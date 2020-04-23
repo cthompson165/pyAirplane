@@ -81,7 +81,7 @@ all_sprites.add(plane)
 
 clock = pygame.time.Clock()
 
-running = False
+running = True
 t = 0
 for i in range(1000):
 

@@ -21,7 +21,7 @@ class RigidBody:
         return this._theta
 
     def resetForces(this):
-        this._force = Vector2D([0, 0])
+        this._force = Vector2D(0, 0)
         this._torque = 0
 
     # Vector2D force, point. point is in initial frame

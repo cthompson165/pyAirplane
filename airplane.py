@@ -30,7 +30,7 @@ class Airplane(RigidBody):
         pass
 
     def cg(this):
-        return Vector2D([0, 0])
+        return Vector2D(0, 0)
 
     def cp(this):
         pass
@@ -84,7 +84,7 @@ class Airplane(RigidBody):
         return lift_force
 
     def weight(this):
-        return Vector2D([0, -9.8 * this.mass()])
+        return Vector2D(0, -9.8 * this.mass())
 
     def step(this, t):
         this.resetForces()
@@ -110,7 +110,7 @@ class SevenFourSeven(Airplane):
         return 510.97
 
     def cp(this):
-        return Vector2D([-3, 0])
+        return Vector2D(-3, 0)
 
     def mass(this):
         return 289132.653061  # weight (F) / a (9.8)

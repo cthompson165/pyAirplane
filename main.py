@@ -36,10 +36,10 @@ class Plane(pygame.sprite.Sprite):
 
         # meters per pixel: image is 250 pixels
         # a 747 is 77 meters. So m/p = 77/250 = 308
-        self._projector = Projector(Vector2D([800, 600]), 0.308)
+        self._projector = Projector(Vector2D(800, 600), 0.308)
 
-        self._airplane = SevenFourSeven(Vector2D([5, 5]),
-                                        Vector2D([265.3581764, 0]))
+        self._airplane = SevenFourSeven(Vector2D(5, 5),
+                                        Vector2D(265.3581764, 0))
         self._airplane._theta = 2.4
 
     def control(self, pressed_keys, t):

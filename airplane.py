@@ -1,5 +1,5 @@
 from rigidBody import RigidBody
-from vector import Vector2D
+from vector2d import Vector2D
 import math
 
 

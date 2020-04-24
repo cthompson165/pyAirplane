@@ -1,6 +1,6 @@
 import pygame
 from airplane import SevenFourSeven
-from vector import Vector2D
+from vector2d import Vector2D
 from projector import Projector
 import numpy
 

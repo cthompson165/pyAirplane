@@ -1,133 +1,53 @@
 from rigidBody import RigidBody
 from vector2d import Vector2D
+from airfoil import Airfoil
 import math
 
 
 class Airplane(RigidBody):
 
-    air_density = 0.30267
-
-    def wingArea(this):
+    def mass(self):
         pass
 
-    def wingSpan(this):
+    def massMomentOfInertia(self):
         pass
 
-    # unused in favor of lift0 + stability derivative
-    def coefficientOfLift(this):
+    def airfoils(self):
         pass
 
-    def coefficientOfLiftStabilityDerivative(this):
-        pass
-
-    def coefficientOfLift0(this):
-        pass
-
-    def mass(this):
-        pass
-
-    def massMomentOfInertia(this):
-        pass
-
-    def cg(this):
+    def cg(self):
         return Vector2D(0, 0)
 
-    def cp(this):
-        pass
-
-    def __init__(this, pos, vel):
-        RigidBody.__init__(this, this.mass(), this.massMomentOfInertia(), pos,
+    def __init__(self, pos, vel):
+        RigidBody.__init__(self, self.mass(), self.massMomentOfInertia(), pos,
                            0, vel, 0)
 
-    def calcAOA(this, theta, vel_angle):
+    
 
-        # normalized is what theta is if vel_angle is 0
-        normalized = theta - vel_angle
+    def addLiftForces(self):
 
-        if normalized > 0:
-            # AOA is positive until plane flips completely
-            # over going backward
-            if normalized <= 180:
-                return normalized
-            else:
-                return normalized - 360
-        else:
-            if normalized >= -180:
-                return normalized
-            else:
-                return 360 + normalized
+        for airfoil in self.airfoils():
+            lift_mag = airfoil.calculateLift(self._theta, self._vel)
+            lift_dir = self._vel.rotate(90).unit()
+            lift_force = lift_dir.scale(lift_mag)
+            
+            self.addForce(airfoil.relativePos, lift_force)
 
-    def calculateLift(this):
-        # equation from
-        # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
-        vel_mag = this._vel.magnitude()
-        return (Airplane.air_density * vel_mag**2 * this.wingArea() *
-                this.calculateCoefficientOfLift()) / 2
+    def weight(self):
+        return Vector2D(0, -9.8 * self.mass())
 
-    def calculateCoefficientOfLift(this):
-        # C_l = C_la * a + C_l0
-        aoa = this.calcAOA(this._theta, this._vel.angle())
+    def step(self, t):
+        self.resetForces()
 
-        print ("aoa: " + str(aoa))
-        print("aoa rads: " + str(math.radians(aoa)))
+        #print("t: " + str(t))
+        #print("theta: " + str(round(self._theta, 3)))
+        #print("vel: " + str(self._vel.round(3)))
+        #print("lift: " + str(self.lift().round(3)))
+        #print("weight: " + str(self.weight().round(3)))
+        #print("angular vel: " + str(round(self._angularVel, 3)))
 
-        C_l = this.coefficientOfLiftStabilityDerivative() * math.radians(aoa) + this.coefficientOfLift0()
+        self.addLiftForces()
+        self.addForce(self.cg(), self.weight())
 
-        print ("CL: " + str(C_l))
+        self.move(t)
 
-        return C_l
-
-    def lift(this):
-        lift_mag = this.calculateLift()
-        lift_dir = this._vel.rotate(90).unit()
-        lift_force = lift_dir.scale(lift_mag)
-        return lift_force
-
-    def weight(this):
-        return Vector2D(0, -9.8 * this.mass())
-
-    def step(this, t):
-        this.resetForces()
-  
-        print("t: " + str(t))
-        print("theta: " + str(round(this._theta, 3)))
-        print("vel: " + str(this._vel.round(3)))
-        print("lift: " + str(this.lift().round(3)))
-        print("weight: " + str(this.weight().round(3)))
-        print("angular vel: " + str(round(this._angularVel, 3)))
-
-        this.addForce(this.cp(), this.lift())
-        this.addForce(this.cg(), this.weight())
-
-        this.move(t)
-
-
-class SevenFourSeven(Airplane):
-    def __init__(this, pos, vel):
-        Airplane.__init__(this, pos, vel)
-
-    def wingArea(this):
-        return 510.97
-
-    def cp(this):
-        return Vector2D(-3, 0)
-
-    def mass(this):
-        return 289132.653061  # weight (F) / a (9.8)
-
-    def massMomentOfInertia(this):
-        length = 68.4
-        height = 19.4
-        return this.mass() * (length**2 + height**2) / 12  # rectangle...
-
-    def wingSpan(this):
-        return 59.74
-
-    def coefficientOfLift(this):
-        return 0.52
-
-    def coefficientOfLiftStabilityDerivative(this):
-        return 5.5
-
-    def coefficientOfLift0(this):
-        return 0.29

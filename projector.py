@@ -9,6 +9,8 @@ class Projector:
         self._centering_offset = screen_size.scale(.5)  # pixels
         self._origin_offset = Vector2D(0, 0)  # pixels
 
+        self._scaling_constant = 1.0 / meters_per_pixel
+
     def project(self, real_pos):
 
         screen_pos = self.map_to_pixels(real_pos)
@@ -19,7 +21,7 @@ class Projector:
 
     def map_to_pixels(self, real_pos):
         # get pixels
-        screen_pos = real_pos.scale(1.0 / self._meters_per_pixel)
+        screen_pos = real_pos.scale(self._scaling_constant)
 
         # flip y
         screen_pos = Vector2D(screen_pos.x,

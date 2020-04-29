@@ -4,13 +4,16 @@ class Airfoil:
 
     air_density = 0.30267
 
-    def __init__(self, relativePos, relativeAoA, area, CLa, CL0):
+    def __init__(self, name, relativePos, relativeAoA, area, CLa, CL0):
 
-        self.relativePos = relativePos
+        self.name = name
+        self.relativePos = relativePos  # relative to CG
         self.relativeAoA = relativeAoA
         self.area = area
         self.CLa = CLa
         self.CL0 = CL0
+
+        self.debugPrint = False
 
     def calcAOA(self, angle, vel_angle):
 
@@ -37,15 +40,41 @@ class Airfoil:
         CL =  self.calculateCoefficientOfLift(airplaneAngle, velocity)
 
         vel_mag = velocity.magnitude()
-        return (Airfoil.air_density * vel_mag**2 * self.area * CL) / 2
+        lift = (Airfoil.air_density * vel_mag**2 * self.area * CL) / 2
+
+        if self.debugPrint:
+            print ("lift: " + str(lift))
+            print ("-----")
+
+        return lift
 
     def calculateCoefficientOfLift(self, airplaneAngle, velocity):
 
-        totalAngle = airplaneAngle + self.relativeAoA
+        absoluteAoA = self.calculateAbsoluteAoA(airplaneAngle)
+
         vel_angle = velocity.angle()
-        aoa = self.calcAOA(totalAngle, vel_angle)
+        aoa = self.calcAOA(absoluteAoA, vel_angle)
 
         # thin airfoil
         # CL = CLa * AoA + CL0
         CL = self.CLa * math.radians(aoa) + self.CL0
+
+        if self.debugPrint:
+          print ("relative AOA: " + str(self.relativeAoA))
+          print ("absolute AOA: " + str(absoluteAoA))
+          print ("AOA: " + str(aoa))
+          print ("CL: " + str(CL))
+          
+        
         return CL
+
+    def calculateAbsoluteAoA(self, airplaneAngle):
+        # TODO - test this
+
+        absoluteAoA = airplaneAngle + self.relativeAoA
+        while absoluteAoA >= 360:
+            absoluteAoA -= 360
+        while absoluteAoA < 0:
+            absoluteAoA += 360
+        return absoluteAoA
+

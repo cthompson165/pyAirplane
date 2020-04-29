@@ -40,17 +40,28 @@ class Plane(pygame.sprite.Sprite):
 
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265.3581764, 0))
-        self._airplane._theta = 2.4
+        self._airplane._theta = 0
+
+        self.elevator = 0
 
     def control(self, pressed_keys, t):
         self.pressed_keys = pressed_keys
 
         if pressed_keys[K_UP]:
-            self._airplane._theta = self._airplane._theta - .01
-            print("theta: " + str(self._airplane._theta))
-        if pressed_keys[K_DOWN]:
-            self._airplane._theta = self._airplane._theta + .01
-            print("theta: " + str(self._airplane._theta))
+            self.elevator += .01
+            #print ("DOWN")
+        elif pressed_keys[K_DOWN]:
+            self.elevator -= .01
+            #print ("UP")
+        else:
+            if self.elevator < 0:
+                self.elevator += .01
+                #print ("RECOVER")
+            elif self.elevator > 0:
+                self.elevator -= .01
+                #print ("RECOVER")
+        
+        self._airplane.changeElevator(self.elevator)
 
         self._airplane.step(t)
 
@@ -105,7 +116,7 @@ for i in range(1000):
     # Drawing on Screen
     screen.fill(Colors.SKYBLUE)
 
-    plane.control(pressed_keys, t/1000)
+    plane.control(pressed_keys, t/1000)  # convert t to seconds
     all_sprites.update()
     screen.blit(plane.image, plane.rect)
 
@@ -113,6 +124,7 @@ for i in range(1000):
     pygame.display.flip()
 
     # Number of frames per secong e.g. 60
+
     t = clock.tick(30)
 
 pygame.quit()

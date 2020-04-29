@@ -12,7 +12,7 @@ class TestSevenFourSeven(unittest.TestCase):
         vel = Vector2D(265.5, 0)
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
-        airplane._theta = 2.4
+        airplane._theta = 0
         lift = airplane.airfoils()[0].calculateLift(airplane._theta, vel)
 
         # example's rounding was pretty far off
@@ -27,7 +27,7 @@ class TestSevenFourSeven(unittest.TestCase):
         vel = Vector2D(265.3581764, 0)
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
-        airplane._theta = 2.4
+        airplane._theta = 0
         lift = airplane.airfoils()[0].calculateLift(airplane._theta, vel)
 
         # example's rounding was pretty far off
@@ -43,7 +43,7 @@ class TestSevenFourSeven(unittest.TestCase):
         vel = Vector2D(265.3581764, 0)
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
-        airplane._theta = 2.4
+        airplane._theta = 0
         airplane.step(1)
         self.assertEqual(0, round(airplane._force.magnitude(), 2))
 
@@ -54,7 +54,7 @@ class TestSevenFourSeven(unittest.TestCase):
     def test_airplane_Cl(self):
         vel = Vector2D(1, 1)
         airplane = SevenFourSeven(Vector2D(200, 200), vel)
-        airplane._theta = 47.4  # 2.4 degrees above vel vector
+        airplane._theta = 45
         airfoil = airplane.airfoils()[0]
         cl = airfoil.calculateCoefficientOfLift(airplane._theta, vel)
 
@@ -62,7 +62,7 @@ class TestSevenFourSeven(unittest.TestCase):
 
     def test_airplane_AoA(self):
 
-        airfoil = Airfoil(Vector2D(0, 0), 0, 0, 0, 0)
+        airfoil = Airfoil("test", Vector2D(0, 0), 0, 0, 0, 0)
 
         self.assertEqual(-5, airfoil.calcAOA(5, 10), "1=>1-")
         self.assertEqual(-95, airfoil.calcAOA(5, 100), "1=>2-")

@@ -13,8 +13,6 @@ class Airfoil:
         self.CLa = CLa
         self.CL0 = CL0
 
-        self.debugPrint = False
-
     def calcAOA(self, angle, vel_angle):
 
         # normalized is what theta is if vel_angle is 0
@@ -42,10 +40,6 @@ class Airfoil:
         vel_mag = velocity.magnitude()
         lift = (Airfoil.air_density * vel_mag**2 * self.area * CL) / 2
 
-        if self.debugPrint:
-            print ("lift: " + str(lift))
-            print ("-----")
-
         return lift
 
     def calculateCoefficientOfLift(self, airplaneAngle, velocity):
@@ -59,13 +53,6 @@ class Airfoil:
         # CL = CLa * AoA + CL0
         CL = self.CLa * math.radians(aoa) + self.CL0
 
-        if self.debugPrint:
-          print ("relative AOA: " + str(self.relativeAoA))
-          print ("absolute AOA: " + str(absoluteAoA))
-          print ("AOA: " + str(aoa))
-          print ("CL: " + str(CL))
-          
-        
         return CL
 
     def calculateAbsoluteAoA(self, airplaneAngle):

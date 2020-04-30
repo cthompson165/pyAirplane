@@ -40,38 +40,40 @@ class Plane(pygame.sprite.Sprite):
 
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265.3581764, 0))
-        self._airplane._theta = 0
-
         self.elevator = 0
+
+        self._projector.center(self._airplane.pos())
 
     def control(self, pressed_keys, t):
         self.pressed_keys = pressed_keys
 
+        elevatorStep = .2
+
         if pressed_keys[K_UP]:
-            self.elevator += .01
-            #print ("DOWN")
+            self.elevator += elevatorStep
+            self._airplane.debug = True
         elif pressed_keys[K_DOWN]:
-            self.elevator -= .01
-            #print ("UP")
+            self.elevator -= elevatorStep
+            self._airplane.debug = True
         else:
+            self.elevator = round(self.elevator, 2)
             if self.elevator < 0:
-                self.elevator += .01
-                #print ("RECOVER")
+                self.elevator += elevatorStep
             elif self.elevator > 0:
-                self.elevator -= .01
-                #print ("RECOVER")
-        
+                self.elevator -= elevatorStep
+            
         self._airplane.changeElevator(self.elevator)
 
         self._airplane.step(t)
 
     def update(self):
 
-        self._projector.center(self._airplane.pos())
-        screen_pos = self._projector.project(self._airplane.pos())
+        pos = self._airplane.pos()
+        self._projector.centerX(pos)
+        screen_pos = self._projector.project(pos)
 
         self.image = pygame.transform.rotate(self.original_image,
-                                             self._airplane.theta())
+                                             self._airplane.orientation())
         self.rect = self.image.get_rect(center=self.rect.center)
 
         self.rect.center = screen_pos.toint().array()

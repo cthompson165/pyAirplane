@@ -33,3 +33,9 @@ class Projector:
         # keep centered
         projected = self.map_to_pixels(real_pos)
         self._origin_offset = projected.subtract(self._centering_offset)
+
+    def centerX(self, real_pos):
+        # TODO - options for whether or not to do this
+        # keep centered
+        projected = self.map_to_pixels(real_pos)
+        self._origin_offset = Vector2D(projected.x - self._centering_offset.x, self._origin_offset.y)

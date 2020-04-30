@@ -45,7 +45,7 @@ class TestSevenFourSeven(unittest.TestCase):
         airplane = SevenFourSeven(pos, vel)
         airplane._theta = 0
         airplane.step(1)
-        self.assertEqual(0, round(airplane._force.magnitude(), 2))
+        self.assertEqual(0, round(airplane.state.vel.y, 2))
 
     def test_airplane_weight(self):
         airplane = SevenFourSeven(Vector2D(200, 200), Vector2D(265.3581764, 0))

@@ -3,6 +3,7 @@ from vector2d import Vector2D
 from airfoil import Airfoil
 import math
 from force import Force
+from state import State 
 
 class Airplane(RigidBody):
 
@@ -22,31 +23,36 @@ class Airplane(RigidBody):
         return Vector2D(0, 0)
 
     def __init__(self, pos, vel):
-        RigidBody.__init__(self, self.mass(), self.massMomentOfInertia(), pos,
-                           0, vel, 0)
+        state = State(pos, vel, 0, 0)
+        RigidBody.__init__(self, self.mass(), self.massMomentOfInertia(), state)
+        self.debug = False
 
-    def calculateForces(self, pos, vel, theta, thetaVel):
+    def pos(self):
+        return self.state.pos
+
+    def orientation(self):
+        return self.state.theta
+
+    def calculateForces(self, state):
        
         forces = []
-        #print("vel: " + str(vel))
-        #print("vel mag: " + str(vel.magnitude()))
-        #print("theta: " + str(round(theta, 3)))
-        #print("weight: " + str(self.weight().round(3)))
+        
+        self.debugPrint(self.state)
 
         for airfoil in self.airfoils():
             
-            #print ("-- " + airfoil.name + " --")
+            self.debugPrint("-- " + airfoil.name + " --")
             
-            lift_mag = airfoil.calculateLift(theta, vel)
-            lift_dir = vel.rotate(90).unit()
+            lift_mag = airfoil.calculateLift(state.theta, state.vel)
+            lift_dir = state.vel.rotate(90).unit()
             lift_force = lift_dir.scale(lift_mag)
 
-            if (airfoil.debugPrint):
-                print ("lift: " + str(lift_force))
+            self.debugPrint("AoA: " + str(airfoil.calculateAbsoluteAoA(state.theta)))
+            self.debugPrint("lift: " + str(lift_force))
             
             forces.append(Force(airfoil.relativePos, lift_force))
 
-        #print ("----------------------------------------")
+        self.debugPrint ("----------------------------------------")
 
         # gravity
         forces.append(Force(self.cg(), self.weight()))
@@ -55,4 +61,8 @@ class Airplane(RigidBody):
 
     def weight(self):
         return Vector2D(0, -9.8 * self.mass())
+
+    def debugPrint(self, message):
+        if self.debug:
+            print (message)
 

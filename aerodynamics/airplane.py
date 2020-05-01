@@ -49,7 +49,7 @@ class Airplane(RigidBody):
             self.debugPrint("AoA: " + str(surface.AoA(state.theta, state.vel).relativeDegrees()))
             self.debugPrint("lift: " + str(lift_force))
             
-            forces.append(Force(surface.relativePos, lift_force))
+            forces.append(Force(surface.relative_pos, lift_force))
 
         self.debugPrint ("----------------------------------------")
 

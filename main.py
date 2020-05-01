@@ -58,7 +58,7 @@ class Plane(pygame.sprite.Sprite):
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265.3581764, 0))
 
-        self._airplane.debug = True
+        self._airplane.debug = False
         self.elevator = 0
 
         self._projector.center(self._airplane.pos())
@@ -86,7 +86,7 @@ class Plane(pygame.sprite.Sprite):
     def update(self):
 
         pos = self._airplane.pos()
-        self._projector.centerX(pos)
+        self._projector.center(pos)
         screen_pos = self._projector.project(pos)
 
         self.image = pygame.transform.rotate(self.original_image,

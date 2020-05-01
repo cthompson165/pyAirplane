@@ -14,7 +14,7 @@ class SevenFourSeven(Airplane):
         self._surfaces.append(ThinAirfoil("stabilizer", Vector2D(-33, 0), 0, 136, 2 * math.pi, 0))
 
     def setElevatorTo(self, degrees):
-        self._surfaces[1].relativeDegrees = degrees
+        self._surfaces[1].relative_degrees = degrees
         pass
 
     def mass(self):

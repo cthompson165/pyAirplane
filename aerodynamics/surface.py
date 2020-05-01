@@ -9,14 +9,11 @@ class Surface:
         self.relativeDegrees = relativeDegrees
         self.area = area
 
-    def calcAOA(self, angle, velAngle):
-        return angle.minus(velAngle)
-
     def AoA(self, airplaneAngle, velocity):
         absoluteAngle = airplaneAngle.plusConstant(self.relativeDegrees)
 
         velAngle = velocity.angle()
-        return self.calcAOA(absoluteAngle, velAngle)
+        return absoluteAngle.minus(velAngle)
 
     def calculateLift(self, airplaneAngle, velocity):
 

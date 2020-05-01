@@ -4,40 +4,40 @@ from util.projector import Projector
 
 
 class TestProjector(unittest.TestCase):
-    def test_projector_project(self):
-        screen_size = Vector2D(10, 10)
-        meters_per_pixel = 1
-        projector = Projector(screen_size, meters_per_pixel)
+    def testProjectorProject(self):
+        screenSize = Vector2D(10, 10)
+        metersPerPixel = 1
+        projector = Projector(screenSize, metersPerPixel)
 
         projected = projector.project(Vector2D(1, 1))
 
         self.assertEqual(1, projected.x)
         self.assertEqual(9, projected.y)
 
-    def test_projector_project_scaled_down(self):
-        screen_size = Vector2D(10, 10)
-        meters_per_pixel = .5
-        projector = Projector(screen_size, meters_per_pixel)
+    def testProjectorProjectScaledDown(self):
+        screenSize = Vector2D(10, 10)
+        metersPerPixel = .5
+        projector = Projector(screenSize, metersPerPixel)
 
         projected = projector.project(Vector2D(1, 1))
 
         self.assertEqual(2, projected.x)
         self.assertEqual(8, projected.y)
 
-    def test_projector_project_scaled_up(self):
-        screen_size = Vector2D(10, 10)
-        meters_per_pixel = 2
-        projector = Projector(screen_size, meters_per_pixel)
+    def testProjectorProjectScaledUp(self):
+        screenSize = Vector2D(10, 10)
+        metersPerPixel = 2
+        projector = Projector(screenSize, metersPerPixel)
 
         projected = projector.project(Vector2D(6, 6))
 
         self.assertEqual(3, projected.x)
         self.assertEqual(7, projected.y)
 
-    def test_projector_center(self):
-        screen_size = Vector2D(10, 10)
-        meters_per_pixel = 1
-        projector = Projector(screen_size, meters_per_pixel)
+    def testProjectorCenter(self):
+        screenSize = Vector2D(10, 10)
+        metersPerPixel = 1
+        projector = Projector(screenSize, metersPerPixel)
 
         projector.center(Vector2D(1, 1))
         projected = projector.project(Vector2D(1, 1))

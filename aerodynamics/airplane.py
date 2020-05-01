@@ -1,13 +1,12 @@
-from rigidBody import RigidBody
-from vector2d import Vector2D
-from airfoil import Airfoil
-import math
-from force import Force
-from state import State 
+from util.vector2d import Vector2D
+from util.angle import Angle
+from physics.force import Force
+from physics.state import State 
+from physics.rigidBody import RigidBody
 
 class Airplane(RigidBody):
 
-    def changeElevator(self, angle):
+    def setElevatorTo(self, degrees):
         pass
 
     def mass(self):
@@ -16,14 +15,14 @@ class Airplane(RigidBody):
     def massMomentOfInertia(self):
         pass
 
-    def airfoils(self):
+    def surfaces(self):
         pass
 
     def cg(self):
         return Vector2D(0, 0)
 
     def __init__(self, pos, vel):
-        state = State(pos, vel, 0, 0)
+        state = State(pos, vel, Angle(0), 0)
         RigidBody.__init__(self, self.mass(), self.massMomentOfInertia(), state)
         self.debug = False
 
@@ -39,18 +38,18 @@ class Airplane(RigidBody):
         
         self.debugPrint(self.state)
 
-        for airfoil in self.airfoils():
+        for surface in self.surfaces():
             
-            self.debugPrint("-- " + airfoil.name + " --")
+            self.debugPrint("-- " + surface.name + " --")
             
-            lift_mag = airfoil.calculateLift(state.theta, state.vel)
-            lift_dir = state.vel.rotate(90).unit()
+            lift_mag = surface.calculateLift(state.theta, state.vel)
+            lift_dir = state.vel.rotate(Angle(90)).unit()
             lift_force = lift_dir.scale(lift_mag)
 
-            self.debugPrint("AoA: " + str(airfoil.calculateAbsoluteAoA(state.theta)))
+            self.debugPrint("AoA: " + str(surface.AoA(state.theta, state.vel).relativeDegrees()))
             self.debugPrint("lift: " + str(lift_force))
             
-            forces.append(Force(airfoil.relativePos, lift_force))
+            forces.append(Force(surface.relativePos, lift_force))
 
         self.debugPrint ("----------------------------------------")
 

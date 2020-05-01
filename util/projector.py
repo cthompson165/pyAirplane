@@ -1,4 +1,4 @@
-from vector2d import Vector2D
+from util.vector2d import Vector2D
 
 
 class Projector:

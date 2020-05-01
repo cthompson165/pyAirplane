@@ -2,18 +2,19 @@
 # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
 
 import unittest
-from vector2d import Vector2D
-from sevenFourSeven import SevenFourSeven
-from airfoil import Airfoil
-
+from util.vector2d import Vector2D
+from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
+from aerodynamics.surfaces.thinAirfoil import ThinAirfoil
+from util.angle import Angle
+import math
 
 class TestSevenFourSeven(unittest.TestCase):
     def test_airplane_lift(self):
         vel = Vector2D(265.5, 0)
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
-        airplane._theta = 0
-        lift = airplane.airfoils()[0].calculateLift(airplane._theta, vel)
+
+        lift = airplane.surfaces()[0].calculateLift(Angle(0), vel)
 
         # example's rounding was pretty far off
         # when using Cl calculated from stability
@@ -27,8 +28,7 @@ class TestSevenFourSeven(unittest.TestCase):
         vel = Vector2D(265.3581764, 0)
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
-        airplane._theta = 0
-        lift = airplane.airfoils()[0].calculateLift(airplane._theta, vel)
+        lift = airplane.surfaces()[0].calculateLift(Angle(0), vel)
 
         # example's rounding was pretty far off
         # when using Cl calculated from stability
@@ -43,7 +43,6 @@ class TestSevenFourSeven(unittest.TestCase):
         vel = Vector2D(265.3581764, 0)
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
-        airplane._theta = 0
         airplane.step(1)
         self.assertEqual(0, round(airplane.state.vel.y, 2))
 
@@ -54,42 +53,45 @@ class TestSevenFourSeven(unittest.TestCase):
     def test_airplane_Cl(self):
         vel = Vector2D(1, 1)
         airplane = SevenFourSeven(Vector2D(200, 200), vel)
-        airplane._theta = 45
-        airfoil = airplane.airfoils()[0]
-        cl = airfoil.calculateCoefficientOfLift(airplane._theta, vel)
+        airfoil = airplane.surfaces()[0]
+        cl = airfoil.calculateCoefficientOfLift(Angle(45), vel)
 
         self.assertEqual(.52, round(cl, 2))
 
+    def calcAOA(airfoil, a1, a2):
+        return math.degrees(airfoil.calcAOA(Angle(a1), Angle(a2)).relativeRadians())
+
     def test_airplane_AoA(self):
 
-        airfoil = Airfoil("test", Vector2D(0, 0), 0, 0, 0, 0)
+        airfoil = ThinAirfoil("test", Vector2D(0, 0), 0, 0, 0, 0)
 
-        self.assertEqual(-5, airfoil.calcAOA(5, 10), "1=>1-")
-        self.assertEqual(-95, airfoil.calcAOA(5, 100), "1=>2-")
-        self.assertEqual(-175, airfoil.calcAOA(10, 185), "1=>3-")
-        self.assertEqual(175, airfoil.calcAOA(10, 195), "1=>3+")
-        self.assertEqual(10, airfoil.calcAOA(5, 355), "1=>4+")
+        self.assertAlmostEqual(-5, TestSevenFourSeven.calcAOA(airfoil, 5, 10), msg="1=>1-")
+        self.assertAlmostEqual(-95, TestSevenFourSeven.calcAOA(airfoil, 5, 100), msg="1=>2-")
+        self.assertAlmostEqual(-175, TestSevenFourSeven.calcAOA(airfoil, 10, 185), msg="1=>3-")
+        self.assertAlmostEqual(175, TestSevenFourSeven.calcAOA(airfoil, 10, 195), msg="1=>3+")
+        self.assertAlmostEqual(10, TestSevenFourSeven.calcAOA(airfoil, 5, 355), msg="1=>4+")
 
-        self.assertEqual(90, airfoil.calcAOA(95, 5), "2=>1+")
-        self.assertEqual(5, airfoil.calcAOA(100, 95), "2=>2+")
-        self.assertEqual(-5, airfoil.calcAOA(95, 100), "2=>2-")
-        self.assertEqual(-90, airfoil.calcAOA(95, 185), "2=>3-")
-        self.assertEqual(105, airfoil.calcAOA(100, 355), "2=>4+")
-        self.assertEqual(-175, airfoil.calcAOA(100, 275), "2=>4-")
+        self.assertAlmostEqual(90, TestSevenFourSeven.calcAOA(airfoil, 95, 5), msg="2=>1+")
+        self.assertAlmostEqual(5, TestSevenFourSeven.calcAOA(airfoil, 100, 95), msg="2=>2+")
+        self.assertAlmostEqual(-5, TestSevenFourSeven.calcAOA(airfoil, 95, 100), msg="2=>2-")
+        self.assertAlmostEqual(-90, TestSevenFourSeven.calcAOA(airfoil, 95, 185), msg="2=>3-")
+        self.assertAlmostEqual(105, TestSevenFourSeven.calcAOA(airfoil, 100, 355), msg="2=>4+")
+        self.assertAlmostEqual(-175, TestSevenFourSeven.calcAOA(airfoil, 100, 275), msg="2=>4-")
 
-        self.assertEqual(-175, airfoil.calcAOA(190, 5), "3=>1-")
-        self.assertEqual(105, airfoil.calcAOA(190, 85), "3=>1-")
-        self.assertEqual(20, airfoil.calcAOA(190, 170), "3=>2-")
-        self.assertEqual(5, airfoil.calcAOA(190, 185), "3=>3-")
-        self.assertEqual(-5, airfoil.calcAOA(190, 195), "3=>3+")
-        self.assertEqual(-85, airfoil.calcAOA(190, 275), "3=>4+")
+        self.assertAlmostEqual(-175, TestSevenFourSeven.calcAOA(airfoil, 190, 5), msg="3=>1-")
+        self.assertAlmostEqual(105, TestSevenFourSeven.calcAOA(airfoil, 190, 85), msg="3=>1-")
+        self.assertAlmostEqual(20, TestSevenFourSeven.calcAOA(airfoil, 190, 170), msg="3=>2-")
+        self.assertAlmostEqual(5, TestSevenFourSeven.calcAOA(airfoil, 190, 185), msg="3=>3-")
+        self.assertAlmostEqual(-5, TestSevenFourSeven.calcAOA(airfoil, 190, 195), msg="3=>3+")
+        self.assertAlmostEqual(-85, TestSevenFourSeven.calcAOA(airfoil, 190, 275), msg="3=>4+")
 
-        self.assertEqual(-85, airfoil.calcAOA(280, 5), "4=>1-")
-        self.assertEqual(-160, airfoil.calcAOA(280, 80), "4=>2-")
-        self.assertEqual(-175, airfoil.calcAOA(280, 95), "4=>3-")
-        self.assertEqual(175, airfoil.calcAOA(280, 105), "4=>3+")
-        self.assertEqual(5, airfoil.calcAOA(280, 275), "4=>4+")
-        self.assertEqual(-70, airfoil.calcAOA(280, 350), "4=>4-")
+        self.assertAlmostEqual(-85, TestSevenFourSeven.calcAOA(airfoil, 280, 5), msg="4=>1-")
+        self.assertAlmostEqual(-160, TestSevenFourSeven.calcAOA(airfoil, 280, 80), msg="4=>2-")
+        self.assertAlmostEqual(-175, TestSevenFourSeven.calcAOA(airfoil, 280, 95), msg="4=>3-")
+        self.assertAlmostEqual(175, TestSevenFourSeven.calcAOA(airfoil, 280, 105), msg="4=>3+")
+        self.assertAlmostEqual(5, TestSevenFourSeven.calcAOA(airfoil, 280, 275), msg="4=>4+")
+        self.assertAlmostEqual(-70, TestSevenFourSeven.calcAOA(airfoil, 280, 350), msg="4=>4-")
+        
 
     # TODO - lift vector
 

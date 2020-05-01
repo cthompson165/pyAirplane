@@ -1,7 +1,5 @@
-import math
-from vector2d import Vector2D
-from force import Force
-from state import State
+from util.vector2d import Vector2D
+from physics.integrator import EulerIntegrator
 
 class RigidBody:
 
@@ -10,6 +8,8 @@ class RigidBody:
         self.state = state
         self._mass = mass
         self._massMomentOfInertia = massMomentOfInertia
+
+        self._integrator = EulerIntegrator()
 
     def calculateForces(self, state):
         pass
@@ -22,6 +22,11 @@ class RigidBody:
             acceleration = acceleration.add(forceAcceleration)
 
             forceTorque = force.pos.rotate(state.theta).cross(force.vector)
+
+            # TODO - figure out the right damping constant 
+            # to prevent all the oscillating...
+            forceTorque -= 10000 * state.thetaVel
+
             thetaAcceleration += forceTorque / massMoment
      
         return [acceleration, thetaAcceleration]
@@ -29,31 +34,21 @@ class RigidBody:
     def calculateChange(self, state):
         forces = self.calculateForces(state)
         [acceleration, thetaAcceleration] = RigidBody.calculateAcceleration(state, forces, self._mass, self._massMomentOfInertia)
-        return State(state.vel, acceleration, state.thetaVel, thetaAcceleration)
-
-    def euler(self, t, state):
-        stateDot = self.calculateChange(state)
-        newState = state.add(stateDot.times(t))
-        
-        return newState
-
-    def rungeKutta(self, t, state):
-      
-        f1 = self.calculateChange(state).times(t);
-        f2 = self.calculateChange(state.add(f1.times(0.5))).times(t);
-        f3 = self.calculateChange(state.add(f2.times(0.5))).times(t);
-        f4 = self.calculateChange(state.add(f3)).times(t);
-                
-        newState = state.add(f1.add(f2.times(2)).add(f3.times(2)).add(f4).times(1.0/6))
-        
-        return newState
+        return StateChange(state.vel, acceleration, state.thetaVel, thetaAcceleration)
 
     def step(self, t):
-        self.state = self.euler(t, self.state)
-        
-    def normalizeAngle(angle):
-        while angle >= 360:
-            angle -= 360
-        while angle < 0:
-            angle += 360
-        return angle
+        self.state = self._integrator.integrate(self.state, t, self.calculateChange)
+
+class StateChange:
+    def __init__(self, vel, acc, thetaVel, thetaAcc):
+        self.vel = vel
+        self.acc = acc
+        self.thetaVel = thetaVel
+        self.thetaAcc = thetaAcc
+    
+    def times(self, t):
+        return StateChange(self.vel.scale(t), self.acc.scale(t), self.thetaVel * t, self.thetaAcc * t)
+
+    def add(self, other):
+        return StateChange(self.vel.add(other.vel), self.acc.add(other), self.thetaVel + other.thetaVel, self.thetaAcc + other.thetaAcc)
+

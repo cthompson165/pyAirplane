@@ -1,8 +1,23 @@
-import pygame
+'''
 from sevenFourSeven import SevenFourSeven
 from vector2d import Vector2D
-from projector import Projector
-import numpy
+
+def runSim(steps):
+    airplane = SevenFourSeven(Vector2D(5, 5),
+               Vector2D(265.3581764, 0))
+
+    t = 1.0/30
+
+    for i in range(0, steps):
+        airplane.step(t)
+
+runSim(10000)
+'''
+
+import pygame
+from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
+from util.vector2d import Vector2D
+from util.projector import Projector
 
 from pygame.locals import (
     RLEACCEL,
@@ -34,12 +49,16 @@ class Plane(pygame.sprite.Sprite):
                 200, 200
             ))
 
+        
+
         # meters per pixel: image is 250 pixels
         # a 747 is 77 meters. So m/p = 77/250 = 308
         self._projector = Projector(Vector2D(800, 600), 0.308)
 
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265.3581764, 0))
+
+        self._airplane.debug = True
         self.elevator = 0
 
         self._projector.center(self._airplane.pos())
@@ -51,10 +70,8 @@ class Plane(pygame.sprite.Sprite):
 
         if pressed_keys[K_UP]:
             self.elevator += elevatorStep
-            self._airplane.debug = True
         elif pressed_keys[K_DOWN]:
             self.elevator -= elevatorStep
-            self._airplane.debug = True
         else:
             self.elevator = round(self.elevator, 2)
             if self.elevator < 0:
@@ -62,7 +79,7 @@ class Plane(pygame.sprite.Sprite):
             elif self.elevator > 0:
                 self.elevator -= elevatorStep
             
-        self._airplane.changeElevator(self.elevator)
+        self._airplane.setElevatorTo(self.elevator)
 
         self._airplane.step(t)
 
@@ -73,7 +90,8 @@ class Plane(pygame.sprite.Sprite):
         screen_pos = self._projector.project(pos)
 
         self.image = pygame.transform.rotate(self.original_image,
-                                             self._airplane.orientation())
+                                             self._airplane.orientation().degrees())
+                                             
         self.rect = self.image.get_rect(center=self.rect.center)
 
         self.rect.center = screen_pos.toint().array()
@@ -96,7 +114,7 @@ clock = pygame.time.Clock()
 
 running = True
 t = 0
-for i in range(1000):
+while running:
 
     # for loop through the event queue
     for event in pygame.event.get():

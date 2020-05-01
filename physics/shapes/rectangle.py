@@ -1,6 +1,5 @@
-import math
-from rigidBody import RigidBody
-from vector import Vector2D
+from physics.rigidBody import RigidBody
+from util.vector import Vector2D
 
 class Rectangle(RigidBody):
     

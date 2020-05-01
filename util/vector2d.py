@@ -1,10 +1,14 @@
 import math
+from util.angle import Angle
 
 
 class Vector2D:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self._cachedAngle = None
+        self._cachedMag = None
+        self._cachedRotated = None
 
     def cross(self, other):
         return self.x * other.y - self.y * other.x
@@ -23,49 +27,63 @@ class Vector2D:
 
     # theta in degrees - rotates counter clockwise
     def rotate(self, theta):
-        theta = math.radians(theta)
-        cos_val = math.cos(theta)
-        sin_val = math.sin(theta)
+        if not(self._cachedRotated is None):
+            return self._cachedRotated
+
+        cos_val = theta.cos()
+        sin_val = theta.sin()
 
         x_new = self.x * cos_val - self.y * sin_val
         y_new = self.x * sin_val + self.y * cos_val
 
-        return Vector2D(x_new, y_new)
+        self._cachedRotated = Vector2D(x_new, y_new)
+        return self._cachedRotated
 
     def magnitude(self):
-        return math.sqrt(self.x**2 + self.y**2)
+        if not(self._cachedMag is None):
+            return self._cachedMag
+
+        self._cachedMag = math.sqrt(self.x**2 + self.y**2)
+        return self._cachedMag
 
     def angle_with_other(self, other):
         angle = math.acos(
             self.dot(other) / (self.magnitude() * other.magnitude()))
-        return math.degrees(angle)
+        return Angle(math.degrees(angle))
 
+    
     def angle(self):
+
+        if not(self._cachedAngle is None):
+            return self._cachedAngle
 
         x = self.x
         y = self.y
 
         if x == 0 and y == 0:
-            return 0  # TODO - error?
+            return Angle(0)  # TODO - error?
         elif x > 0 and y == 0:
-            return 0
+            return Angle(0)
         elif x == 0 and y > 0:
-            return 90
+            return Angle(90)
         elif x < 0 and y == 0:
-            return 180
+            return Angle(180)
         elif x == 0 and y < 0:
-            return 270
+            return Angle(270)
 
         angle_with_x = math.degrees(math.atan(self.y / self.x))
 
         if (x > 0 and y > 0):
-            return angle_with_x
+            degrees = angle_with_x
         elif (x < 0 and y > 0):
-            return 180 + angle_with_x
+            degrees = 180 + angle_with_x
         elif (x < 0 and y < 0):
-            return 180 + angle_with_x
+            degrees = 180 + angle_with_x
         else:  # x > 0 and y < 0
-            return 360 + angle_with_x
+            degrees = 360 + angle_with_x
+
+        self._cachedAngle = Angle(degrees)
+        return self._cachedAngle
 
     def unit(self):
         mag = self.magnitude()

@@ -1,6 +1,7 @@
 import unittest
 import math
-from vector2d import Vector2D
+from util.vector2d import Vector2D
+from util.angle import Angle
 
 
 class TestVector(unittest.TestCase):
@@ -29,38 +30,38 @@ class TestVector(unittest.TestCase):
     def test_vector_angleWithOther(self):
         u = Vector2D(2, 2)
         v = Vector2D(0, 3)
-        self.assertAlmostEqual(45, u.angle_with_other(v))
+        self.assertAlmostEqual(45, u.angle_with_other(v).degrees())
 
     def test_vector_angle(self):
         # 45s
         u = Vector2D(1, 1)
-        self.assertAlmostEqual(45, u.angle())
+        self.assertAlmostEqual(45, u.angle().degrees())
 
         u = Vector2D(-1, 1)
-        self.assertAlmostEqual(135, u.angle())
+        self.assertAlmostEqual(135, u.angle().degrees())
 
         u = Vector2D(-1, -1)
-        self.assertAlmostEqual(225, u.angle())
+        self.assertAlmostEqual(225, u.angle().degrees())
 
         u = Vector2D(1, -1)
-        self.assertAlmostEqual(315, u.angle())
+        self.assertAlmostEqual(315, u.angle().degrees())
 
         # 90s
         u = Vector2D(1, 0)
-        self.assertAlmostEqual(0, u.angle())
+        self.assertAlmostEqual(0, u.angle().degrees())
 
         u = Vector2D(0, 1)
-        self.assertAlmostEqual(90, u.angle())
+        self.assertAlmostEqual(90, u.angle().degrees())
 
         u = Vector2D(-1, 0)
-        self.assertAlmostEqual(180, u.angle())
+        self.assertAlmostEqual(180, u.angle().degrees())
 
         u = Vector2D(0, -1)
-        self.assertAlmostEqual(270, u.angle())
+        self.assertAlmostEqual(270, u.angle().degrees())
 
     def test_vector_rotate(self):
         u = Vector2D(1, 0)
-        u_rot = u.rotate(90).round(2)
+        u_rot = u.rotate(Angle(90)).round(2)
         expected = Vector2D(0, 1)
         self.assertTrue(expected.equals(u_rot))
 

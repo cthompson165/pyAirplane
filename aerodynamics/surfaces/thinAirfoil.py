@@ -2,8 +2,8 @@ from aerodynamics.surface import Surface
 
 class ThinAirfoil(Surface):
 
-    def __init__(self, name, relativePos, relativeDegrees, area, CLa, CL0):
-        Surface.__init__(self, name, relativePos, relativeDegrees, area)
+    def __init__(self, name, relative_pos, relative_degrees, area, CLa, CL0):
+        Surface.__init__(self, name, relative_pos, relative_degrees, area)
         self.CLa = CLa
         self.CL0 = CL0
 

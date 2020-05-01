@@ -4,18 +4,23 @@ from aerodynamics.airplane import Airplane
 from aerodynamics.surfaces.thinAirfoil import ThinAirfoil
 
 class SevenFourSeven(Airplane):
+
+    MAX_ELEVATOR_DEGREES = 10
+
     def __init__(self, pos, vel):
         Airplane.__init__(self, pos, vel)
 
-        self._surfaces = []
-        self._surfaces.append(ThinAirfoil("wing", Vector2D(0, 0), 2.4, 510.97, 5.5, 0.29))
+        self._wing = ThinAirfoil("wing", Vector2D(0, 0), 2.4, 510.97, 5.5, 0.29)
 
         # TODO - figure out CLa
-        self._surfaces.append(ThinAirfoil("stabilizer", Vector2D(-33, 0), 0, 136, 2 * math.pi, 0))
+        self._horizontal_stabilizer = ThinAirfoil("stabilizer", Vector2D(-33, 0), 0, 136, 2 * math.pi, 0)
 
-    def setElevatorTo(self, degrees):
-        self._surfaces[1].relativeDegrees = degrees
-        pass
+        self._surfaces = []
+        self._surfaces.append(self._wing)
+        self._surfaces.append(self._horizontal_stabilizer)
+
+    def apply_pitch_control(self, percent):
+        self._horizontal_stabilizer.relative_degrees = SevenFourSeven.MAX_ELEVATOR_DEGREES * percent / 100.0
 
     def mass(self):
         return 289132.653061  # weight (F) / a (9.8)

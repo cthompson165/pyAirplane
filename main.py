@@ -29,7 +29,6 @@ from pygame.locals import (
 )
 
 class Colors:
-
   GREEN = (20, 255, 140)
   GREY = (210, 210, 210)
   WHITE = (255, 255, 255)
@@ -39,6 +38,9 @@ class Colors:
   SKYBLUE = (135, 206, 250)
 
 class Plane(pygame.sprite.Sprite):
+
+    ELEVATOR_STEP = 5
+
     def __init__(self):
         super(Plane, self).__init__()
         self.original_image = pygame.image.load("images/plane4.png")
@@ -49,8 +51,6 @@ class Plane(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        
-
         # meters per pixel: image is 250 pixels
         # a 747 is 77 meters. So m/p = 77/250 = 308
         self._projector = Projector(Vector2D(800, 600), 0.308)
@@ -58,28 +58,31 @@ class Plane(pygame.sprite.Sprite):
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265.3581764, 0))
 
-        self._airplane.debug = True
-        self.elevator = 0
+        self._airplane.debug = False
+        self.elevator_percent = 0
 
         self._projector.center(self._airplane.pos())
+
+    def _incrementElevator(self):
+        self.elevator_percent = min(100, self.elevator_percent + Plane.ELEVATOR_STEP)
+
+    def _decrementElevator(self):
+        self.elevator_percent = max(-100, self.elevator_percent - Plane.ELEVATOR_STEP)
 
     def control(self, pressed_keys, t):
         self.pressed_keys = pressed_keys
 
-        elevatorStep = .2
-
         if pressed_keys[K_UP]:
-            self.elevator += elevatorStep
+            self._incrementElevator()
         elif pressed_keys[K_DOWN]:
-            self.elevator -= elevatorStep
+            self._decrementElevator()
         else:
-            self.elevator = round(self.elevator, 2)
-            if self.elevator < 0:
-                self.elevator += elevatorStep
-            elif self.elevator > 0:
-                self.elevator -= elevatorStep
+            if self.elevator_percent < 0:
+                self._incrementElevator()
+            elif self.elevator_percent > 0:
+                self._decrementElevator()
             
-        self._airplane.setElevatorTo(self.elevator)
+        self._airplane.apply_pitch_control(self.elevator_percent)
 
         self._airplane.step(t)
 

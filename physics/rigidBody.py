@@ -22,11 +22,7 @@ class RigidBody:
             acceleration = acceleration.add(force_acceleration)
 
             force_torque = force.pos.rotate(state.theta).cross(force.vector)
-
-            # TODO - figure out the right damping constant 
-            # to prevent all the oscillating...
-            force_torque -= 10000 * state.theta_vel
-
+            
             theta_acceleration += force_torque / mass_moment
      
         return [acceleration, theta_acceleration]

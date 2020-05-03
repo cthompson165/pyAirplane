@@ -6,9 +6,6 @@ class Vector2D:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self._cachedAngle = None
-        self._cachedMag = None
-        self._cachedRotated = None
 
     def cross(self, other):
         return self.x * other.y - self.y * other.x
@@ -27,25 +24,18 @@ class Vector2D:
 
     # theta in degrees - rotates counter clockwise
     def rotate(self, theta):
-        if not(self._cachedRotated is None):
-            return self._cachedRotated
-
+   
         cos_val = theta.cos()
         sin_val = theta.sin()
 
         x_new = self.x * cos_val - self.y * sin_val
         y_new = self.x * sin_val + self.y * cos_val
 
-        self._cachedRotated = Vector2D(x_new, y_new)
-        return self._cachedRotated
-
+        return Vector2D(x_new, y_new)
+   
     def magnitude(self):
-        if not(self._cachedMag is None):
-            return self._cachedMag
-
-        self._cachedMag = math.sqrt(self.x**2 + self.y**2)
-        return self._cachedMag
-
+        return math.sqrt(self.x**2 + self.y**2)
+        
     def angle_with_other(self, other):
         angle = math.acos(
             self.dot(other) / (self.magnitude() * other.magnitude()))
@@ -53,9 +43,6 @@ class Vector2D:
 
     
     def angle(self):
-
-        if not(self._cachedAngle is None):
-            return self._cachedAngle
 
         x = self.x
         y = self.y
@@ -82,8 +69,7 @@ class Vector2D:
         else:  # x > 0 and y < 0
             degrees = 360 + angle_with_x
 
-        self._cachedAngle = Angle(degrees)
-        return self._cachedAngle
+        return Angle(degrees)
 
     def unit(self):
         mag = self.magnitude()

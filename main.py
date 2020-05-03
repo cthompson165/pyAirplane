@@ -58,7 +58,7 @@ class Plane(pygame.sprite.Sprite):
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265.3581764, 0))
 
-        self._airplane.debug = True
+        self._airplane.debug = False
         self.elevator_percent = 0
 
         self._projector.center(self._airplane.pos())

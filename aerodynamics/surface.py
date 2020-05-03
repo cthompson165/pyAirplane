@@ -16,7 +16,7 @@ class Surface:
 
         velAngle = velocity.angle()
         return absoluteAngle.minus(velAngle)
-        
+
     def calculateLift(self, airplane_angle, velocity):
 
         # equation from

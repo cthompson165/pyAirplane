@@ -22,7 +22,7 @@ class RigidBody:
             acceleration = acceleration.add(force_acceleration)
 
             force_torque = force.pos.rotate(state.theta).cross(force.vector)
-            
+
             theta_acceleration += force_torque / mass_moment
      
         return [acceleration, theta_acceleration]

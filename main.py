@@ -1,3 +1,4 @@
+'''
 from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
 from util.vector2d import Vector2D
 
@@ -30,8 +31,8 @@ def AdjustAngle(angle):
 
 runSim(200)
 print("done")
-
 '''
+
 import pygame
 from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
 from util.vector2d import Vector2D
@@ -169,4 +170,3 @@ while running:
     t = clock.tick(30)
 
 pygame.quit()
-'''

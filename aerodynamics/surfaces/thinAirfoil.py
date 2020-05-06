@@ -9,11 +9,16 @@ class ThinAirfoil(Surface):
         self.CL0 = CL0
         self.CD0 = CD0
         self.aspect_ratio = aspect_ratio
+        self.efficiency_factor = efficiency_factor
+
+        # TODO - ever want CLa = 0?
+        if self.CLa == 0:
+            self.CLa = self.calculate_CLa_lifting_line(aspect_ratio)
 
     def calculate_CLa_lifting_line(self, aspect_ratio):
         return 2 * math.pi * (aspect_ratio / (2 + aspect_ratio))
             
-    def calculateCoefficientOfLift(self, airplaneAngle, velocity):
+    def calculate_lift_coefficient(self, airplaneAngle, velocity):
         aoa = self.AoA(airplaneAngle, velocity)
 
         # thin airfoil
@@ -22,11 +27,10 @@ class ThinAirfoil(Surface):
         return CL
 
     def calculate_drag_coefficient(self, airplaneAngle, velocity):
-        aoa = self.AoA(airplaneAngle, velocity)
 
-        CL = calculateCoefficientOfLift(airplaneAngle, velocity)
+        CL = self.calculate_lift_coefficient(airplaneAngle, velocity)
         induced_drag_coefficient = CL**2 / (math.pi * self.aspect_ratio)
-        CD =  self.CD0 + induced_drag_coefficient / e
+        CD =  self.CD0 + induced_drag_coefficient / self.efficiency_factor
         return CD
 
 

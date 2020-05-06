@@ -17,17 +17,31 @@ class Surface:
         velAngle = velocity.angle()
         return absoluteAngle.minus(velAngle)
 
-    def calculateLift(self, airplane_angle, velocity):
+    def calculate_lift(self, airplane_angle, velocity):
 
         # equation from
         # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
-        CL =  self.calculateCoefficientOfLift(airplane_angle, velocity)
+        CL =  self.calculate_lift_coefficient(airplane_angle, velocity)
 
         vel_mag = velocity.magnitude()
         lift = (Surface.air_density * vel_mag**2 * self.area * CL) / 2
 
         return lift
 
-    def calculateCoefficientOfLift(self, airplane_angle, velocity):
+    def calculate_drag(self, airplane_angle, velocity):
+
+        # equation from
+        # https://wright.nasa.gov/airplane/drageq.html
+        CD = self.calculate_drag_coefficient(airplane_angle, velocity)
+
+        vel_mag = velocity.magnitude()
+        drag = CD * self.area * (Surface.air_density * vel_mag**2) / 2
+
+        return drag
+
+    def calculate_lift_coefficient(self, airplane_angle, velocity):
+        pass
+
+    def calculate_drag_coefficient(self, airplane_angle, velocity):
         pass
 

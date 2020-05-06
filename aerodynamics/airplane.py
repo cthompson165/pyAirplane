@@ -53,7 +53,7 @@ class Airplane(RigidBody):
             self.debugPrint("vel tot: " + str(surface_vel))
             self.debugPrint("vel tot angle: " + str(surface_vel.angle()))
 
-            lift_mag = surface.calculateLift(state.theta, surface_vel)
+            lift_mag = surface.calculate_lift(state.theta, surface_vel)
 
             lift_dir = surface_vel.rotate(Angle(90)).unit()
             lift_force = lift_dir.scale(lift_mag)
@@ -85,7 +85,7 @@ class Airplane(RigidBody):
 
              # TODO: can cache this
             tangent_vel_unit = surface.relative_pos.rotate(Angle(90)).unit()
-            return tangent_vel_unit.scale(magnitude * 10)
+            return tangent_vel_unit.scale(magnitude)
         else:
             return Vector2D(0, 0)
 

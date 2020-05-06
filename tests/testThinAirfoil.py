@@ -31,7 +31,12 @@ class TestAirfoil(unittest.TestCase):
 
         self.assertEqual(.52, round(cl, 2))
 
-    # TODO - lift vector
+    # (self, name, relative_pos, relative_degrees, area, aspect_ratio, CLa, CL0, CD0, efficiency_factor)
+    def test_CLa_lifting_line(self):
+        cessna_172_wing = ThinAirfoil("wing", Vector2D(0, 0), 0, 136, 7.37, 0, 0, 0, 0.27, 0.75)
+        CLa = cessna_172_wing.calculate_CLa_lifting_line(7.37)
+        self.assertAlmostEqual(4.942, CLa, 3)
+
 
 
 # Some code to make the tests actually run.

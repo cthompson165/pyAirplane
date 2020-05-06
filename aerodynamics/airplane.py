@@ -85,7 +85,7 @@ class Airplane(RigidBody):
 
              # TODO: can cache this
             tangent_vel_unit = surface.relative_pos.rotate(Angle(90)).unit()
-            return tangent_vel_unit.scale(magnitude)
+            return tangent_vel_unit.scale(magnitude * 10)
         else:
             return Vector2D(0, 0)
 

@@ -10,10 +10,10 @@ class SevenFourSeven(Airplane):
     def __init__(self, pos, vel):
         Airplane.__init__(self, pos, vel)
 
-        self._wing = ThinAirfoil("wing", Vector2D(0, 0), 2.4, 510.97, 5.5, 0.29)
+        self._wing = ThinAirfoil("wing", Vector2D(0, 0), 2.4, 510.97, 6.98, 5.5, 0.29, 0.0305, 0.75)
 
         # TODO - figure out CLa
-        self._horizontal_stabilizer = ThinAirfoil("stabilizer", Vector2D(-33, 0), 0, 136, 2 * math.pi, 0)
+        self._horizontal_stabilizer = ThinAirfoil("stabilizer", Vector2D(-33, 0), 0, 136, 3.62, 0, 0, 0, 0.75)
 
         self._surfaces = []
         self._surfaces.append(self._wing)

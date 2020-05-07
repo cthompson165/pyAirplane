@@ -89,18 +89,18 @@ class TestSurface(unittest.TestCase):
         self.assertAlmostEqual(14802.58517, lift, 4, "7")
 
     def test_cessna_drag(self):
-
+  
         vel = Vector2D(100, 0)
         wing = self.get_cessna_wing()
 
         drag = wing.calculate_drag(Angle(0), vel)
-        self.assertAlmostEqual(661.93929, drag, 4, "0")
+        self.assertAlmostEqual(661.93928, drag, 4, "0")
 
         drag = wing.calculate_drag(Angle(1), vel)
-        self.assertAlmostEqual(672.4430802, drag, 4, "1")
+        self.assertAlmostEqual(672.44308, drag, 4, "1")
 
         drag = wing.calculate_drag(Angle(7), vel)
-        self.assertAlmostEqual(1176.625008, drag, 4, "7")
+        self.assertAlmostEqual(1176.62500, drag, 4, "7")
 
 # Some code to make the tests actually run.
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ import unittest
 from util.vector2d import Vector2D
 from aerodynamics.surfaces.thinAirfoil import ThinAirfoil
 from util.angle import Angle
-
+from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
 
 class TestAirfoil(unittest.TestCase):
     def get_boeing_wing(self):
@@ -25,9 +25,8 @@ class TestAirfoil(unittest.TestCase):
         self.assertEqual(.52, round(cl, 2))
 
     def test_CLa_lifting_line(self):
-        wing = self.get_cessna_wing()
-        CLa = wing.calculate_CLa_lifting_line(7.37)
-        self.assertAlmostEqual(4.942, CLa, 3)
+        force_curve = LiftingLineLift(7.37)
+        self.assertAlmostEqual(4.942, force_curve.lift_slope_3d, 3)
     
     def test_CL_cesna(self):
         wing = self.get_cessna_wing()
@@ -50,14 +49,17 @@ class TestAirfoil(unittest.TestCase):
     def test_CD_cesna(self):
         wing = self.get_cessna_wing()
 
+        # cesna is actually 0.027 CDmin but this test 
+        # using default force curve which is set to 0.025
+        # so the expected values are off a bit 
         CD = wing.calculate_drag_coefficient(Angle(0), Vector2D(100, 0))
         self.assertAlmostEqual(0.027, CD, 4, "0")
 
         CD = wing.calculate_drag_coefficient(Angle(1), Vector2D(100, 0))
-        self.assertAlmostEqual(0.027428442, CD, 4, "1")
+        self.assertAlmostEqual(0.02742, CD, 4, "1")
 
         CD = wing.calculate_drag_coefficient(Angle(6), Vector2D(100, 0))
-        self.assertAlmostEqual(0.042423898, CD, 4, "6")
+        self.assertAlmostEqual(0.04242, CD, 4, "6")
 
 # Some code to make the tests actually run.
 if __name__ == '__main__':

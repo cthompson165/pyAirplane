@@ -34,6 +34,9 @@ class Airplane(RigidBody):
     def orientation(self):
         return self.state.theta
 
+    def calculate_thrust(self, state):
+        pass
+
     def calculateForces(self, state):
        
         forces = []
@@ -54,20 +57,29 @@ class Airplane(RigidBody):
             self.debugPrint("vel tot angle: " + str(surface_vel.angle()))
 
             lift_mag = surface.calculate_lift(state.theta, surface_vel)
-
             lift_dir = surface_vel.rotate(Angle(90)).unit()
             lift_force = lift_dir.scale(lift_mag)
+
+            drag_mag = surface.calculate_drag(state.theta, surface_vel)
+            drag_dir = surface_vel.reverse().unit()
+            drag_force = drag_dir.scale(drag_mag)
 
             self.debugPrint("AoA: " + str(surface.AoA(state.theta, surface_vel).relativeDegrees()))
             self.debugPrint("AoA ex: " + str(surface.AoA(state.theta, state.vel).relativeDegrees()))
             self.debugPrint("lift: " + str(lift_force))
-            
-            forces.append(Force(surface.relative_pos, lift_force))
+            self.debugPrint("drag: " + str(drag_force))
+
+            forces.append(Force("lift", surface.relative_pos, lift_force))
+            forces.append(Force("drag", surface.relative_pos, drag_force))
 
         self.debugPrint ("----------------------------------------")
 
-        # gravity
-        forces.append(Force(self.cg(), self.weight()))
+        thrust = self.calculate_thrust(self.state)
+        print("thrust: " + str(thrust))
+        forces.append(Force("thrust", self.cg(), thrust))
+        forces.append(Force("gravity", self.cg(), self.weight()))
+
+        print ("VEL: " + str(state.vel.magnitude()) + ": " + str(state.vel.angle().degrees()))
 
         return forces
 

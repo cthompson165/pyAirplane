@@ -33,7 +33,7 @@ class Surface:
         # equation from
         # https://wright.nasa.gov/airplane/drageq.html
         CD = self.calculate_drag_coefficient(airplane_angle, velocity)
-
+        
         vel_mag = velocity.magnitude()
         drag = CD * self.area * (Surface.air_density * vel_mag**2) / 2
 

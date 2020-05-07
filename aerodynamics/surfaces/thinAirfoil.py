@@ -26,11 +26,13 @@ class ThinAirfoil(Surface):
         CL = self.CLa * aoa.relativeRadians() + self.CL0
         return CL
 
-    def calculate_drag_coefficient(self, airplaneAngle, velocity):
-
+    def calculate_drag_coefficient(self, airplaneAngle, velocity): 
         CL = self.calculate_lift_coefficient(airplaneAngle, velocity)
+        
         induced_drag_coefficient = CL**2 / (math.pi * self.aspect_ratio)
+
         CD =  self.CD0 + induced_drag_coefficient / self.efficiency_factor
+        
         return CD
 
 

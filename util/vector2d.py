@@ -75,6 +75,9 @@ class Vector2D:
         mag = self.magnitude()
         return Vector2D(self.x / mag, self.y / mag)
 
+    def reverse(self):
+        return Vector2D(-self.x, -self.y)
+
     def array(self):
         return [self.x, self.y]
 

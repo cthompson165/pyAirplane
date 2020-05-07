@@ -1,3 +1,4 @@
+'''
 from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
 from util.vector2d import Vector2D
 
@@ -30,8 +31,8 @@ def AdjustAngle(angle):
 
 runSim(200)
 print("done")
-
 '''
+
 import pygame
 from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
 from util.vector2d import Vector2D
@@ -74,7 +75,7 @@ class Plane(pygame.sprite.Sprite):
         self._projector = Projector(Vector2D(800, 600), 0.308)
 
         self._airplane = SevenFourSeven(Vector2D(5, 5),
-                                        Vector2D(265.3581764, 0))
+                                        Vector2D(265, 0))
 
         self._airplane.debug = False
         self.elevator_percent = 0
@@ -169,4 +170,3 @@ while running:
     t = clock.tick(30)
 
 pygame.quit()
-'''

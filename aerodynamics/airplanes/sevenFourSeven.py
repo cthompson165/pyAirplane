@@ -1,4 +1,3 @@
-import math
 from util.vector2d import Vector2D
 from aerodynamics.airplane import Airplane
 from aerodynamics.surfaces.thinAirfoil import ThinAirfoil
@@ -21,6 +20,13 @@ class SevenFourSeven(Airplane):
 
     def apply_pitch_control(self, percent):
         self._horizontal_stabilizer.relative_degrees = SevenFourSeven.MAX_ELEVATOR_DEGREES * percent / 100.0
+
+    def calculate_thrust(self, state):
+        max_engine_thrust = 275000
+        num_engines = 4
+        max_total_thrust = max_engine_thrust * num_engines
+        thrust_percent = 24
+        return Vector2D(1, 0).rotate(state.theta).scale(max_total_thrust * thrust_percent / 100)
 
     def mass(self):
         return 289132.653061  # weight (F) / a (9.8)

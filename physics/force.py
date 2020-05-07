@@ -1,4 +1,5 @@
 class Force:
-    def __init__(self, pos, vector):
+    def __init__(self, name, pos, vector):
+        self.name = name
         self.pos = pos
         self.vector = vector

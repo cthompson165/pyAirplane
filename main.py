@@ -60,8 +60,8 @@ class Plane(pygame.sprite.Sprite):
             100, self.elevator_percent + Plane.ELEVATOR_STEP)
 
     def _decrement_elevator(self):
-        self.elevator_percent = max(-100,
-                                    self.elevator_percent - Plane.ELEVATOR_STEP)
+        self.elevator_percent = max(
+            -100, self.elevator_percent - Plane.ELEVATOR_STEP)
 
     def control(self, pressed_keys, time):
         ''' pass user control input to the plane '''
@@ -87,8 +87,8 @@ class Plane(pygame.sprite.Sprite):
         self._projector.center_x(pos)
         screen_pos = self._projector.project(pos)
 
-        self.image = pygame.transform.rotate(self.original_image,
-                                             self._airplane.orientation().degrees())
+        self.image = pygame.transform.rotate(
+            self.original_image, self._airplane.orientation().degrees())
 
         self.rect = self.image.get_rect(center=self.rect.center)
 

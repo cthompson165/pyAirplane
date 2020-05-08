@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring
 import unittest
 import math
 from util.vector_2d import Vector2D

@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring
 # boeing examples from
 # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
 

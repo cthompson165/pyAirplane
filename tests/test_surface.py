@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring
 import unittest
 from util.vector_2d import Vector2D
 from util.angle import Angle
@@ -68,13 +67,17 @@ class TestSurface(unittest.TestCase):
     def get_boeing_wing(self):
         wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
         wing_drag_curve = LiftingLineDrag(6.98, 0.0305, 0.75)
-        return Surface("boeing wing", Vector2D(0, 0), 2.4, 510.97, wing_lift_curve, wing_drag_curve)
+        return Surface(
+            "boeing wing", Vector2D(0, 0), 2.4, 510.97,
+            wing_lift_curve, wing_drag_curve)
 
     def get_cessna_wing(self):
 
         wing_lift_curve = LiftingLineLift(7.37)
         wing_drag_curve = LiftingLineDrag(7.37, 0.027, 0.75)
-        return Surface("cessna 172 wing", Vector2D(0, 0), 0, 16.2, wing_lift_curve, wing_drag_curve)
+        return Surface(
+            "cessna 172 wing", Vector2D(0, 0), 0, 16.2,
+            wing_lift_curve, wing_drag_curve)
 
     def test_boeing_lift(self):
 

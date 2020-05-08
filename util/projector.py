@@ -38,4 +38,5 @@ class Projector:
         # TODO - options for whether or not to do this
         # keep centered
         projected = self.map_to_pixels(real_pos)
-        self._origin_offset = Vector2D(projected.x - self._centering_offset.x, self._origin_offset.y)
+        self._origin_offset = Vector2D(
+            projected.x - self._centering_offset.x, self._origin_offset.y)

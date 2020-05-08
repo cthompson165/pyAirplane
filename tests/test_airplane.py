@@ -1,8 +1,8 @@
-# pylint: disable=missing-docstring
 import unittest
 from util.vector_2d import Vector2D
 from aerodynamics.airplane import Airplane
 from aerodynamics.surface import Surface
+
 
 class TestAirplane(unittest.TestCase):
 
@@ -11,7 +11,6 @@ class TestAirplane(unittest.TestCase):
 
         # airplane rotating back
         airplane.state.theta_vel = 3
-
 
         # surface is behind the cg on y axis
         surface = Surface("test", Vector2D(-10, 0), 0, 0, None, None)
@@ -32,6 +31,7 @@ class TestAirplane(unittest.TestCase):
 
         self.assertAlmostEqual(0.524, vel_rot.y, 3)
         self.assertAlmostEqual(0, vel_rot.x)
+
 
 # Some code to make the tests actually run.
 if __name__ == '__main__':

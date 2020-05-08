@@ -1,6 +1,3 @@
-''' Drag Curve to get drag coefficient for CL '''
-
-
 class DragCurve:
     ''' Drag Curve to get drag coefficient for CL '''
 

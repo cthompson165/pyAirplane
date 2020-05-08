@@ -1,6 +1,3 @@
-''' Lift Curve to get lift coefficient for angle of attack '''
-
-
 class LiftCurve:
     ''' Lift Curve to get lift coefficient for angle of attack '''
 

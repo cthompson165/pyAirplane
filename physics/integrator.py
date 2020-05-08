@@ -1,15 +1,12 @@
-''' Integrators '''
 from physics.state import State
 
 
 class Integrator:
-    ''' Integrator '''
+
     def integrate(self, state, time, change_calculation):
-        ''' run integration '''
         raise NotImplementedError()
 
     def plus(self, state, state_change):
-        ''' Add state and state change together '''
         new_pos = state.pos.add(state_change.vel)
         new_vel = state.vel.add(state_change.acc)
         new_theta = state.theta.plus_constant(state_change.theta_vel)
@@ -19,7 +16,6 @@ class Integrator:
 
 
 class EulerIntegrator(Integrator):
-    ''' Euler integrator '''
     def integrate(self, state, time, change_calculation):
         state_dot = change_calculation(state)
         new_state = self.plus(state, state_dot.multiply(time))
@@ -28,7 +24,6 @@ class EulerIntegrator(Integrator):
 
 
 class RungeKuttaIntegrator(Integrator):
-    ''' Runge kutta integrator'''
 
     def integrate(self, state, time, change_calculation):
         ''' integrate with runge kutta '''

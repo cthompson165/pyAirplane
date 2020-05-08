@@ -24,7 +24,7 @@ class Vector2D:
 
     # theta in degrees - rotates counter clockwise
     def rotate(self, theta):
-   
+
         cos_val = theta.cos()
         sin_val = theta.sin()
 
@@ -32,16 +32,15 @@ class Vector2D:
         y_new = self.x * sin_val + self.y * cos_val
 
         return Vector2D(x_new, y_new)
-   
+
     def magnitude(self):
         return math.sqrt(self.x**2 + self.y**2)
-        
+
     def angle_with_other(self, other):
         angle = math.acos(
             self.dot(other) / (self.magnitude() * other.magnitude()))
         return Angle(math.degrees(angle))
 
-    
     def angle(self):
 
         x = self.x

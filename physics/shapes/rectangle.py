@@ -6,7 +6,8 @@ from util.vector_2d import Vector2D
 
 
 class Rectangle(RigidBody):
-    ''' A rectangle that reacts realistically to forces applied at different locations
+    ''' A rectangle that reacts realistically to forces applied at
+    different locations
     WARNING - hasn't been tested since a lot of refactoring...'''
 
     def __init__(self, pos, theta, vel, angular_vel, length, width, cp):

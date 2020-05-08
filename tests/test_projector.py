@@ -1,4 +1,3 @@
-# pylint: disable=missing-docstring
 import unittest
 from util.vector_2d import Vector2D
 from util.projector import Projector

@@ -1,5 +1,6 @@
 import math
 
+
 class Angle:
     twoPi = math.pi * 2
 
@@ -12,7 +13,7 @@ class Angle:
 
     def degrees(self):
         return self._degrees
-    
+
     def radians(self):
         return self._radians
 
@@ -46,7 +47,7 @@ class Angle:
             return self._degrees
         else:
             return self._degrees - 360
-    
+
     def relative_radians(self):
         if (self._radians >= 0 and self._radians <= math.pi):
             return self._radians

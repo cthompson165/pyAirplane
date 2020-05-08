@@ -2,7 +2,7 @@ from util.vector_2d import Vector2D
 from util.angle import Angle
 from physics.force import Force
 from physics.state import State 
-from physics.rigidBody import RigidBody
+from physics.rigid_body import RigidBody
 
 import math
 

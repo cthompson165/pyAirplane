@@ -1,7 +1,5 @@
 class State:
     def __init__(self, pos, vel, theta, theta_vel):
-        if theta.type() != "angle":
-            raise ValueError("Not an angle")
 
         self.pos = pos  # vector
         self.vel = vel  # vector

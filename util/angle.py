@@ -41,14 +41,15 @@ class Angle:
     def tan(self):
         return math.tan(self._radians)
 
-    # 0 to 180 or 0 to -180
     def relative_degrees(self):
+        ''' 0 to 180 or 0 to -180 '''
         if (self._degrees >= 0 and self._degrees <= 180):
             return self._degrees
         else:
             return self._degrees - 360
 
     def relative_radians(self):
+        ''' 0 to pi or 0 to -pi '''
         if (self._radians >= 0 and self._radians <= math.pi):
             return self._radians
         else:

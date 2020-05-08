@@ -95,10 +95,12 @@ class Plane(pygame.sprite.Sprite):
         self.rect.center = screen_pos.toint().array()
 
 
-def run():
-    ''' run the game '''
+def run_game():
+
+    clock = pygame.time.Clock()
     running = True
     time = 0
+
     while running:
 
         # for loop through the event queue
@@ -115,31 +117,22 @@ def run():
         if not running:
             break
 
-        # Get all the keys currently pressed
-        pressed_keys = pygame.key.get_pressed()
-
-        # Drawing on Screen
+        # draw the background
         screen.fill(Colors.SKYBLUE)
 
+        # update and draw the plane
+        pressed_keys = pygame.key.get_pressed()
         plane.control(pressed_keys, time/1000)  # convert t to seconds
         all_sprites.update()
         screen.blit(plane.image, plane.rect)
 
-        # Refresh Screen
+        # update the display and clock
         pygame.display.flip()
-
-        # Number of frames per secong e.g. 60
-
         time = clock.tick(30)
 
 
 pygame.init()
-
-SCREENWIDTH = 800
-SCREENHEIGHT = 600
-
-size = (SCREENWIDTH, SCREENHEIGHT)
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Airplane Simulator")
 
 # create plane and add to the list of sprites
@@ -147,6 +140,5 @@ plane = Plane()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(plane)
 
-clock = pygame.time.Clock()
-run()
+run_game()
 pygame.quit()

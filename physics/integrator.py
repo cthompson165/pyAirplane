@@ -6,7 +6,7 @@ class Integrator:
     def integrate(self, state, time, change_calculation):
         raise NotImplementedError()
 
-    def plus(self, state, state_change):
+    def _add(self, state, state_change):
         new_pos = state.pos.add(state_change.vel)
         new_vel = state.vel.add(state_change.acc)
         new_theta = state.theta.plus_constant(state_change.theta_vel)
@@ -18,7 +18,7 @@ class Integrator:
 class EulerIntegrator(Integrator):
     def integrate(self, state, time, change_calculation):
         state_dot = change_calculation(state)
-        new_state = self.plus(state, state_dot.multiply(time))
+        new_state = self._add(state, state_dot.multiply(time))
 
         return new_state
 
@@ -34,7 +34,7 @@ class RungeKuttaIntegrator(Integrator):
             self.plus(state, f_2.multiply(0.5))).multiply(time)
         f_4 = change_calculation(self.plus(state, f_3)).multiply(time)
 
-        new_state = self.plus(state, f_1.add(f_2.multiply(2)).add(
+        new_state = self._add(state, f_1.add(f_2.multiply(2)).add(
             f_3.multiply(2)).add(f_4).multiply(1.0/6))
 
         return new_state

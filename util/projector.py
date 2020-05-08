@@ -13,14 +13,14 @@ class Projector:
 
     def project(self, real_pos):
 
-        screen_pos = self.map_to_pixels(real_pos)
+        screen_pos = self._map_to_pixels(real_pos)
 
         # translate to origin
         screen_pos = screen_pos.subtract(self._origin_offset)
         return screen_pos
 
-    def map_to_pixels(self, real_pos):
-        # get pixels
+    def _map_to_pixels(self, real_pos):
+        ''' get pixel position from world position '''
         screen_pos = real_pos.scale(self._scaling_constant)
 
         # flip y
@@ -31,12 +31,12 @@ class Projector:
     def center(self, real_pos):
         # TODO - options for whether or not to do this
         # keep centered
-        projected = self.map_to_pixels(real_pos)
+        projected = self._map_to_pixels(real_pos)
         self._origin_offset = projected.subtract(self._centering_offset)
 
     def center_x(self, real_pos):
         # TODO - options for whether or not to do this
         # keep centered
-        projected = self.map_to_pixels(real_pos)
+        projected = self._map_to_pixels(real_pos)
         self._origin_offset = Vector2D(
             projected.x - self._centering_offset.x, self._origin_offset.y)

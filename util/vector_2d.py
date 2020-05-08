@@ -22,9 +22,8 @@ class Vector2D:
     def scale(self, number):
         return Vector2D(self.x * number, self.y * number)
 
-    # theta in degrees - rotates counter clockwise
     def rotate(self, theta):
-
+        ''' rotates counter clockwise '''
         cos_val = theta.cos()
         sin_val = theta.sin()
 

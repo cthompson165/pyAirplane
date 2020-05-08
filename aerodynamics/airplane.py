@@ -80,13 +80,9 @@ class Airplane(RigidBody):
 
         self.debug_print("----------------------------------------")
 
-        thrust = self.calculate_thrust(self.state)
-        print("thrust: " + str(thrust))
-        forces.append(Force("thrust", self.cg(), thrust))
+        forces.append(
+            Force("thrust", self.cg(), self.calculate_thrust(self.state)))
         forces.append(Force("gravity", self.cg(), self.weight()))
-
-        print("VEL: " + str(state.vel.magnitude()) +
-              ": " + str(state.vel.angle().degrees()))
 
         return forces
 

@@ -1,34 +1,45 @@
+''' Integrators '''
 from physics.state import State
 
-class Integrator:
-    def integrate(self, changeCalculation):
-        pass
 
-    def add(self, state, stateChange):
-        new_pos = state.pos.add(stateChange.vel)
-        new_vel = state.vel.add(stateChange.acc)
-        new_theta = state.theta.plus_constant(stateChange.theta_vel)
-        new_theta_vel = state.theta_vel + stateChange.theta_acc
+class Integrator:
+    ''' Integrator '''
+    def integrate(self, state, time, change_calculation):
+        ''' run integration '''
+        raise NotImplementedError()
+
+    def plus(self, state, state_change):
+        ''' Add state and state change together '''
+        new_pos = state.pos.add(state_change.vel)
+        new_vel = state.vel.add(state_change.acc)
+        new_theta = state.theta.plus_constant(state_change.theta_vel)
+        new_theta_vel = state.theta_vel + state_change.theta_acc
 
         return State(new_pos, new_vel, new_theta, new_theta_vel)
 
+
 class EulerIntegrator(Integrator):
-    def integrate(self, state, t, changeCalculation):
-        state_dot = changeCalculation(state)
-        new_state = self.add(state, state_dot.times(t))
-        
+    ''' Euler integrator '''
+    def integrate(self, state, time, change_calculation):
+        state_dot = change_calculation(state)
+        new_state = self.plus(state, state_dot.multiply(time))
+
         return new_state
+
 
 class RungeKuttaIntegrator(Integrator):
+    ''' Runge kutta integrator'''
 
-    def integrate(self, state, t, changeCalculation):
-      
-        f1 = changeCalculation(state).times(t);
-        f2 = changeCalculation(self.add(state, (f1.times(0.5)))).times(t)
-        f3 = changeCalculation(self.add(state, f2.times(0.5))).times(t)
-        f4 = changeCalculation(self.add(state, f3)).times(t)
-                
-        new_state = self.add(state, f1.add(f2.times(2)).add(f3.times(2)).add(f4).times(1.0/6))
-        
+    def integrate(self, state, time, change_calculation):
+        ''' integrate with runge kutta '''
+        f_1 = change_calculation(state).multiply(time)
+        f_2 = change_calculation(
+            self.plus(state, (f_1.multiply(0.5)))).multiply(time)
+        f_3 = change_calculation(
+            self.plus(state, f_2.multiply(0.5))).multiply(time)
+        f_4 = change_calculation(self.plus(state, f_3)).multiply(time)
+
+        new_state = self.plus(state, f_1.add(f_2.multiply(2)).add(
+            f_3.multiply(2)).add(f_4).multiply(1.0/6))
+
         return new_state
-

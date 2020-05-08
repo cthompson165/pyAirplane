@@ -1,46 +1,60 @@
-from physics.rigidBody import RigidBody
-from util.vector import Vector2D
+''' Rectangle rigid body '''
+from physics.force import Force
+from physics.rigid_body import RigidBody
+from physics.state import State
+from util.vector_2d import Vector2D
+
 
 class Rectangle(RigidBody):
-    
-    def __init__(this, pos, theta, vel, angularVel, length, width, cp):
+    ''' A rectangle that reacts realistically to forces applied at different locations
+    WARNING - hasn't been tested since a lot of refactoring...'''
 
-      # a really big rectangle is too hard to rotate
-      massLength = length / 10
-      massWidth = width / 10
+    def __init__(self, pos, theta, vel, angular_vel, length, width, cp):
 
-      mass = massLength * massWidth
-      mass_moment_of_inertia = mass * (massLength**2 + massWidth**2) / 12
+        # a really big rectangle is too hard to rotate
+        mass_length = length / 10
+        mass_width = width / 10
 
-      RigidBody.__init__(this, mass, mass_moment_of_inertia, pos, theta, vel, angularVel)
+        mass = mass_length * mass_width
+        mass_moment_of_inertia = mass * (mass_length**2 + mass_width**2) / 12
 
-      this._length = length
-      this._width = width
+        state = State(pos, vel, theta, angular_vel)
+        RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
-      half_length = length / 2
-      half_width = width / 2
+        self._length = length
+        self._width = width
 
-      this._cp = cp
-      
-      this._vertices = [
-        Vector2D([-half_length, -half_width]),
-        Vector2D([half_length, -half_width]),
-        Vector2D([half_length, half_width]),
-        Vector2D([-half_length, half_width])
-      ]
+        half_length = length / 2
+        half_width = width / 2
 
-    def get_cp(this):
-      return this._cp.rotate(this._theta).add(this._pos).array()
+        self._cp = cp
+        self._forces = []
 
-    def add_force_at_cp(this, force):
-      this.addForce(this._cp, force)
+        self._vertices = [
+            Vector2D(-half_length, -half_width),
+            Vector2D(half_length, -half_width),
+            Vector2D(half_length, half_width),
+            Vector2D(-half_length, half_width)
+        ]
 
-    def get_vertices(this):
-    
-      new_points = []
+    def calculate_forces(self, state):
+        forces = self._forces
+        self._forces = []
+        return forces
 
-      for point in this._vertices:
-          new_point = point.rotate(this._theta).add(this._pos)
-          new_points.append(new_point.array())
-    
-      return new_points
+    def _get_cp(self):
+        return self._cp.rotate(self.state.theta).add(self.state.pos).array()
+
+    def add_force_at_cp(self, force):
+        ''' Add force at predefined "center of pressure" '''
+        self._forces.append(Force("A force", self._cp, force))
+
+    def get_vertices(self):
+        ''' Get a list of points defining the rectangle '''
+        new_points = []
+
+        for point in self._vertices:
+            new_point = point.rotate(self.state.theta).add(self.state.pos)
+            new_points.append(new_point.array())
+
+        return new_points

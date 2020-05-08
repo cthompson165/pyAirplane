@@ -1,15 +1,18 @@
+''' Implements drag curve based on lifting line theory '''
 import math
 from aerodynamics.drag_curve import DragCurve
 
+
 class LiftingLineDrag(DragCurve):
-    def __init__(self, aspect_ratio, CD_min=0.025, efficiency_factor=0.75):
+    ''' Implements drag curve based on lifting line theory '''
+    def __init__(self, aspect_ratio, cd_min=0.025, efficiency_factor=0.75):
 
         self.aspect_ratio = aspect_ratio
-        self.CD_min = CD_min
+        self.cd_min = cd_min
         self.efficiency_factor = efficiency_factor
 
-    def calculate_drag_coefficient(self, CL):
+    def calculate_drag_coefficient(self, coefficient_lift):
+        ''' calculate drag coefficient '''
+        induced_drag_coefficient = coefficient_lift**2 / (math.pi * self.aspect_ratio)
 
-        induced_drag_coefficient = CL**2 / (math.pi * self.aspect_ratio)
-
-        return self.CD_min + induced_drag_coefficient / self.efficiency_factor 
+        return self.cd_min + induced_drag_coefficient / self.efficiency_factor

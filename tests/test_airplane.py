@@ -1,3 +1,4 @@
+# pylint: disable=missing-docstring
 import unittest
 from util.vector_2d import Vector2D
 from aerodynamics.airplane import Airplane
@@ -6,7 +7,7 @@ from aerodynamics.surface import Surface
 class TestAirplane(unittest.TestCase):
 
     def test_calculate_velocity_from_rotation_rear_surface(self):
-        airplane = Airplane(Vector2D(0,0), Vector2D(0, 0))
+        airplane = Airplane(Vector2D(0, 0), Vector2D(0, 0))
 
         # airplane rotating back
         airplane.state.theta_vel = 3
@@ -20,7 +21,7 @@ class TestAirplane(unittest.TestCase):
         self.assertAlmostEqual(0, vel_rot.x)
 
     def test_calculate_velocity_from_rotation_forward_surface(self):
-        airplane = Airplane(Vector2D(0,0), Vector2D(0, 0))
+        airplane = Airplane(Vector2D(0, 0), Vector2D(0, 0))
 
         # airplane rotating back
         airplane.state.theta_vel = 3

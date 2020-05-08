@@ -1,6 +1,6 @@
 import unittest
 import math
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from util.angle import Angle
 
 

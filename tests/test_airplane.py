@@ -1,9 +1,7 @@
 import unittest
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from aerodynamics.airplane import Airplane
 from aerodynamics.surface import Surface
-from util.angle import Angle
-import math
 
 class TestAirplane(unittest.TestCase):
 
@@ -15,7 +13,7 @@ class TestAirplane(unittest.TestCase):
 
 
         # surface is behind the cg on y axis
-        surface = Surface("test", Vector2D(-10, 0), 0, 0)
+        surface = Surface("test", Vector2D(-10, 0), 0, 0, None, None)
         vel_rot = airplane.calculate_velocity_from_rotation(surface)
 
         self.assertAlmostEqual(-0.524, vel_rot.y, 3)
@@ -27,15 +25,12 @@ class TestAirplane(unittest.TestCase):
         # airplane rotating back
         airplane.state.theta_vel = 3
 
-
         # surface is in front of cg on y axis
-        surface = Surface("test", Vector2D(10, 0), 0, 0)
+        surface = Surface("test", Vector2D(10, 0), 0, 0, None, None)
         vel_rot = airplane.calculate_velocity_from_rotation(surface)
 
         self.assertAlmostEqual(0.524, vel_rot.y, 3)
         self.assertAlmostEqual(0, vel_rot.x)
-
-
 
 # Some code to make the tests actually run.
 if __name__ == '__main__':

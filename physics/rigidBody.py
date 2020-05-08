@@ -1,4 +1,4 @@
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from physics.integrator import EulerIntegrator
 
 class RigidBody:

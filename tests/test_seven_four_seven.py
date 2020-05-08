@@ -2,8 +2,8 @@
 # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
 
 import unittest
-from util.vector2d import Vector2D
-from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
+from util.vector_2d import Vector2D
+from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
 
 class TestSevenFourSeven(unittest.TestCase):
 

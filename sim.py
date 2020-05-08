@@ -1,5 +1,5 @@
-from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
-from util.vector2d import Vector2D
+from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
+from util.vector_2d import Vector2D
 
 def runSim(steps):
     airplane = SevenFourSeven(Vector2D(0, 0),

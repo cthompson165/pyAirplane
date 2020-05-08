@@ -1,58 +1,60 @@
 import unittest
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from aerodynamics.surface import Surface
-from aerodynamics.surfaces.thinAirfoil import ThinAirfoil
+from aerodynamics.lift_curves.linear_lift import LinearLift
+from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
+from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
 from util.angle import Angle
 
 
 class TestSurface(unittest.TestCase):
 
     def get_surface(self, relativeDegrees):
-        return Surface("test", Vector2D(0, 0), relativeDegrees, 0)
+        return Surface("test", Vector2D(0, 0), relativeDegrees, 0, None, None)
 
     def test_surface_aoa(self):
         surface = self.get_surface(0)
-        aoa = surface.AoA(Angle(0), Vector2D(100, 0))
+        aoa = surface.aoa(Angle(0), Vector2D(100, 0))
         self.assertAlmostEqual(0, aoa.relativeDegrees())
     
     def test_surface_aoa_positive(self):
         surface = self.get_surface(0)
-        aoa = surface.AoA(Angle(5), Vector2D(100, 0))
+        aoa = surface.aoa(Angle(5), Vector2D(100, 0))
         self.assertAlmostEqual(5, aoa.relativeDegrees())
 
     def test_surface_aoa_negative(self):
         surface = self.get_surface(0)
-        aoa = surface.AoA(Angle(-5), Vector2D(100, 0))
+        aoa = surface.aoa(Angle(-5), Vector2D(100, 0))
         self.assertAlmostEqual(-5, aoa.relativeDegrees())
 
     def test_surface_aoa_rotated(self):
         surface = self.get_surface(0)
-        aoa = surface.AoA(Angle(47), Vector2D(100, 100))
+        aoa = surface.aoa(Angle(47), Vector2D(100, 100))
         self.assertAlmostEqual(2, aoa.relativeDegrees())
 
     def test_surface_aoa_rotated_huge_pos(self):
         surface = self.get_surface(0)
-        aoa = surface.AoA(Angle(223), Vector2D(100, 100))
+        aoa = surface.aoa(Angle(223), Vector2D(100, 100))
         self.assertAlmostEqual(178, aoa.relativeDegrees())
 
     def test_surface_aoa_rotated_huge_neg(self):
         surface = self.get_surface(0)
-        aoa = surface.AoA(Angle(227), Vector2D(100, 100))
+        aoa = surface.aoa(Angle(227), Vector2D(100, 100))
         self.assertAlmostEqual(-178, aoa.relativeDegrees())
 
     def test_surface_aoa_with_relative(self):
         surface = self.get_surface(3)
-        aoa = surface.AoA(Angle(42), Vector2D(100, 100))
+        aoa = surface.aoa(Angle(42), Vector2D(100, 100))
         self.assertAlmostEqual(0, aoa.relativeDegrees())
 
     def test_surface_aoa_with_relative_positive(self):
         surface = self.get_surface(3)
-        aoa = surface.AoA(Angle(45), Vector2D(100, 100))
+        aoa = surface.aoa(Angle(45), Vector2D(100, 100))
         self.assertAlmostEqual(3, aoa.relativeDegrees())
     
     def test_surface_aoa_with_relative_negative(self):
         surface = self.get_surface(3)
-        aoa = surface.AoA(Angle(40), Vector2D(100, 100))
+        aoa = surface.aoa(Angle(40), Vector2D(100, 100))
         self.assertAlmostEqual(-2, aoa.relativeDegrees())
 
     ''' lift and drag '''
@@ -63,10 +65,15 @@ class TestSurface(unittest.TestCase):
     # http://www.aerospaceweb.org/question/aerodynamics/q0184.shtml
 
     def get_boeing_wing(self):
-        return ThinAirfoil("boeing wing", Vector2D(0, 0), 2.4, 510.97, 6.98, 5.5, 0.29, 0.0305, 0.75)
-
-    def get_cessna_wing(self):
-        return ThinAirfoil("cessna 172 wing", Vector2D(0, 0), 0, 16.2, 7.37, 0, 0, 0.027, 0.75)
+        wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
+        wing_drag_curve = LiftingLineDrag(6.98, 0.0305, 0.75)
+        return Surface("boeing wing", Vector2D(0, 0), 2.4, 510.97, wing_lift_curve, wing_drag_curve)
+ 
+    def get_cessna_wing(self): 
+        
+        wing_lift_curve = LiftingLineLift(7.37)
+        wing_drag_curve = LiftingLineDrag(7.37, 0.027, 0.75)
+        return Surface("cessna 172 wing", Vector2D(0, 0), 0, 16.2, wing_lift_curve, wing_drag_curve)
 
     def test_boeing_lift(self):
 

@@ -1,4 +1,4 @@
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from util.angle import Angle
 from physics.force import Force
 from physics.state import State 
@@ -64,8 +64,8 @@ class Airplane(RigidBody):
             drag_dir = surface_vel.reverse().unit()
             drag_force = drag_dir.scale(drag_mag)
 
-            self.debugPrint("AoA: " + str(surface.AoA(state.theta, surface_vel).relativeDegrees()))
-            self.debugPrint("AoA ex: " + str(surface.AoA(state.theta, state.vel).relativeDegrees()))
+            self.debugPrint("AoA: " + str(surface.aoa(state.theta, surface_vel).relativeDegrees()))
+            self.debugPrint("AoA ex: " + str(surface.aoa(state.theta, state.vel).relativeDegrees()))
             self.debugPrint("lift: " + str(lift_force))
             self.debugPrint("drag: " + str(drag_force))
 

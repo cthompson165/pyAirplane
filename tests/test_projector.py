@@ -1,5 +1,5 @@
 import unittest
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from util.projector import Projector
 
 

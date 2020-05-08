@@ -1,6 +1,9 @@
-from util.vector2d import Vector2D
+from util.vector_2d import Vector2D
 from aerodynamics.airplane import Airplane
-from aerodynamics.surfaces.thinAirfoil import ThinAirfoil
+from aerodynamics.surface import Surface
+from aerodynamics.lift_curves.linear_lift import LinearLift
+from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
+from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
 
 class SevenFourSeven(Airplane):
 
@@ -9,10 +12,13 @@ class SevenFourSeven(Airplane):
     def __init__(self, pos, vel):
         Airplane.__init__(self, pos, vel)
 
-        self._wing = ThinAirfoil("wing", Vector2D(0, 0), 2.4, 510.97, 6.98, 5.5, 0.29, 0.0305, 0.75)
+        wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
+        wing_drag_curve = LiftingLineDrag(6.98, 0.0305, 0.75)
+        self._wing = Surface("wing", Vector2D(0, 0), 2.4, 510.97, wing_lift_curve, wing_drag_curve)
 
-        # TODO - figure out CLa
-        self._horizontal_stabilizer = ThinAirfoil("stabilizer", Vector2D(-33, 0), 0, 136, 3.62, 0, 0, 0, 0.75)
+        stab_lift_curve = LiftingLineLift(3.62)
+        stab_drag_curve = LiftingLineDrag(3.62)
+        self._horizontal_stabilizer = Surface("stabilizer", Vector2D(-33, 0), 0, 136, stab_lift_curve, stab_drag_curve)
 
         self._surfaces = []
         self._surfaces.append(self._wing)

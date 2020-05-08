@@ -1,6 +1,6 @@
 import pygame
-from aerodynamics.airplanes.sevenFourSeven import SevenFourSeven
-from util.vector2d import Vector2D
+from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
+from util.vector_2d import Vector2D
 from util.projector import Projector
 
 from pygame.locals import (

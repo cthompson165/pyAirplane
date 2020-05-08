@@ -73,7 +73,7 @@ class Plane(pygame.sprite.Sprite):
     def update(self):
 
         pos = self._airplane.pos()
-        self._projector.centerX(pos)
+        self._projector.center_x(pos)
         screen_pos = self._projector.project(pos)
 
         self.image = pygame.transform.rotate(self.original_image,

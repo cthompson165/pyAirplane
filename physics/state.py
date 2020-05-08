@@ -15,7 +15,7 @@ class State:
 
     def times(self, t):
         return State(
-            self.pos.scale(t), self.vel.scale(t), self.theta.timesConstant(t),
+            self.pos.scale(t), self.vel.scale(t), self.theta.times_constant(t),
             self.theta_vel * t)
     
     def __str__(self):

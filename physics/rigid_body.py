@@ -11,10 +11,10 @@ class RigidBody:
 
         self._integrator = EulerIntegrator()
 
-    def calculateForces(self, state):
+    def calculate_forces(self, state):
         pass
         
-    def calculateAcceleration(state, forces, mass, mass_moment):   
+    def calculate_acceleration(state, forces, mass, mass_moment):   
         acceleration = Vector2D(0, 0)
         theta_acceleration = 0
         for force in forces:
@@ -27,13 +27,13 @@ class RigidBody:
      
         return [acceleration, theta_acceleration]
 
-    def calculateChange(self, state):
-        forces = self.calculateForces(state)
-        [acceleration, theta_acceleration] = RigidBody.calculateAcceleration(state, forces, self._mass, self._mass_moment_of_inertia)
+    def calculate_change(self, state):
+        forces = self.calculate_forces(state)
+        [acceleration, theta_acceleration] = RigidBody.calculate_acceleration(state, forces, self._mass, self._mass_moment_of_inertia)
         return StateChange(state.vel, acceleration, state.theta_vel, theta_acceleration)
 
     def step(self, t):
-        self.state = self._integrator.integrate(self.state, t, self.calculateChange)
+        self.state = self._integrator.integrate(self.state, t, self.calculate_change)
 
 class StateChange:
     def __init__(self, vel, acc, theta_vel, theta_acc):
@@ -45,6 +45,6 @@ class StateChange:
     def times(self, t):
         return StateChange(self.vel.scale(t), self.acc.scale(t), self.theta_vel * t, self.theta_acc * t)
 
-    def add(self, other):
+    def plus(self, other):
         return StateChange(self.vel.add(other.vel), self.acc.add(other), self.theta_vel + other.theta_vel, self.theta_acc + other.theta_acc)
 

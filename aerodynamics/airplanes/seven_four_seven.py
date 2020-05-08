@@ -37,7 +37,7 @@ class SevenFourSeven(Airplane):
     def mass(self):
         return 289132.653061  # weight (F) / a (9.8)
 
-    def massMomentOfInertia(self):
+    def mass_moment_of_inertia(self):
         length = 68.4
         height = 19.4
         radius = 4.5

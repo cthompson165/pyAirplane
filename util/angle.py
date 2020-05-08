@@ -7,7 +7,6 @@ class Angle:
         self._degrees = Angle._normalize(degrees)
         self._radians = math.radians(self._degrees)
 
-
     def type(self):
         return "angle"
 
@@ -20,16 +19,16 @@ class Angle:
     def plus(self, other):
         return Angle(self._degrees + other.degrees())
 
-    def plusConstant(self, c):
+    def plus_constant(self, c):
         return Angle(self._degrees + c)
 
     def minus(self, other):
         return Angle(self._degrees - other.degrees())
 
-    def minusConstant(self, c):
+    def minus_constant(self, c):
         return Angle(self._degrees - c)
 
-    def timesConstant(self, c):
+    def times_constant(self, c):
         return Angle(self._degrees * c)
 
     def sin(self):
@@ -42,13 +41,13 @@ class Angle:
         return math.tan(self._radians)
 
     # 0 to 180 or 0 to -180
-    def relativeDegrees(self):
+    def relative_degrees(self):
         if (self._degrees >= 0 and self._degrees <= 180):
             return self._degrees
         else:
             return self._degrees - 360
     
-    def relativeRadians(self):
+    def relative_radians(self):
         if (self._radians >= 0 and self._radians <= math.pi):
             return self._radians
         else:

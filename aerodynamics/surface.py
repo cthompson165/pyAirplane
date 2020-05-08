@@ -17,10 +17,10 @@ class Surface:
         self.distance_to_cg = relative_pos.magnitude()
 
     def aoa(self, airplane_angle, velocity):
-        absoluteAngle = airplane_angle.plusConstant(self.relative_degrees)
+        absolute_angle = airplane_angle.plus_constant(self.relative_degrees)
 
         velAngle = velocity.angle()
-        return absoluteAngle.minus(velAngle)
+        return absolute_angle.minus(velAngle)
 
     def calculate_lift(self, airplane_angle, velocity):
 

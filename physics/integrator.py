@@ -7,7 +7,7 @@ class Integrator:
     def add(self, state, stateChange):
         new_pos = state.pos.add(stateChange.vel)
         new_vel = state.vel.add(stateChange.acc)
-        new_theta = state.theta.plusConstant(stateChange.theta_vel)
+        new_theta = state.theta.plus_constant(stateChange.theta_vel)
         new_theta_vel = state.theta_vel + stateChange.theta_acc
 
         return State(new_pos, new_vel, new_theta, new_theta_vel)

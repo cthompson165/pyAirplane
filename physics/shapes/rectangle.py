@@ -10,9 +10,9 @@ class Rectangle(RigidBody):
       massWidth = width / 10
 
       mass = massLength * massWidth
-      massMomentOfInertia = mass * (massLength**2 + massWidth**2) / 12
+      mass_moment_of_inertia = mass * (massLength**2 + massWidth**2) / 12
 
-      RigidBody.__init__(this, mass, massMomentOfInertia, pos, theta, vel, angularVel)
+      RigidBody.__init__(this, mass, mass_moment_of_inertia, pos, theta, vel, angularVel)
 
       this._length = length
       this._width = width
@@ -32,7 +32,7 @@ class Rectangle(RigidBody):
     def get_cp(this):
       return this._cp.rotate(this._theta).add(this._pos).array()
 
-    def addForceAtCp(this, force):
+    def add_force_at_cp(this, force):
       this.addForce(this._cp, force)
 
     def get_vertices(this):

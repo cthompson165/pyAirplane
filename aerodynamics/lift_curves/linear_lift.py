@@ -9,4 +9,4 @@ class LinearLift(LiftCurve):
         self.lift_slope_3d = lift_slope_3d
       
     def calculate_lift_coefficient(self, aoa):
-        return self.CL0 + self.lift_slope_3d * aoa.relativeRadians()
+        return self.CL0 + self.lift_slope_3d * aoa.relative_radians()

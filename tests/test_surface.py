@@ -9,53 +9,53 @@ from util.angle import Angle
 
 class TestSurface(unittest.TestCase):
 
-    def get_surface(self, relativeDegrees):
-        return Surface("test", Vector2D(0, 0), relativeDegrees, 0, None, None)
+    def get_surface(self, relative_degrees):
+        return Surface("test", Vector2D(0, 0), relative_degrees, 0, None, None)
 
     def test_surface_aoa(self):
         surface = self.get_surface(0)
         aoa = surface.aoa(Angle(0), Vector2D(100, 0))
-        self.assertAlmostEqual(0, aoa.relativeDegrees())
+        self.assertAlmostEqual(0, aoa.relative_degrees())
     
     def test_surface_aoa_positive(self):
         surface = self.get_surface(0)
         aoa = surface.aoa(Angle(5), Vector2D(100, 0))
-        self.assertAlmostEqual(5, aoa.relativeDegrees())
+        self.assertAlmostEqual(5, aoa.relative_degrees())
 
     def test_surface_aoa_negative(self):
         surface = self.get_surface(0)
         aoa = surface.aoa(Angle(-5), Vector2D(100, 0))
-        self.assertAlmostEqual(-5, aoa.relativeDegrees())
+        self.assertAlmostEqual(-5, aoa.relative_degrees())
 
     def test_surface_aoa_rotated(self):
         surface = self.get_surface(0)
         aoa = surface.aoa(Angle(47), Vector2D(100, 100))
-        self.assertAlmostEqual(2, aoa.relativeDegrees())
+        self.assertAlmostEqual(2, aoa.relative_degrees())
 
     def test_surface_aoa_rotated_huge_pos(self):
         surface = self.get_surface(0)
         aoa = surface.aoa(Angle(223), Vector2D(100, 100))
-        self.assertAlmostEqual(178, aoa.relativeDegrees())
+        self.assertAlmostEqual(178, aoa.relative_degrees())
 
     def test_surface_aoa_rotated_huge_neg(self):
         surface = self.get_surface(0)
         aoa = surface.aoa(Angle(227), Vector2D(100, 100))
-        self.assertAlmostEqual(-178, aoa.relativeDegrees())
+        self.assertAlmostEqual(-178, aoa.relative_degrees())
 
     def test_surface_aoa_with_relative(self):
         surface = self.get_surface(3)
         aoa = surface.aoa(Angle(42), Vector2D(100, 100))
-        self.assertAlmostEqual(0, aoa.relativeDegrees())
+        self.assertAlmostEqual(0, aoa.relative_degrees())
 
     def test_surface_aoa_with_relative_positive(self):
         surface = self.get_surface(3)
         aoa = surface.aoa(Angle(45), Vector2D(100, 100))
-        self.assertAlmostEqual(3, aoa.relativeDegrees())
+        self.assertAlmostEqual(3, aoa.relative_degrees())
     
     def test_surface_aoa_with_relative_negative(self):
         surface = self.get_surface(3)
         aoa = surface.aoa(Angle(40), Vector2D(100, 100))
-        self.assertAlmostEqual(-2, aoa.relativeDegrees())
+        self.assertAlmostEqual(-2, aoa.relative_degrees())
 
     ''' lift and drag '''
     # boeing examples from

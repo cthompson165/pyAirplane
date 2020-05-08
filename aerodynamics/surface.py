@@ -1,3 +1,9 @@
+import math
+from physics.force import Force
+from util.vector_2d import Vector2D
+from util.angle import Angle
+
+
 class Surface:
     ''' A plane has multiple services that generate lift
     and drag forces'''
@@ -22,6 +28,25 @@ class Surface:
 
         velAngle = velocity.angle()
         return absolute_angle.minus(velAngle)
+
+    def calculate_forces(self, state):
+
+        rotation_velocity = self.calculate_velocity_from_rotation(state)
+        total_velocity = state.vel.add(rotation_velocity)
+
+        lift_mag = self.calculate_lift(state.theta, total_velocity)
+        lift_dir = total_velocity.rotate(Angle(90)).unit()
+        lift_force = lift_dir.scale(lift_mag)
+
+        drag_mag = self.calculate_drag(state.theta, total_velocity)
+        drag_dir = total_velocity.reverse().unit()
+        drag_force = drag_dir.scale(drag_mag)
+
+        forces = []
+        forces.append(Force("lift", self.relative_pos, lift_force))
+        forces.append(Force("drag", self.relative_pos, drag_force))
+
+        return forces
 
     def calculate_lift(self, airplane_angle, velocity):
 
@@ -48,3 +73,22 @@ class Surface:
         drag = CD * self.area * (Surface.air_density * vel_mag**2) / 2
 
         return drag
+
+    def calculate_velocity_from_rotation(self, state):
+        # TODO - this should go in surface which will need State
+        # convert degrees per second (theta_vel) to meters per second
+
+        # TODO - will we ever want CG not to be origin?
+        if self.relative_pos.x != 0 or self.relative_pos.y != 0:
+
+            magnitude = math.tan(math.radians(
+                state.theta_vel)) * self.distance_to_cg
+
+            # get a vector 90 degrees from relative pos that points in the
+            # direction of positive rotation.
+
+            # TODO: can cache this
+            tangent_vel_unit = self.relative_pos.rotate(Angle(90)).unit()
+            return tangent_vel_unit.scale(magnitude)
+        else:
+            return Vector2D(0, 0)

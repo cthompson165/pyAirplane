@@ -75,20 +75,15 @@ class Surface:
         return drag
 
     def calculate_velocity_from_rotation(self, state):
-        # TODO - this should go in surface which will need State
-        # convert degrees per second (theta_vel) to meters per second
-
-        # TODO - will we ever want CG not to be origin?
+        
         if self.relative_pos.x != 0 or self.relative_pos.y != 0:
 
             magnitude = math.tan(math.radians(
                 state.theta_vel)) * self.distance_to_cg
 
-            # get a vector 90 degrees from relative pos that points in the
-            # direction of positive rotation.
-
             # TODO: can cache this
             tangent_vel_unit = self.relative_pos.rotate(Angle(90)).unit()
             return tangent_vel_unit.scale(magnitude)
         else:
+            # at CG - no rotation
             return Vector2D(0, 0)

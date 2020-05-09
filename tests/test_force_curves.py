@@ -12,7 +12,7 @@ from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
 from util.angle import Angle
 
 
-class TestAirfoil(unittest.TestCase):
+class TestForceCurves(unittest.TestCase):
 
     def get_747_lift_curve(self):
         return LinearLift(6.98, 0.29, 5.5)

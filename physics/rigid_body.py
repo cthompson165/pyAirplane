@@ -13,6 +13,9 @@ class RigidBody:
 
         self._integrator = EulerIntegrator()
 
+    def mass(self):
+        return self._mass
+
     def calculate_forces(self, state):
         ''' Get all the forces applied to the object '''
         raise NotImplementedError()

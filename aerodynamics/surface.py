@@ -58,9 +58,6 @@ class Surface:
             drag_vector = drag_dir.scale(drag_mag)
             drag_force = Force(Force.Source.drag, "drag",
                                self.relative_pos, drag_vector)
-
-            print(drag_force)
-
             forces.append(drag_force)
 
         return forces

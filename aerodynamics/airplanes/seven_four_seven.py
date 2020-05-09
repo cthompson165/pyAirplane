@@ -11,7 +11,7 @@ from physics.state import State
 
 class SevenFourSeven(Airplane):
 
-    MAX_ELEVATOR_DEGREES = 10
+    MAX_ELEVATOR_DEGREES = 15
 
     def __init__(self, pos, vel):
         state = State(pos, vel, Angle(0), 0)
@@ -29,7 +29,7 @@ class SevenFourSeven(Airplane):
             "stabilizer", Vector2D(-33, 0), 0, 136,
             stab_lift_curve, stab_drag_curve)
 
-        fusilage_drag_curve = ParasiticDrag(0.26)
+        fusilage_drag_curve = ParasiticDrag(0.27)
         # 747 cabin = ~19x6 meters
         self._fusilage = Surface("fusilage", self.cg(), 0, 118, None,
                                  fusilage_drag_curve)

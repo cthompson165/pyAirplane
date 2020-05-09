@@ -13,6 +13,9 @@ class Airplane(RigidBody):
     def apply_pitch_control(self, percent):
         raise NotImplementedError
 
+    def set_throttle(self, percent):
+        raise NotImplementedError
+
     def calculate_thrust(self, state):
         raise NotImplementedError
 
@@ -21,6 +24,9 @@ class Airplane(RigidBody):
 
     def cg(self):
         return Vector2D(0, 0)
+
+    def current_state(self):
+        return self.state.copy()
 
     def pos(self):
         return self.state.pos

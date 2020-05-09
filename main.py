@@ -50,6 +50,8 @@ class Plane(pygame.sprite.Sprite):
         self._airplane = SevenFourSeven(Vector2D(5, 5),
                                         Vector2D(265, 0))
 
+        self._airplane.set_throttle(60)
+
         self._airplane.debug = False
         self.elevator_percent = 0
 
@@ -94,6 +96,8 @@ class Plane(pygame.sprite.Sprite):
 
         self.rect.center = screen_pos.toint().array()
 
+        print("vel: " + str(self._airplane.current_state().vel))
+
 
 def run_game():
 
@@ -101,7 +105,14 @@ def run_game():
     running = True
     time = 0
 
+    run_for = 10
+    iteration = 0
+
     while running:
+
+        #if iteration > run_for:
+        #    running = False
+        #iteration = iteration + 1
 
         # for loop through the event queue
         for event in pygame.event.get():

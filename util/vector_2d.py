@@ -7,6 +7,9 @@ class Vector2D:
         self.x = x
         self.y = y
 
+    def copy(self):
+        return Vector2D(self.x, self.y)
+
     def cross(self, other):
         return self.x * other.y - self.y * other.x
 

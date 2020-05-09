@@ -9,6 +9,9 @@ class Force:
         self.vector = vector
         self.source = source
 
+    def __str__(self):
+        return self.name + ": " + str(self.vector) + " at " + str(self.pos)
+
     class Source(enum.Enum):
         lift = 1
         drag = 2

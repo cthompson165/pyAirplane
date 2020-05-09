@@ -38,22 +38,30 @@ class Surface:
         velocity_magnitude = total_velocity.magnitude()
 
         aoa = self.aoa(state.theta, total_velocity)
-        CL = self.lift_curve.calculate_lift_coefficient(aoa)
-        CD = self.drag_curve.calculate_drag_coefficient(CL)
-
-        lift_mag = self.calculate_lift(CL, velocity_magnitude)
-        lift_dir = total_velocity.rotate(Angle(90)).unit()
-        lift_force = lift_dir.scale(lift_mag)
-
-        drag_mag = self.calculate_drag(CD, velocity_magnitude)
-        drag_dir = total_velocity.reverse().unit()
-        drag_force = drag_dir.scale(drag_mag)
 
         forces = []
-        forces.append(Force(Force.Source.lift, "lift",
-                            self.relative_pos, lift_force))
-        forces.append(Force(Force.Source.drag, "drag",
-                            self.relative_pos, drag_force))
+
+        CL = 0
+        if self.lift_curve is not None:
+            CL = self.lift_curve.calculate_lift_coefficient(aoa)
+            lift_mag = self.calculate_lift(CL, velocity_magnitude)
+            lift_dir = total_velocity.rotate(Angle(90)).unit()
+            lift_force = lift_dir.scale(lift_mag)
+            forces.append(Force(Force.Source.lift, "lift",
+                                self.relative_pos, lift_force))
+
+        CD = 0
+        if self.drag_curve is not None:
+            CD = self.drag_curve.calculate_drag_coefficient(CL)
+            drag_mag = self.calculate_drag(CD, velocity_magnitude)
+            drag_dir = total_velocity.reverse().unit()
+            drag_vector = drag_dir.scale(drag_mag)
+            drag_force = Force(Force.Source.drag, "drag",
+                               self.relative_pos, drag_vector)
+
+            print(drag_force)
+
+            forces.append(drag_force)
 
         return forces
 

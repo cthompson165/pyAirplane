@@ -5,6 +5,7 @@ from aerodynamics.surface import Surface
 from aerodynamics.lift_curves.linear_lift import LinearLift
 from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
 from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
+from aerodynamics.drag_curves.parasitic_drag import ParasiticDrag
 from physics.state import State
 
 
@@ -28,9 +29,17 @@ class SevenFourSeven(Airplane):
             "stabilizer", Vector2D(-33, 0), 0, 136,
             stab_lift_curve, stab_drag_curve)
 
+        fusilage_drag_curve = ParasiticDrag(0.26)
+        # 747 cabin = ~19x6 meters
+        self._fusilage = Surface("fusilage", self.cg(), 0, 118, None,
+                                 fusilage_drag_curve)
+
         self._surfaces = []
         self._surfaces.append(self._wing)
         self._surfaces.append(self._horizontal_stabilizer)
+        self._surfaces.append(self._fusilage)
+
+        self._throttle = 0
 
     def apply_pitch_control(self, percent):
         self._horizontal_stabilizer.relative_degrees = \
@@ -41,9 +50,11 @@ class SevenFourSeven(Airplane):
         max_engine_thrust = 275000
         num_engines = 4
         max_total_thrust = max_engine_thrust * num_engines
-        thrust_percent = 24
         orientation_unit = Vector2D(1, 0).rotate(state.theta)
-        return orientation_unit.scale(max_total_thrust * thrust_percent / 100)
+        return orientation_unit.scale(max_total_thrust * self._throttle)
+
+    def set_throttle(self, percent):
+        self._throttle = percent / 100.0
 
     def _mass(self):
         return 289132.653061  # weight (F) / a (9.8)

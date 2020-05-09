@@ -6,6 +6,10 @@ class State:
         self.theta = theta  # angle
         self.theta_vel = theta_vel  # int
 
+    def copy(self):
+        return State(self.pos.copy(), self.vel.copy(), self.theta.copy(),
+                     self.theta_vel)
+
     def add(self, other):
         return State(
             self.pos.add(other.pos), self.vel.add(other.vel),

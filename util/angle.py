@@ -8,6 +8,9 @@ class Angle:
         self._degrees = Angle._normalize(degrees)
         self._radians = math.radians(self._degrees)
 
+    def copy(self):
+        return Angle(self._degrees)
+
     def type(self):
         return "angle"
 

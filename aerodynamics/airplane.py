@@ -45,8 +45,10 @@ class Airplane(RigidBody):
             forces.extend(surface.calculate_forces(self.state))
 
         forces.append(
-            Force("thrust", self.cg(), self.calculate_thrust(self.state)))
-        forces.append(Force("gravity", self.cg(), self.weight()))
+            Force(Force.Source.thrust, "thrust", self.cg(),
+                  self.calculate_thrust(self.state)))
+        forces.append(Force(Force.Source.gravity,
+                            "gravity", self.cg(), self.weight()))
 
         return forces
 

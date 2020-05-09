@@ -48,7 +48,8 @@ class Rectangle(RigidBody):
 
     def add_force_at_cp(self, force):
         ''' Add force at predefined "center of pressure" '''
-        self._forces.append(Force("A force", self._cp, force))
+        self._forces.append(Force(Force.Source.other,
+                                  "A force", self._cp, force))
 
     def get_vertices(self):
         ''' Get a list of points defining the rectangle '''

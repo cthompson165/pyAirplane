@@ -23,6 +23,8 @@ class Surface:
 
         self.distance_to_cg = relative_pos.magnitude()
 
+        self._tangent_unit_vector = self.relative_pos.rotate(Angle(90)).unit()
+
     def aoa(self, airplane_angle, velocity):
         absolute_angle = airplane_angle.plus_constant(self.relative_degrees)
 
@@ -33,57 +35,44 @@ class Surface:
 
         rotation_velocity = self.calculate_velocity_from_rotation(state)
         total_velocity = state.vel.add(rotation_velocity)
+        velocity_magnitude = total_velocity.magnitude()
 
-        lift_mag = self.calculate_lift(state.theta, total_velocity)
+        aoa = self.aoa(state.theta, total_velocity)
+        CL = self.lift_curve.calculate_lift_coefficient(aoa)
+        CD = self.drag_curve.calculate_drag_coefficient(CL)
+
+        lift_mag = self.calculate_lift(CL, velocity_magnitude)
         lift_dir = total_velocity.rotate(Angle(90)).unit()
         lift_force = lift_dir.scale(lift_mag)
 
-        drag_mag = self.calculate_drag(state.theta, total_velocity)
+        drag_mag = self.calculate_drag(CD, velocity_magnitude)
         drag_dir = total_velocity.reverse().unit()
         drag_force = drag_dir.scale(drag_mag)
 
         forces = []
-        forces.append(Force("lift", self.relative_pos, lift_force))
-        forces.append(Force("drag", self.relative_pos, drag_force))
+        forces.append(Force(Force.Source.lift, "lift",
+                            self.relative_pos, lift_force))
+        forces.append(Force(Force.Source.drag, "drag",
+                            self.relative_pos, drag_force))
 
         return forces
 
-    def calculate_lift(self, airplane_angle, velocity):
+    def calculate_lift(self, CL, velocity_magnitude):
+        return (Surface.air_density * velocity_magnitude**2 * self.area * CL) \
+            / 2
 
-        # equation from
-        # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
-        aoa = self.aoa(airplane_angle, velocity)
-        CL = self.lift_curve.calculate_lift_coefficient(aoa)
-
-        vel_mag = velocity.magnitude()
-        lift = (Surface.air_density * vel_mag**2 * self.area * CL) / 2
-
-        return lift
-
-    def calculate_drag(self, airplane_angle, velocity):
-
-        aoa = self.aoa(airplane_angle, velocity)
-        CL = self.lift_curve.calculate_lift_coefficient(aoa)
-
-        # equation from
-        # https://wright.nasa.gov/airplane/drageq.html
-        CD = self.drag_curve.calculate_drag_coefficient(CL)
-
-        vel_mag = velocity.magnitude()
-        drag = CD * self.area * (Surface.air_density * vel_mag**2) / 2
-
-        return drag
+    def calculate_drag(self, CD, velocity_magnitude):
+        return CD * self.area * (Surface.air_density * velocity_magnitude**2) \
+            / 2
 
     def calculate_velocity_from_rotation(self, state):
-        
+
         if self.relative_pos.x != 0 or self.relative_pos.y != 0:
 
             magnitude = math.tan(math.radians(
                 state.theta_vel)) * self.distance_to_cg
 
-            # TODO: can cache this
-            tangent_vel_unit = self.relative_pos.rotate(Angle(90)).unit()
-            return tangent_vel_unit.scale(magnitude)
+            return self._tangent_unit_vector.scale(magnitude)
         else:
             # at CG - no rotation
             return Vector2D(0, 0)

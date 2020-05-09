@@ -70,8 +70,11 @@ class Vector2D:
         return Angle(degrees)
 
     def unit(self):
-        mag = self.magnitude()
-        return Vector2D(self.x / mag, self.y / mag)
+        if self.x == 0 and self.y == 0:
+            return Vector2D(0, 0)
+        else:
+            mag = self.magnitude()
+            return Vector2D(self.x / mag, self.y / mag)
 
     def reverse(self):
         return Vector2D(-self.x, -self.y)

@@ -1,6 +1,8 @@
 import unittest
 from util.vector_2d import Vector2D
 from util.angle import Angle
+from physics.state import State
+from physics.force import Force
 from aerodynamics.surface import Surface
 from aerodynamics.lift_curves.linear_lift import LinearLift
 from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
@@ -79,24 +81,46 @@ class TestSurface(unittest.TestCase):
             "cessna 172 wing", Vector2D(0, 0), 0, 16.2,
             wing_lift_curve, wing_drag_curve)
 
+    def get_lift(self, velocity, surface, angle):
+
+        state = State(Vector2D(0, 0), velocity, angle, 0)
+        forces = surface.calculate_forces(state)
+        lift = [force for force in forces if force.source == Force.Source.lift]
+        if len(lift) == 1:
+            return lift[0].vector.magnitude()
+        else:
+            return None
+
+    def get_drag(self, velocity, surface, angle):
+
+        state = State(Vector2D(0, 0), velocity, angle, 0)
+        forces = surface.calculate_forces(state)
+        drag = [force for force in forces if force.source == Force.Source.drag]
+        if len(drag) == 1:
+            return drag[0].vector.magnitude()
+        else:
+            return None
+
     def test_boeing_lift(self):
 
-        vel = Vector2D(265.5, 0)
-        lift = self.get_boeing_wing().calculate_lift(Angle(0), vel)
-        self.assertEqual(2836530, round(lift, 0))
+        velocity = Vector2D(265.5, 0)
+        surface = self.get_boeing_wing()
+        lift = self.get_lift(velocity, surface, Angle(0))
+
+        self.assertAlmostEqual(2836530, lift, 0)
 
     def test_cessna_lift(self):
 
-        vel = Vector2D(100, 0)
+        velocity = Vector2D(100, 0)
         wing = self.get_cessna_wing()
 
-        lift = wing.calculate_lift(Angle(0), vel)
+        lift = self.get_lift(velocity, wing, Angle(0))
         self.assertAlmostEqual(0, lift, 4, "0")
 
-        lift = wing.calculate_lift(Angle(1), vel)
+        lift = self.get_lift(velocity, wing, Angle(1))
         self.assertAlmostEqual(2114.655024, lift, 4, "1")
 
-        lift = wing.calculate_lift(Angle(7), vel)
+        lift = self.get_lift(velocity, wing, Angle(7))
         self.assertAlmostEqual(14802.58517, lift, 4, "7")
 
     def test_cessna_drag(self):
@@ -104,13 +128,13 @@ class TestSurface(unittest.TestCase):
         vel = Vector2D(100, 0)
         wing = self.get_cessna_wing()
 
-        drag = wing.calculate_drag(Angle(0), vel)
+        drag = self.get_drag(vel, wing, Angle(0))
         self.assertAlmostEqual(661.93928, drag, 4, "0")
 
-        drag = wing.calculate_drag(Angle(1), vel)
+        drag = self.get_drag(vel, wing, Angle(1))
         self.assertAlmostEqual(672.44308, drag, 4, "1")
 
-        drag = wing.calculate_drag(Angle(7), vel)
+        drag = self.get_drag(vel, wing, Angle(7))
         self.assertAlmostEqual(1176.62500, drag, 4, "7")
 
 

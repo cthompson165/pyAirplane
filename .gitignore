@@ -1,3 +1,4 @@
 nohup.out
 *.pyc
 **/__pycache__
+.vscode

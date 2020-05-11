@@ -16,6 +16,7 @@ def run_sim(steps):
     airplane.apply_pitch_control(100)
     for i in range(0, 10):
         airplane.step(t)
+        time += t
 
     # neutral pitch to check oscillations
     airplane.apply_pitch_control(0)

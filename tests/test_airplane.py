@@ -1,17 +1,16 @@
 import unittest
 from util.vector_2d import Vector2D
 from physics.state import State
-from aerodynamics.airplane import Airplane
 from aerodynamics.surface import Surface
 
 
 class TestAirplane(unittest.TestCase):
 
     def test_calculate_velocity_from_rotation_rear_surface(self):
-        
+
         # airplane rotating back
         state = State(Vector2D(0, 0), Vector2D(0, 0), 0, 3)
-        
+
         # surface is behind the cg on y axis
         surface = Surface("test", Vector2D(-10, 0), 0, 0, None, None)
         vel_rot = surface.calculate_velocity_from_rotation(state)

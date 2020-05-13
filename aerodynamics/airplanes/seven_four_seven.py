@@ -1,6 +1,7 @@
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from aerodynamics.airplane import Airplane
+from aerodynamics.engine import Engine
 from aerodynamics.surface import Surface
 from aerodynamics.lift_curves.linear_lift import LinearLift
 from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
@@ -39,22 +40,17 @@ class SevenFourSeven(Airplane):
         self._surfaces.append(self._horizontal_stabilizer)
         self._surfaces.append(self._fusilage)
 
-        self._throttle = 0
+        # don't have yaw forces (or a 3rd axis) to put engines out on wings
+        # so they all go at cg
+        self._engines = []
+        self._engines.append(Engine("test1", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(Engine("test2", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(Engine("test3", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(Engine("test4", self.cg(), Angle(0), 0, 275000))
 
     def apply_pitch_control(self, percent):
         self._horizontal_stabilizer.relative_degrees = \
-            SevenFourSeven.MAX_ELEVATOR_DEGREES \
-            * percent / 100.0
-
-    def calculate_thrust(self, state):
-        max_engine_thrust = 275000
-        num_engines = 4
-        max_total_thrust = max_engine_thrust * num_engines
-        orientation_unit = Vector2D(1, 0).rotate(state.theta)
-        return orientation_unit.scale(max_total_thrust * self._throttle)
-
-    def set_throttle(self, percent):
-        self._throttle = percent / 100.0
+            SevenFourSeven.MAX_ELEVATOR_DEGREES * percent / 100.0
 
     def _mass(self):
         return 289132.653061  # weight (F) / a (9.8)
@@ -69,3 +65,6 @@ class SevenFourSeven(Airplane):
 
     def surfaces(self):
         return self._surfaces
+
+    def engines(self):
+        return self._engines

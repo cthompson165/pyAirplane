@@ -8,8 +8,9 @@ class Surface:
     ''' A plane has multiple services that generate lift
     and drag forces'''
 
-    air_density = 0.30267
+    air_density = 0.30267  # the  density is of air at 12,192 meters is approximately 0.30267 kg/m3
 
+    # relative degrees is + or - vs 0 to 360
     def __init__(self, name, relative_pos,
                  relative_degrees, area, lift_curve, drag_curve):
 

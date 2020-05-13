@@ -49,7 +49,6 @@ class Airplane(RigidBody):
             # TODO - make airplane operate in local coordinates and translate
             # in physics
             thrust.vector = thrust.vector.rotate(self.state.theta)
-            print(thrust.vector)
             forces.append(thrust)
 
         forces.extend(self.get_force_fields())
@@ -60,11 +59,14 @@ class Airplane(RigidBody):
         return Vector2D(0, -9.8 * self.mass())
 
     def get_force_fields(self):
-        ''' Using force fields as a name for things that apply to all particles in an object
-            equally. So they work on the object's cg and are independent of the object's mass.
-            So... pretty much gravity. But allow descendants to override for flexibility.'''
+        ''' Using force fields as a name for things that apply to
+            all particles in an object equally. So they work on the
+            object's cg and are independent of the object's mass.
+            So... pretty much gravity. But allow descendants to override
+            for flexibility.'''
 
         force_fields = []
         gravity = Force(Force.Source.gravity,
                         "gravity", self.cg(), self.weight())
         force_fields.append(gravity)
+        return force_fields

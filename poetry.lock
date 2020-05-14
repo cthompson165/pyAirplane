@@ -23,8 +23,8 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "0.0.0"
 
 [metadata]
-content-hash = "7d27748512bc3d9aa50550d0eab5040a3322834011bec89f6d447bd39657d9fb"
-python-versions = "^3.8"
+content-hash = "32717edf70a07f74e17f3eb911a3c95bbfc1721d2b92eb66677e322b2278fadd"
+python-versions = "^3.7"
 
 [metadata.hashes]
 ansicolors = ["00d2dde5a675579325902536738dd27e4fac1fd68f773fe36c21044eb559e187", "99f94f5e3348a0bcd43c82e5fc4414013ccc19d70bd939ad71e0133ce9c372e0"]

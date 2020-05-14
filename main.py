@@ -269,7 +269,7 @@ def run_game():
 
 pygame.init()
 SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 700
+SCREEN_HEIGHT = 600
 CLOUD_BASE = 300
 GROUND_HEIGHT = 30
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

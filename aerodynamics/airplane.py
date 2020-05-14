@@ -14,8 +14,9 @@ class Airplane(RigidBody):
         raise NotImplementedError
 
     def set_throttle(self, percent):
-        for engine in self.engines():
-            engine.set_throttle(percent)
+        if self.engines() is not None:
+            for engine in self.engines():
+                engine.set_throttle(percent)
 
     def engines(self):
         raise NotImplementedError
@@ -39,17 +40,19 @@ class Airplane(RigidBody):
 
         forces = []
 
-        for surface in self.surfaces():
-            # TODO - get forces in local coordinates and translate in physics
-            forces.extend(surface.calculate_forces(self.state))
+        if self.surfaces() is not None:
+            for surface in self.surfaces():
+                # TODO - get forces in local coordinates and translate in physics
+                forces.extend(surface.calculate_forces(self.state))
 
-        for engine in self.engines():
-            thrust = engine.get_thrust()
+        if self.engines() is not None:
+            for engine in self.engines():
+                thrust = engine.get_thrust()
 
-            # TODO - make airplane operate in local coordinates and translate
-            # in physics
-            thrust.vector = thrust.vector.rotate(self.state.theta)
-            forces.append(thrust)
+                # TODO - make airplane operate in local coordinates and translate
+                # in physics
+                thrust.vector = thrust.vector.rotate(self.state.theta)
+                forces.append(thrust)
 
         forces.extend(self.get_force_fields())
 

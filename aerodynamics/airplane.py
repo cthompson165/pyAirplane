@@ -6,9 +6,10 @@ from physics.rigid_body import RigidBody
 class Airplane(RigidBody):
 
     def __init__(self, initial_state, mass, mass_moment_of_inertia):
-        RigidBody.__init__(self, mass,
-                           mass_moment_of_inertia, initial_state)
-        self.debug = False
+        RigidBody.__init__(
+            self, mass,
+            mass_moment_of_inertia,
+            initial_state)
 
     def apply_pitch_control(self, percent):
         raise NotImplementedError
@@ -27,49 +28,38 @@ class Airplane(RigidBody):
     def cg(self):
         return Vector2D(0, 0)
 
-    def current_state(self):
-        return self.state.copy()
-
     def pos(self):
-        return self.state.pos
+        return self.state.pos.copy()
 
     def orientation(self):
         return self.state.theta
 
-    def calculate_forces(self, state):
+    def calculate_local_forces(self, local_velocity, angular_velocity):
 
         forces = []
 
         if self.surfaces() is not None:
             for surface in self.surfaces():
-                # TODO - get forces in local coordinates and translate in physics
-                forces.extend(surface.calculate_forces(self.state))
+                forces.extend(
+                    surface.calculate_forces(
+                        local_velocity,
+                        angular_velocity))
 
         if self.engines() is not None:
             for engine in self.engines():
-                thrust = engine.get_thrust()
+                forces.append(engine.get_thrust())
 
-                # TODO - make airplane operate in local coordinates and translate
-                # in physics
-                thrust.vector = thrust.vector.rotate(self.state.theta)
-                forces.append(thrust)
+        return forces
 
-        forces.extend(self.get_force_fields())
+    def calculate_global_forces(self, state):
+        ''' Get forces that don't really make sense in a local reference frame.
+            Like gravity... '''
 
+        forces = []
+        gravity = Force(Force.Source.gravity,
+                        "gravity", self.cg(), self.weight())
+        forces.append(gravity)
         return forces
 
     def weight(self):
         return Vector2D(0, -9.8 * self.mass())
-
-    def get_force_fields(self):
-        ''' Using force fields as a name for things that apply to
-            all particles in an object equally. So they work on the
-            object's cg and are independent of the object's mass.
-            So... pretty much gravity. But allow descendants to override
-            for flexibility.'''
-
-        force_fields = []
-        gravity = Force(Force.Source.gravity,
-                        "gravity", self.cg(), self.weight())
-        force_fields.append(gravity)
-        return force_fields

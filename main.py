@@ -13,8 +13,8 @@ from pygame.locals import (
     QUIT,
 )
 
-# from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
-from bomber import Bomber
+from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
+# from bomber import Bomber
 from util.vector_2d import Vector2D
 from projector import Projector
 
@@ -50,8 +50,9 @@ class Plane(pygame.sprite.Sprite):
 
         self.pressed_keys = []
 
-        self._airplane = Bomber(Vector2D(5, 5),
-                                Vector2D(265, 0))
+        self._airplane = SevenFourSeven(
+            Vector2D(5, 5),
+            Vector2D(265, 0))
 
         self.dead = False
 

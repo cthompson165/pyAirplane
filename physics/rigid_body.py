@@ -16,8 +16,11 @@ class RigidBody:
     def mass(self):
         return self._mass
 
-    def calculate_forces(self, state):
+    def calculate_local_forces(self, state):
         ''' Get all the forces applied to the object '''
+        raise NotImplementedError()
+
+    def calculate_global_forces(self, state):
         raise NotImplementedError()
 
     @staticmethod
@@ -27,17 +30,31 @@ class RigidBody:
         for force in forces:
             force_acceleration = force.vector.scale(1.0 / mass)
             acceleration = acceleration.add(force_acceleration)
-
-            force_torque = force.pos.rotate(state.theta).cross(force.vector)
-
+            force_torque = force.pos.cross(force.vector)
             theta_acceleration += force_torque / mass_moment
 
         return [acceleration, theta_acceleration]
 
+    def _convert_to_global(self, local_forces):
+        global_forces = []
+        for local_force in local_forces:
+            global_forces.append(local_force.rotate(self.state.theta))
+        return global_forces
+
     def _calculate_change(self, state):
-        forces = self.calculate_forces(state)
-        [acceleration, theta_acceleration] = RigidBody._calculate_acceleration(
-            state, forces, self._mass, self._mass_moment_of_inertia)
+
+        local_velocity = state.vel.rotate(state.theta.times_constant(-1))
+        local_forces = self.calculate_local_forces(
+            local_velocity, state.theta_vel)
+
+        global_forces = self._convert_to_global(local_forces)
+        global_forces.extend(self.calculate_global_forces(state))
+
+        [acceleration, theta_acceleration] = \
+            RigidBody._calculate_acceleration(
+                state, global_forces,
+                self._mass, self._mass_moment_of_inertia)
+
         return self.StateChange(state.vel, acceleration,
                                 state.theta_vel, theta_acceleration)
 

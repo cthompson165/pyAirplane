@@ -9,6 +9,10 @@ class Force:
         self.vector = vector
         self.source = source
 
+    def rotate(self, angle):
+        return Force(self.source, self.name, self.pos.rotate(angle),
+                     self.vector.rotate(angle))
+
     def __str__(self):
         return self.name + ": " + str(self.vector) + " at " + str(self.pos)
 

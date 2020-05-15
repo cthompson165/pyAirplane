@@ -12,7 +12,7 @@ from physics.state import State
 
 class SevenFourSeven(Airplane):
 
-    MAX_ELEVATOR_DEGREES = 15
+    MAX_ELEVATOR_DEGREES = 10
 
     def __init__(self, pos, vel):
         state = State(pos, vel, Angle(0), 0)
@@ -21,18 +21,18 @@ class SevenFourSeven(Airplane):
 
         wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
         wing_drag_curve = LiftingLineDrag(6.98, 0.0305, 0.75)
-        self._wing = Surface("wing", Vector2D(0, 0), 2.4,
+        self._wing = Surface("wing", Vector2D(0, 0), Angle(2.4),
                              510.97, wing_lift_curve, wing_drag_curve)
 
         stab_lift_curve = LiftingLineLift(3.62)
         stab_drag_curve = LiftingLineDrag(3.62, efficiency_factor=0.6)
         self._horizontal_stabilizer = Surface(
-            "stabilizer", Vector2D(-33, 0), 0, 136,
+            "stabilizer", Vector2D(-33, 0), Angle(0), 136,
             stab_lift_curve, stab_drag_curve)
 
         fusilage_drag_curve = ParasiticDrag(0.27)
         # 747 cabin = ~19x6 meters
-        self._fusilage = Surface("fusilage", self.cg(), 0, 118, None,
+        self._fusilage = Surface("fusilage", self.cg(), Angle(0), 118, None,
                                  fusilage_drag_curve)
 
         self._surfaces = []
@@ -49,8 +49,8 @@ class SevenFourSeven(Airplane):
         self._engines.append(Engine("test4", self.cg(), Angle(0), 0, 275000))
 
     def apply_pitch_control(self, percent):
-        self._horizontal_stabilizer.relative_degrees = \
-            SevenFourSeven.MAX_ELEVATOR_DEGREES * percent / 100.0
+        self._horizontal_stabilizer.angle = \
+            Angle(SevenFourSeven.MAX_ELEVATOR_DEGREES * percent / 100.0)
 
     def _mass(self):
         return 289132.653061  # weight (F) / a (9.8)

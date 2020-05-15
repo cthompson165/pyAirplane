@@ -10,7 +10,7 @@ def run_sim(steps):
     t = 1.0/30
     time = 0
 
-    # f = open("../out.csv", "w")
+    f = open("../out.csv", "w")
 
     # pitch up for 10 seconds
     airplane.apply_pitch_control(100)
@@ -21,11 +21,11 @@ def run_sim(steps):
     # neutral pitch to check oscillations
     airplane.apply_pitch_control(0)
     for i in range(0, steps):
-        # write(time, airplane, f)
+        write(time, airplane, f)
         airplane.step(t)
         time += t
 
-    # f.close()
+    f.close()
 
 
 def write(time, airplane, f):

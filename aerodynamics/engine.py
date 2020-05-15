@@ -27,6 +27,5 @@ class Engine:
         self._current_thrust = self.idle_thrust + above_throttle
 
     def get_thrust(self):
-
-        return Force(Force.Source.thrust, self.name, self.pos,
-                     self._orientation_unit.scale(self._current_thrust))
+        thrust = self._orientation_unit.scale(self._current_thrust)
+        return Force(Force.Source.thrust, self.name, self.pos, thrust)

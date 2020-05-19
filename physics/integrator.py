@@ -29,10 +29,10 @@ class RungeKuttaIntegrator(Integrator):
         ''' integrate with runge kutta '''
         f_1 = change_calculation(state).multiply(time)
         f_2 = change_calculation(
-            self.plus(state, (f_1.multiply(0.5)))).multiply(time)
+            self._add(state, (f_1.multiply(0.5)))).multiply(time)
         f_3 = change_calculation(
-            self.plus(state, f_2.multiply(0.5))).multiply(time)
-        f_4 = change_calculation(self.plus(state, f_3)).multiply(time)
+            self._add(state, f_2.multiply(0.5))).multiply(time)
+        f_4 = change_calculation(self._add(state, f_3)).multiply(time)
 
         new_state = self._add(state, f_1.add(f_2.multiply(2)).add(
             f_3.multiply(2)).add(f_4).multiply(1.0/6))

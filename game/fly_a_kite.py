@@ -48,7 +48,6 @@ class Plane(pygame.sprite.Sprite):
         self.pressed_keys = []
 
         self._airplane = BoxKite(.9, .35, .2, .4, .7)
-
         self.dead = False
 
         projector.center_x(self._airplane.pos())

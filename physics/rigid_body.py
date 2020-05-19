@@ -77,6 +77,7 @@ class RigidBody:
 
         def add(self, other):
             return RigidBody.StateChange(
-                self.vel.add(other.vel), self.acc.add(other),
+                self.vel.add(other.vel),
+                self.acc.add(other.acc),
                 self.theta_vel + other.theta_vel,
                 self.theta_acc + other.theta_acc)

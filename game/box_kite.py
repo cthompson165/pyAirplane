@@ -11,7 +11,7 @@ import math
 
 class BoxKite(RigidBody):
     def __init__(self, length, width, cell_length, bridle_length, knot_length):
-        state = State(Vector2D(0, 1), Vector2D(0, 0), Angle(80), 0)
+        state = State(Vector2D(-10, 1), Vector2D(0, 0), Angle(80), 0)
 
         mass = 0.005  # TODO
         mass_moment_of_inertia = mass * (length**2 + width**2) / 12
@@ -84,9 +84,15 @@ class BoxKite(RigidBody):
         forces.append(gravity)
         return forces
 
+    def convert_local_forces_to_global(self, state, local_forces):
+        global_forces = []
+        for local_force in local_forces:
+            global_forces.append(local_force.rotate(state.theta))
+        return global_forces
+
     def calculate_forces(self, state):
 
-        wind_speed = Vector2D(10, 0)
+        wind_speed = Vector2D(3.2, 0)
         wind_state = State(
             state.pos, state.vel.add(wind_speed),
             state.theta, state.theta_vel)
@@ -94,10 +100,38 @@ class BoxKite(RigidBody):
         local_velocity = RigidBody.get_local_velocity(wind_state)
         angular_velocity = state.theta_vel
 
-        forces = self.calculate_local_forces(local_velocity, angular_velocity)
+        local_forces = self.calculate_local_forces(
+            local_velocity, angular_velocity)
+
+        forces = self.convert_local_forces_to_global(state, local_forces)
         forces.extend(self.calculate_global_forces(state))
+
+        force_sum = self.sum_forces(forces)
+
+        string_force = self.calculate_string_force(state, force_sum)
+
+        forces.append(Force(
+             Force.Source.other, "String", Vector2D(0, 0), string_force))
 
         return forces
 
     def weight(self):
-        return Vector2D(0, self._mass * -9.8)
+        return Vector2D(0, self.mass() * -9.8)
+
+    def sum_forces(self, forces):
+        # adding these all to CG. I think that's valid...
+        sum = Vector2D(0, 0)
+        for force in forces:
+            sum = sum.add(force.vector)
+        return sum
+
+    def calculate_string_force(self, state, other_forces_sum):
+        t1 = self.mass() * (state.pos.dot(state.vel))**2 \
+            / state.pos.dot(state.pos)
+        t2 = self.mass() * state.vel.dot(state.vel)
+        t3 = state.pos.dot(other_forces_sum)
+
+        scaling_constant = (t1 - t2 - t3) / state.pos.magnitude()
+        N = state.pos.scale(1 / state.pos.magnitude())
+
+        return N.scale(scaling_constant)

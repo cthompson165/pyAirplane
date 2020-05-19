@@ -13,9 +13,8 @@ from pygame.locals import (
     QUIT,
 )
 
-# from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
-# from bomber import Bomber
 from box_kite import BoxKite
+# from point_kite import PointKite
 from util.vector_2d import Vector2D
 from projector import Projector
 
@@ -38,9 +37,9 @@ class Plane(pygame.sprite.Sprite):
 
     def __init__(self):
         super(Plane, self).__init__()
-        self.original_image = pygame.image.load("images/plane4.png")
+        self.original_image = pygame.image.load("images/box_kite.png")
         self.image = self.original_image
-        self.image.set_colorkey([53, 60, 41], RLEACCEL)
+        self.image.set_colorkey([255, 255, 255], RLEACCEL)
         self.rect = self.image.get_rect(
             center=(
                 200, 200
@@ -48,16 +47,11 @@ class Plane(pygame.sprite.Sprite):
 
         self.pressed_keys = []
 
-        self._airplane = BoxKite(
-            .9, .4, .28, .35, .8)
+        self._airplane = BoxKite(.9, .35, .2, .4, .7)
 
         self.dead = False
 
-        self._airplane.debug = False
-        self.elevator_percent = 0
-        self.throttle_percent = 60
-
-        projector.center(self._airplane.pos())
+        projector.center_x(self._airplane.pos())
 
     def x_velocity(self):
         if self.dead:
@@ -75,7 +69,6 @@ class Plane(pygame.sprite.Sprite):
     def update(self):
         ''' update the sprite based on plane's state '''
         pos = self._airplane.pos()
-        projector.center_x(pos)
         screen_pos = projector.project(pos)
 
         self.image = pygame.transform.rotate(
@@ -133,29 +126,6 @@ class Explosion(pygame.sprite.Sprite):
                 self.rect.center = center
 
 
-class Cloud(pygame.sprite.Sprite):
-    def __init__(self):
-        super(Cloud, self).__init__()
-        self.surf = pygame.image.load("images/cloud7.png").convert()
-        self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-        # The starting position is randomly generated
-        self.rect = self.surf.get_rect(
-            center=(
-                random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
-                random.randint(0, CLOUD_BASE),
-            )
-        )
-
-    # Move the cloud based on a constant speed
-    # Remove the cloud when it passes the left edge of the screen
-    def update(self):
-        velocity = plane.x_velocity() / 50  # divide for parallax
-        pixels = projector.get_pixels(velocity)
-        self.rect.move_ip(-pixels, 0)
-        if self.rect.right < 0:
-            self.kill()
-
-
 def run_game():
 
     clock = pygame.time.Clock()
@@ -174,13 +144,6 @@ def run_game():
             # Check for QUIT event. If QUIT, then set running to false.
             elif event.type == QUIT or event.type == GAME_OVER:
                 running = False
-            elif event.type == ADDCLOUD:
-
-                if not plane.dead:
-                    # Create the new cloud and add it to sprite groups
-                    new_cloud = Cloud()
-                    clouds.add(new_cloud)
-                    all_sprites.add(new_cloud)
 
         if not running:
             break
@@ -193,10 +156,6 @@ def run_game():
                           SCREEN_WIDTH, GROUND_HEIGHT))
 
         pressed_keys = pygame.key.get_pressed()
-
-        clouds.update()
-        for cloud in clouds:
-            screen.blit(cloud.surf, cloud.rect)
 
         explosions.update()
         for explosion in explosions:
@@ -235,9 +194,10 @@ if pygame.joystick.get_count() > 0:
 else:
     print("Using keyboard")
 
-# meters per pixel: image is 250 pixels
-# a 747 is 77 meters. So m/p = 77/250 = 308
-projector = Projector(Vector2D(SCREEN_WIDTH, SCREEN_HEIGHT), 0.308)
+# meters per pixel: image is 34 pixels wide
+# a kite is .9 meters. So m/p = .9/34 = .026
+projector = Projector(Vector2D(
+    SCREEN_WIDTH, SCREEN_HEIGHT - GROUND_HEIGHT), .026)
 
 # create plane and add to the list of sprites
 plane = Plane()

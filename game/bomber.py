@@ -9,6 +9,6 @@ class Bomber(SimplePlane):
     def get_force_vectors(self, mass, velocity):
         vectors = []
 
-        ''' TODO: Add force vectors '''
+        vectors.append(Vector2D(0, -9.8 * mass))
 
         return vectors

@@ -7,7 +7,7 @@ class RigidBody:
 
     # Vector2D pos and vel. theta in degrees
     def __init__(self, mass, mass_moment_of_inertia, state):
-        self.state = state
+        self._state = state
         self._mass = mass
         self._mass_moment_of_inertia = mass_moment_of_inertia
 
@@ -16,12 +16,21 @@ class RigidBody:
     def mass(self):
         return self._mass
 
-    def calculate_local_forces(self, state):
-        ''' Get all the forces applied to the object '''
+    def pos(self):
+        return self._state.pos.copy()
+
+    def orientation(self):
+        return self._state.theta
+
+    def current_state(self):
+        return self._state.copy()
+
+    def calculate_forces(self, state):
         raise NotImplementedError()
 
-    def calculate_global_forces(self, state):
-        raise NotImplementedError()
+    @staticmethod
+    def get_local_velocity(state):
+        return state.vel.rotate(state.theta.times_constant(-1))
 
     @staticmethod
     def _calculate_acceleration(state, forces, mass, mass_moment):
@@ -35,24 +44,13 @@ class RigidBody:
 
         return [acceleration, theta_acceleration]
 
-    def _convert_to_global(self, local_forces):
-        global_forces = []
-        for local_force in local_forces:
-            global_forces.append(local_force.rotate(self.state.theta))
-        return global_forces
-
     def _calculate_change(self, state):
 
-        local_velocity = state.vel.rotate(state.theta.times_constant(-1))
-        local_forces = self.calculate_local_forces(
-            local_velocity, state.theta_vel)
-
-        global_forces = self._convert_to_global(local_forces)
-        global_forces.extend(self.calculate_global_forces(state))
+        forces = self.calculate_forces(state)
 
         [acceleration, theta_acceleration] = \
             RigidBody._calculate_acceleration(
-                state, global_forces,
+                state, forces,
                 self._mass, self._mass_moment_of_inertia)
 
         return self.StateChange(state.vel, acceleration,
@@ -60,8 +58,8 @@ class RigidBody:
 
     def step(self, time):
         ''' Apply forces and update state '''
-        self.state = self._integrator.integrate(
-            self.state, time, self._calculate_change)
+        self._state = self._integrator.integrate(
+            self._state, time, self._calculate_change)
 
     class StateChange:
         ''' Holds velocity and acceleration for use in integrators '''

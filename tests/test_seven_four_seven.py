@@ -10,7 +10,7 @@ class TestSevenFourSeven(unittest.TestCase):
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, vel)
         airplane.step(1)
-        self.assertEqual(0, round(airplane.state.vel.y, 2))
+        self.assertEqual(0, round(airplane.current_state().vel.y, 2))
 
     def test_weight(self):
         airplane = SevenFourSeven(Vector2D(200, 200), Vector2D(265.3581764, 0))

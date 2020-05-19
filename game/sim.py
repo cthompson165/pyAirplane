@@ -31,7 +31,7 @@ def run_sim(steps):
 def write(time, airplane, f):
     f.write(
         str(time) + ","
-        + str(adjust_angle(airplane.state.theta)) + "\n")
+        + str(adjust_angle(airplane.current_state().theta)) + "\n")
 
 
 def adjust_angle(angle):

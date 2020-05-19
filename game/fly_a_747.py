@@ -14,7 +14,6 @@ from pygame.locals import (
 )
 
 from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
-# from bomber import Bomber
 from util.vector_2d import Vector2D
 from projector import Projector
 
@@ -66,7 +65,7 @@ class Plane(pygame.sprite.Sprite):
         if self.dead:
             return 0
         else:
-            return self._airplane.state.vel.x
+            return self._airplane.current_state().vel.x
 
     def _increment_elevator(self):
         self.elevator_percent = min(

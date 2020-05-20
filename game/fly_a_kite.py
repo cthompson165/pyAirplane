@@ -6,11 +6,14 @@ from pygame.locals import (
     QUIT,
 )
 
+from game.kite.point_kite import PointKite
 from game.kite.box_kite import BoxKite
 from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
+
+USE_BOX_KITE = True
 
 
 class Kite(pygame.sprite.Sprite):
@@ -25,9 +28,11 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.pressed_keys = []
+        if USE_BOX_KITE:
+            self.kite = BoxKite(10, .01, .9, .35, .2, .4, .7)
+        else:
+            self.kite = PointKite()
 
-        self.kite = BoxKite(.9, .35, .2, .4, .7)
         self.dead = False
 
         projector.center_x(self.kite.pos())
@@ -64,14 +69,10 @@ def run_game():
 
     while running:
 
-        # for loop through the event queue
         for event in pygame.event.get():
-            # Check for KEYDOWN event
             if event.type == KEYDOWN:
-                # If the Esc key is pressed, then exit the main loop
                 if event.key == K_ESCAPE:
                     running = False
-            # Check for QUIT event. If QUIT, then set running to false.
             elif event.type == QUIT or event.type == GAME_OVER:
                 running = False
 

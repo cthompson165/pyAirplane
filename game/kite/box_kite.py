@@ -8,10 +8,14 @@ import math
 
 
 class BoxKite(RigidBody):
-    def __init__(self, length, width, cell_length, bridle_length, knot_length):
-        state = State(Vector2D(-10, 1), Vector2D(0, 0), Angle(80), 0)
+    def __init__(self, string_length, mass, length, width, cell_length,
+                 bridle_length, knot_length):
 
-        mass = 0.005  # TODO
+        state = State(Vector2D(-string_length, 1),
+                      Vector2D(0, 0), Angle(80), 0)
+
+        self.string_length = string_length
+
         mass_moment_of_inertia = mass * (length**2 + width**2) / 12
 
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
@@ -61,7 +65,8 @@ class BoxKite(RigidBody):
     def calculate_global_forces(self, state):
         forces = []
         gravity = Force(Force.Source.gravity,
-                        "gravity", self.kite_cg, self.weight())
+                        "gravity", self.kite_cg.rotate(state.theta),
+                        self.weight())
         forces.append(gravity)
         return forces
 
@@ -73,7 +78,7 @@ class BoxKite(RigidBody):
 
     def calculate_forces(self, state):
 
-        wind_speed = Vector2D(3.2, 0)
+        wind_speed = Vector2D(3, 0)
         wind_state = State(
             state.pos, state.vel.add(wind_speed),
             state.theta, state.theta_vel)
@@ -106,12 +111,27 @@ class BoxKite(RigidBody):
         return sum
 
     def calculate_string_force(self, state, other_forces_sum):
-        t1 = self.mass() * (state.pos.dot(state.vel))**2 \
-            / state.pos.dot(state.pos)
-        t2 = self.mass() * state.vel.dot(state.vel)
-        t3 = state.pos.dot(other_forces_sum)
+        alpha = 1
+        beta = 1
 
-        scaling_constant = (t1 - t2 - t3) / state.pos.magnitude()
-        N = state.pos.scale(1 / state.pos.magnitude())
+        distance = state.pos.magnitude()
+        N = state.pos.scale(1/distance)
+
+        print("distance: " + str(round(distance)))
+
+        N_dot_term = state.pos.dot(state.vel) / state.pos.dot(state.pos)
+        N_dot = state.vel.subtract(state.pos.scale(N_dot_term))
+        N_dot = N_dot.scale(1 / distance)
+
+        N_dot_N = N.dot(N)
+
+        C = distance - self.string_length
+        C_dot = N.dot(state.vel)
+
+        t1 = self.mass() * N_dot.dot(state.vel)
+        t2 = N.dot(other_forces_sum)
+        feedback_term = self.mass() * (alpha * C + beta * C_dot)
+
+        scaling_constant = (-t1 - t2 - feedback_term) / N_dot_N
 
         return N.scale(scaling_constant)

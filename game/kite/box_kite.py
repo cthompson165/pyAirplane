@@ -16,7 +16,7 @@ class BoxKite(RigidBody):
 
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
-        bottom_front = Vector2D(-width / 2.0, length / 2.0)
+        bottom_front = Vector2D(length / 2.0, -width / 2.0)
 
         cos_bridle_angle = (knot_length**2 + length**2
                             - (bridle_length - knot_length)**2) \
@@ -24,7 +24,7 @@ class BoxKite(RigidBody):
 
         bridle_angle = math.acos(cos_bridle_angle)
 
-        bridle_relative_x = -knot_length * math.cos(bridle_angle)
+        bridle_relative_x = -(length - knot_length * math.cos(bridle_angle))
         bridle_relative_y = -knot_length * math.sin(bridle_angle)
         bridle_position = bottom_front.add(
             Vector2D(bridle_relative_x, bridle_relative_y))

@@ -3,9 +3,7 @@ from util.vector_2d import Vector2D
 from physics.state import State
 from physics.force import Force
 from physics.rigid_body import RigidBody
-from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
-from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
-from aerodynamics.surface import Surface
+from game.kite.cell import Cell
 import math
 
 
@@ -18,55 +16,38 @@ class BoxKite(RigidBody):
 
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
-        # put bridle point at 0, 0 with kite above it at 0 aoa
+        bottom_front = Vector2D(-width / 2.0, length / 2.0)
+
         cos_bridle_angle = (knot_length**2 + length**2
                             - (bridle_length - knot_length)**2) \
             / (2 * knot_length * length)
 
-        self.bridle_angle = math.acos(cos_bridle_angle)
+        bridle_angle = math.acos(cos_bridle_angle)
 
-        # back bottom corner
-        back_of_kite_x = -knot_length * math.cos(self.bridle_angle)
-        back_of_kite_y = knot_length * math.sin(self.bridle_angle)
+        bridle_relative_x = -knot_length * math.cos(bridle_angle)
+        bridle_relative_y = -knot_length * math.sin(bridle_angle)
+        bridle_position = bottom_front.add(
+            Vector2D(bridle_relative_x, bridle_relative_y))
 
-        self.kite_cg = Vector2D(
-            back_of_kite_x + length / 2.0, back_of_kite_y + width / 2.0)
+        front_surface_position = Vector2D(bottom_front.x, 0)
+        back_surface_position = Vector2D(
+            bottom_front.x - length + cell_length, 0)
 
-        # surface pos is the aerodynamic center of the surface
-        # ac is 1/4 of chord from front of surface
-        # TODO - move this calculation to surface?
-        front_cell_cp = Vector2D(
-            back_of_kite_x + length - cell_length / 4.0,
-            self.kite_cg.y)
+        # adjust all positions so bridle position is at 0
+        # to make torque calculations easier
+        self.front_cell = Cell(
+            "front", front_surface_position.subtract(bridle_position),
+            cell_length, width)
 
-        back_cell_cp = Vector2D(
-            back_of_kite_x + 3 * cell_length / 4.0,
-            self.kite_cg.y)
-
-        cell_span = self._cell_span(width)
-        cell_area = self._cell_area(cell_span, cell_length)
-        cell_aspect_ratio = self._cell_aspect_ratio(cell_span, cell_area)
-
-        cell_lift_curve = LiftingLineLift(cell_aspect_ratio)
-        cell_drag_curve = LiftingLineDrag(cell_aspect_ratio)
+        self.back_cell = Cell(
+            "back", back_surface_position.subtract(bridle_position),
+            cell_length, width)
 
         self._surfaces = []
-        self._surfaces.append(Surface("front", front_cell_cp,
-                                      Angle(0), cell_area,
-                                      cell_lift_curve, cell_drag_curve))
-        self._surfaces.append(Surface("back", back_cell_cp,
-                                      Angle(0), cell_area,
-                                      cell_lift_curve, cell_drag_curve))
+        self._surfaces.append(self.front_cell)
+        self._surfaces.append(self.back_cell)
 
-    def _cell_span(self, width):
-        return 2 * width * math.cos(45)
-
-    def _cell_area(self, span, cell_length):
-        cell_area = cell_length * span
-        return 2 * cell_area
-
-    def _cell_aspect_ratio(self, span, area):
-        return span**2 / area
+        self.kite_cg = bridle_position.scale(-1)
 
     def calculate_local_forces(self, local_velocity, angular_velocity):
         local_forces = []
@@ -119,7 +100,6 @@ class BoxKite(RigidBody):
         return Vector2D(0, self.mass() * -9.8)
 
     def sum_forces(self, forces):
-        # adding these all to CG. I think that's valid...
         sum = Vector2D(0, 0)
         for force in forces:
             sum = sum.add(force.vector)

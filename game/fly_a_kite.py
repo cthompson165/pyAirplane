@@ -1,42 +1,22 @@
-''' Run airplane in pygame '''
-
-import random
 import pygame
 from pygame.locals import (
     RLEACCEL,
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
     K_ESCAPE,
     KEYDOWN,
     QUIT,
 )
 
-from box_kite import BoxKite
-# from point_kite import PointKite
+from game.kite.box_kite import BoxKite
+from game.sprites.explosion import Explosion
+from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
 
 
-class Colors:
-    ''' colors enum '''
-    GREEN = (20, 255, 140)
-    FOREST_GREEN = (11, 102, 35)
-    GREY = (210, 210, 210)
-    WHITE = (255, 255, 255)
-    RED = (255, 0, 0)
-    BLUE = (0, 0, 255)
-    PURPLE = (255, 0, 255)
-    SKYBLUE = (135, 206, 250)
-    BLACK = (0, 0, 0)
-
-
-class Plane(pygame.sprite.Sprite):
-    ''' Plane sprite '''
+class Kite(pygame.sprite.Sprite):
 
     def __init__(self):
-        super(Plane, self).__init__()
+        super(Kite, self).__init__()
         self.original_image = pygame.image.load("images/box_kite.png")
         self.image = self.original_image
         self.image.set_colorkey([255, 255, 255], RLEACCEL)
@@ -47,31 +27,20 @@ class Plane(pygame.sprite.Sprite):
 
         self.pressed_keys = []
 
-        self._airplane = BoxKite(.9, .35, .2, .4, .7)
+        self.kite = BoxKite(.9, .35, .2, .4, .7)
         self.dead = False
 
-        projector.center_x(self._airplane.pos())
+        projector.center_x(self.kite.pos())
 
-    def x_velocity(self):
-        if self.dead:
-            return 0
-        else:
-            return self._airplane.current_state().vel.x
-
-    def control(self, pressed_keys, joystick, time):
-
-        self._airplane.step(time)
-
-        # print("elevator: " + str(self.elevator_percent))
-        # print("throttle: " + str(self.throttle_percent))
+    def control(self, time):
+        self.kite.step(time)
 
     def update(self):
-        ''' update the sprite based on plane's state '''
-        pos = self._airplane.pos()
+        pos = self.kite.pos()
         screen_pos = projector.project(pos)
 
         self.image = pygame.transform.rotate(
-            self.original_image, self._airplane.orientation().degrees())
+            self.original_image, self.kite.orientation().degrees())
 
         self.rect = self.image.get_rect(center=self.rect.center)
         self.rect.center = screen_pos.toint().array()
@@ -85,44 +54,6 @@ class Plane(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
-
-
-class Explosion(pygame.sprite.Sprite):
-    def __init__(self, center, size):
-
-        self._explosion_anim = {}
-        self._explosion_anim['lg'] = []
-        self._explosion_anim['sm'] = []
-        for i in range(9):
-            filename = 'images/regularExplosion0{}.png'.format(i)
-            img = pygame.image.load(filename).convert()
-            img.set_colorkey(Colors.BLACK)
-            img_lg = pygame.transform.scale(img, (75, 75))
-            self._explosion_anim['lg'].append(img_lg)
-            img_sm = pygame.transform.scale(img, (32, 32))
-            self._explosion_anim['sm'].append(img_sm)
-
-        pygame.sprite.Sprite.__init__(self)
-        self.size = size
-        self.image = self._explosion_anim[self.size][0]
-        self.rect = self.image.get_rect()
-        self.rect.center = center
-        self.frame = 0
-        self.last_update = pygame.time.get_ticks()
-        self.frame_rate = 50
-
-    def update(self):
-        now = pygame.time.get_ticks()
-        if now - self.last_update > self.frame_rate:
-            self.last_update = now
-            self.frame += 1
-            if self.frame == len(self._explosion_anim[self.size]):
-                self.kill()
-            else:
-                center = self.rect.center
-                self.image = self._explosion_anim[self.size][self.frame]
-                self.rect = self.image.get_rect()
-                self.rect.center = center
 
 
 def run_game():
@@ -154,17 +85,14 @@ def run_game():
                          (0, SCREEN_HEIGHT - GROUND_HEIGHT,
                           SCREEN_WIDTH, GROUND_HEIGHT))
 
-        pressed_keys = pygame.key.get_pressed()
-
         explosions.update()
         for explosion in explosions:
             screen.blit(explosion.image, explosion.rect)
 
-        if not plane.dead:
-            plane.control(pressed_keys, joystick, time /
-                          1000)  # convert t to seconds
-            plane.update()
-            screen.blit(plane.image, plane.rect)
+        if not kite.dead:
+            kite.control(time / 1000)  # convert t to seconds
+            kite.update()
+            screen.blit(kite.image, kite.rect)
 
         # update the display and clock
         pygame.display.flip()
@@ -177,21 +105,9 @@ SCREEN_HEIGHT = 600
 CLOUD_BASE = 300
 GROUND_HEIGHT = 30
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Airplane Simulator")
+pygame.display.set_caption("Kite Simulator")
 
-
-ADDCLOUD = pygame.USEREVENT + 2
 GAME_OVER = pygame.USEREVENT + 3
-pygame.time.set_timer(ADDCLOUD, 1000)
-
-pygame.joystick.init()
-joystick = None
-if pygame.joystick.get_count() > 0:
-    joystick = pygame.joystick.Joystick(0)
-    print("Using joystick " + joystick.get_name())
-    joystick.init()
-else:
-    print("Using keyboard")
 
 # meters per pixel: image is 34 pixels wide
 # a kite is .9 meters. So m/p = .9/34 = .026
@@ -199,9 +115,9 @@ projector = Projector(Vector2D(
     SCREEN_WIDTH, SCREEN_HEIGHT - GROUND_HEIGHT), .026)
 
 # create plane and add to the list of sprites
-plane = Plane()
+kite = Kite()
 all_sprites = pygame.sprite.Group()
-all_sprites.add(plane)
+all_sprites.add(kite)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

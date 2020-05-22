@@ -59,16 +59,19 @@ class TestForceCurves(unittest.TestCase):
 
         coefficient_lift = lift_curve.calculate_lift_coefficient(Angle(0))
         coefficient_drag = drag_curve.calculate_drag_coefficient(
+            Angle(0),
             coefficient_lift)
         self.assertAlmostEqual(0.027, coefficient_drag, 4, "0")
 
         coefficient_lift = lift_curve.calculate_lift_coefficient(Angle(1))
         coefficient_drag = drag_curve.calculate_drag_coefficient(
+            Angle(1),
             coefficient_lift)
         self.assertAlmostEqual(0.02742, coefficient_drag, 4, "1")
 
         coefficient_lift = lift_curve.calculate_lift_coefficient(Angle(6))
         coefficient_drag = drag_curve.calculate_drag_coefficient(
+            Angle(6),
             coefficient_lift)
         self.assertAlmostEqual(0.04242, coefficient_drag, 4, "6")
 

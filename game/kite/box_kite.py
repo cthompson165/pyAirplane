@@ -4,7 +4,7 @@ from physics.state import State
 from physics.force import Force
 from physics.rigid_body import RigidBody
 from game.kite.cell import Cell
-import math
+from game.kite.bridle import Bridle
 
 
 class BoxKite(RigidBody):
@@ -20,22 +20,12 @@ class BoxKite(RigidBody):
 
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
-        bottom_front = Vector2D(length / 2.0, -width / 2.0)
-
-        cos_bridle_angle = (knot_length**2 + length**2
-                            - (bridle_length - knot_length)**2) \
-            / (2 * knot_length * length)
-
-        bridle_angle = math.acos(cos_bridle_angle)
-
-        bridle_relative_x = -(length - knot_length * math.cos(bridle_angle))
-        bridle_relative_y = -knot_length * math.sin(bridle_angle)
-        bridle_position = bottom_front.add(
-            Vector2D(bridle_relative_x, bridle_relative_y))
-
-        front_surface_position = Vector2D(bottom_front.x, 0)
-        back_surface_position = Vector2D(
-            bottom_front.x - length + cell_length, 0)
+        # get positions relative to
+        bottom_back = Vector2D(-length / 2.0, -width / 2.0)
+        bridle = Bridle(bridle_length, knot_length, length)
+        bridle_position = bottom_back.add(bridle.get_position())
+        front_surface_position = Vector2D(bottom_back.x + length, 0)
+        back_surface_position = Vector2D(bottom_back.x + cell_length, 0)
 
         # adjust all positions so bridle position is at 0
         # to make torque calculations easier
@@ -51,7 +41,7 @@ class BoxKite(RigidBody):
         self._surfaces.append(self.front_cell)
         self._surfaces.append(self.back_cell)
 
-        self.kite_cg = bridle_position.scale(-1)
+        self.kite_cg = Vector2D(0, 0).subtract(bridle_position)
 
     def calculate_local_forces(self, local_velocity, angular_velocity):
         local_forces = []
@@ -97,7 +87,15 @@ class BoxKite(RigidBody):
         string_force = self.calculate_string_force(state, force_sum)
 
         forces.append(Force(
-             Force.Source.other, "String", Vector2D(0, 0), string_force))
+            Force.Source.other, "String", Vector2D(0, 0), string_force))
+
+        print("FORCES:")
+        for force in forces:
+            print("\t" + force.name + " " +
+                  str(round(force.vector.magnitude(), 2)))
+
+        print("Orientation: " + str(round(state.theta, 2)))
+        print("Height: " + str(round(state.pos.y, 2)))
 
         return forces
 
@@ -115,23 +113,28 @@ class BoxKite(RigidBody):
         beta = 1
 
         distance = state.pos.magnitude()
-        N = state.pos.scale(1/distance)
+        if distance < (self.string_length - 1):
+            # TODO - how small a number under string length
+            # we can get away with. 1 is too big
+            return Vector2D(0, 0)  # don't apply force
+        else:
+            N = state.pos.scale(1/distance)
 
-        print("distance: " + str(round(distance)))
+            print("distance: " + str(round(distance)))
 
-        N_dot_term = state.pos.dot(state.vel) / state.pos.dot(state.pos)
-        N_dot = state.vel.subtract(state.pos.scale(N_dot_term))
-        N_dot = N_dot.scale(1 / distance)
+            N_dot_term = state.pos.dot(state.vel) / state.pos.dot(state.pos)
+            N_dot = state.vel.subtract(state.pos.scale(N_dot_term))
+            N_dot = N_dot.scale(1 / distance)
 
-        N_dot_N = N.dot(N)
+            N_dot_N = N.dot(N)
 
-        C = distance - self.string_length
-        C_dot = N.dot(state.vel)
+            C = distance - self.string_length
+            C_dot = N.dot(state.vel)
 
-        t1 = self.mass() * N_dot.dot(state.vel)
-        t2 = N.dot(other_forces_sum)
-        feedback_term = self.mass() * (alpha * C + beta * C_dot)
+            t1 = self.mass() * N_dot.dot(state.vel)
+            t2 = N.dot(other_forces_sum)
+            feedback_term = self.mass() * (alpha * C + beta * C_dot)
 
-        scaling_constant = (-t1 - t2 - feedback_term) / N_dot_N
+            scaling_constant = (-t1 - t2 - feedback_term) / N_dot_N
 
-        return N.scale(scaling_constant)
+            return N.scale(scaling_constant)

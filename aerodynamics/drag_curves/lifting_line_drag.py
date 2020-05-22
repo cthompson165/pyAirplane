@@ -11,9 +11,9 @@ class LiftingLineDrag(DragCurve):
         self.cd_min = cd_min
         self.efficiency_factor = efficiency_factor
 
-    def calculate_drag_coefficient(self, coefficient_lift):
+    def calculate_drag_coefficient(self, aoa, CL):
         ''' calculate drag coefficient '''
-        induced_drag_coefficient = coefficient_lift**2 \
+        induced_drag_coefficient = CL**2 \
             / (math.pi * self.aspect_ratio)
         return self.cd_min \
             + induced_drag_coefficient \

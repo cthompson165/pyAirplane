@@ -29,7 +29,7 @@ class Kite(pygame.sprite.Sprite):
             ))
 
         if USE_BOX_KITE:
-            self.kite = BoxKite(10, .01, .9, .35, .2, .4, .7)
+            self.kite = BoxKite(10, .005, .9, .35, .2, 1.2, .88)
         else:
             self.kite = PointKite()
 

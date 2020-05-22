@@ -1,6 +1,7 @@
 from aerodynamics.surface import Surface
-from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
-from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
+from aerodynamics.lift_curves.naca_63006_empirical \
+    import Naca63006EmpiricalLift
+from aerodynamics.drag_curves.flat_plate_drag import FlatPlateDrag
 from util.angle import Angle
 from util.vector_2d import Vector2D
 import math
@@ -12,8 +13,8 @@ class Cell(Surface):
         area = self.calculate_area(span, length)
         aspect_ratio = self.calculate_aspect_ratio(span, area)
 
-        lift_curve = LiftingLineLift(aspect_ratio)
-        drag_curve = LiftingLineDrag(aspect_ratio)
+        lift_curve = Naca63006EmpiricalLift()
+        drag_curve = FlatPlateDrag(aspect_ratio)
 
         aerodynamic_center = Vector2D(position.x - (length / 4.0), position.y)
 

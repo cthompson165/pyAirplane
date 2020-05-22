@@ -11,7 +11,6 @@ class Surface:
     # is approximately 0.30267 kg/m3
     air_density = 0.30267
 
-    # relative degrees is + or - vs 0 to 360
     def __init__(self, name, relative_pos,
                  angle, area, lift_curve, drag_curve):
 
@@ -51,7 +50,7 @@ class Surface:
 
         CD = 0
         if self.drag_curve is not None:
-            CD = self.drag_curve.calculate_drag_coefficient(CL)
+            CD = self.drag_curve.calculate_drag_coefficient(aoa, CL)
             drag_mag = self.calculate_drag(CD, velocity_magnitude)
             drag_dir = surface_velocity.reverse().unit()
             drag_vector = drag_dir.scale(drag_mag)

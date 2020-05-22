@@ -6,7 +6,7 @@ class ParasiticDrag:
     def __init__(self, drag_coefficient):
         self._cd = drag_coefficient
 
-    def calculate_drag_coefficient(self, coefficient_lift):
+    def calculate_drag_coefficient(self, aoa, CL):
         return self._cd
 
     class _ShapeCoefficients():

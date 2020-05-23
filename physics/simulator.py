@@ -1,5 +1,4 @@
 from util.vector_2d import Vector2D
-from physics.rigid_body import RigidBody
 from physics.integrator import EulerIntegrator
 
 
@@ -13,6 +12,12 @@ class Simulator:
         # TODO - make this a keyed collection and add deregister
         self._rigid_bodies.append(rigid_body)
 
+    def step(self, time):
+        for rigid_body in self._rigid_bodies:
+            ''' Apply forces and update state '''
+            rigid_body._state = self._integrator.integrate(
+                rigid_body, time, self._calculate_change)
+
     @staticmethod
     def _calculate_acceleration(state, forces, mass, mass_moment):
         acceleration = Vector2D(0, 0)
@@ -25,23 +30,17 @@ class Simulator:
 
         return [acceleration, theta_acceleration]
 
-    def _calculate_change(self, state, rigid_body):
+    def _calculate_change(self, rigid_body, state):
 
         forces = rigid_body.calculate_forces(state)
 
         [acceleration, theta_acceleration] = \
             Simulator._calculate_acceleration(
                 state, forces,
-                self._mass, self._mass_moment_of_inertia)
+                rigid_body._mass, rigid_body._mass_moment_of_inertia)
 
-        return self.StateChange(state.vel, acceleration,
-                                state.theta_vel, theta_acceleration)
-
-    def step(self, time):
-        for rigid_body in self._rigid_bodies:
-            ''' Apply forces and update state '''
-            self._state = self._integrator.integrate(
-                rigid_body._state, time, rigid_body._calculate_change)
+        return Simulator.StateChange(state.vel, acceleration,
+                                     state.theta_vel, theta_acceleration)
 
     class StateChange:
         ''' Holds velocity and acceleration for use in integrators '''
@@ -53,12 +52,12 @@ class Simulator:
             self.theta_acc = theta_acc
 
         def multiply(self, time):
-            return RigidBody.StateChange(
+            return Simulator.StateChange(
                 self.vel.scale(time), self.acc.scale(time),
                 self.theta_vel * time, self.theta_acc * time)
 
         def add(self, other):
-            return RigidBody.StateChange(
+            return Simulator.StateChange(
                 self.vel.add(other.vel),
                 self.acc.add(other.acc),
                 self.theta_vel + other.theta_vel,

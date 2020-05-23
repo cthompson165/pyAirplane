@@ -11,6 +11,7 @@ from game.kite.box_kite import BoxKite
 from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
+from physics.simulator import Simulator
 from projector import Projector
 
 USE_BOX_KITE = True
@@ -38,7 +39,7 @@ class Kite(pygame.sprite.Sprite):
         projector.center_x(self.kite.pos())
 
     def control(self, time):
-        self.kite.step(time)
+        simulator.step(time)  # TODO - move out
 
     def update(self):
         pos = self.kite.pos()
@@ -119,6 +120,9 @@ projector = Projector(Vector2D(
 kite = Kite()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(kite)
+
+simulator = Simulator()
+simulator.register(kite.kite)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

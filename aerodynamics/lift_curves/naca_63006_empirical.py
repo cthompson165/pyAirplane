@@ -4,7 +4,7 @@ from util.vector_2d import Vector2D
 
 class Naca63006EmpiricalLift(EmpiricalLift):
     ''' Approximated from curve in NASA paper:
-    https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20140000500.pdf 
+    https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20140000500.pdf
     First 10 degrees adjusted matches lifting line (2*pi*aoa) '''
 
     def __init__(self, aspect_ratio):

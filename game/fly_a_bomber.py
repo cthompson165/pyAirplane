@@ -15,6 +15,7 @@ from pygame.locals import (
 
 from bomber import Bomber
 from util.vector_2d import Vector2D
+from physics.simulator import Simulator
 from projector import Projector
 
 
@@ -110,7 +111,7 @@ class Plane(pygame.sprite.Sprite):
 
         self._airplane.apply_pitch_control(self.elevator_percent)
         self._airplane.set_throttle(self.throttle_percent)
-        self._airplane.step(time)
+        simulator.step(time)  # TODO - move out
 
         # print("elevator: " + str(self.elevator_percent))
         # print("throttle: " + str(self.throttle_percent))
@@ -297,6 +298,9 @@ projector = Projector(Vector2D(SCREEN_WIDTH, SCREEN_HEIGHT), 0.308)
 plane = Plane()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(plane)
+
+simulator = Simulator()
+simulator.register(plane._airplane)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

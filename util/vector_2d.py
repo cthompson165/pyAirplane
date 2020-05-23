@@ -93,6 +93,9 @@ class Vector2D:
             round(self.x, precision),
             round(self.y, precision))
 
+    def __round__(self, precision):
+        return self.round(2)
+
     def __str__(self):
         return "[" + str(self.x) + ", " + str(self.y) + "]"
 

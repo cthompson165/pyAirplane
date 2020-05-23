@@ -1,3 +1,6 @@
+from util.vector_2d import Vector2D
+
+
 class State:
     def __init__(self, pos, vel, theta, theta_vel):
 
@@ -5,6 +8,14 @@ class State:
         self.vel = vel  # vector
         self.theta = theta  # angle
         self.theta_vel = theta_vel  # int
+
+        self.wind_speed = Vector2D(0, 0)
+
+    def ground_speed(self):
+        return self.vel
+
+    def airspeed(self):
+        return self.vel.subtract(self.wind_speed)
 
     def copy(self):
         return State(self.pos.copy(), self.vel.copy(), self.theta.copy(),

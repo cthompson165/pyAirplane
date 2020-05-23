@@ -1,4 +1,5 @@
 from aerodynamics.surface import Surface
+from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
 from aerodynamics.lift_curves.naca_63006_empirical \
     import Naca63006EmpiricalLift
 from aerodynamics.drag_curves.flat_plate_drag import FlatPlateDrag

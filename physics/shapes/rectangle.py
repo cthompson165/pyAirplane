@@ -10,7 +10,7 @@ class Rectangle(RigidBody):
     different locations
     WARNING - hasn't been tested since a lot of refactoring...'''
 
-    def __init__(self, pos, theta, vel, angular_vel, length, width, cp):
+    def __init__(self, pos, theta, velocity, angular_vel, length, width, cp):
 
         # a really big rectangle is too hard to rotate
         mass_length = length / 10
@@ -19,7 +19,7 @@ class Rectangle(RigidBody):
         mass = mass_length * mass_width
         mass_moment_of_inertia = mass * (mass_length**2 + mass_width**2) / 12
 
-        state = State(pos, vel, theta, angular_vel)
+        state = State(pos, velocity, theta, angular_vel)
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
         self._length = length

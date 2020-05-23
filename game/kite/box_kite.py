@@ -45,6 +45,8 @@ class BoxKite(RigidBody):
 
         self.kite_cg = Vector2D(0, 0).subtract(bridle_position)
 
+        self.on_string = True
+
     def calculate_local_forces(self, local_velocity, angular_velocity):
         local_forces = []
         for surface in self._surfaces:
@@ -80,14 +82,12 @@ class BoxKite(RigidBody):
             global_forces.append(local_force.rotate(state.theta))
         return global_forces
 
+    def cut_string(self):
+        self.on_string = False
+
     def calculate_forces(self, state, atmosphere):
 
-        wind_speed = Vector2D(5, 0)
-        wind_state = State(
-            state.pos, state.vel.add(wind_speed),
-            state.theta, state.theta_vel)
-
-        local_velocity = RigidBody.get_local_velocity(wind_state)
+        local_velocity = RigidBody.get_local_airspeed(state)
         angular_velocity = state.theta_vel
 
         local_forces = self.calculate_local_forces(
@@ -96,20 +96,22 @@ class BoxKite(RigidBody):
         forces = self.convert_local_forces_to_global(state, local_forces)
         forces.extend(self.calculate_global_forces(state))
 
-        force_sum = self.sum_forces(forces)
+        if self.on_string:
+            force_sum = self.sum_forces(forces)
+            string_force = self.calculate_string_force(state, force_sum)
+            forces.append(Force(
+                Force.Source.other, "String", Vector2D(0, 0), string_force))
 
-        string_force = self.calculate_string_force(state, force_sum)
-
-        forces.append(Force(
-            Force.Source.other, "String", Vector2D(0, 0), string_force))
-
+        '''
         print("FORCES:")
         for force in forces:
             print("\t" + force.name + " " +
                   str(round(force.vector.magnitude(), 2)))
+        '''
 
         print("Orientation: " + str(round(state.theta, 2)))
-        print("Height: " + str(round(state.pos.y, 2)))
+        # print("Height: " + str(round(state.pos.y, 2)))
+        print("Airspeed: " + str(round(state.airspeed(), 2)))
 
         return forces
 
@@ -123,6 +125,7 @@ class BoxKite(RigidBody):
         return sum
 
     def calculate_string_force(self, state, other_forces_sum):
+
         alpha = 1
         beta = 1
 
@@ -131,21 +134,25 @@ class BoxKite(RigidBody):
             # TODO - how small a number under string length
             # we can get away with. 1 is too big
             return Vector2D(0, 0)  # don't apply force
+        elif distance > (self.string_length + 1):
+            self.cut_string()
+            return Vector2D(0, 0)
         else:
             N = state.pos.scale(1/distance)
 
             print("distance: " + str(round(distance)))
 
-            N_dot_term = state.pos.dot(state.vel) / state.pos.dot(state.pos)
-            N_dot = state.vel.subtract(state.pos.scale(N_dot_term))
+            N_dot_term = state.pos.dot(state.ground_speed()) \
+                / state.pos.dot(state.pos)
+            N_dot = state.ground_speed().subtract(state.pos.scale(N_dot_term))
             N_dot = N_dot.scale(1 / distance)
 
             N_dot_N = N.dot(N)
 
             C = distance - self.string_length
-            C_dot = N.dot(state.vel)
+            C_dot = N.dot(state.ground_speed())
 
-            t1 = self.mass() * N_dot.dot(state.vel)
+            t1 = self.mass() * N_dot.dot(state.ground_speed())
             t2 = N.dot(other_forces_sum)
             feedback_term = self.mass() * (alpha * C + beta * C_dot)
 

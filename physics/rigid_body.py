@@ -1,7 +1,6 @@
 class RigidBody:
     ''' Calculates state based on forces '''
 
-    # Vector2D pos and vel. theta in degrees
     def __init__(self, mass, mass_moment_of_inertia, state):
         self._state = state
         self._mass = mass
@@ -23,5 +22,5 @@ class RigidBody:
         raise NotImplementedError()
 
     @staticmethod
-    def get_local_velocity(state):
-        return state.vel.rotate(state.theta.times_constant(-1))
+    def get_local_airspeed(state):
+        return state.airspeed().rotate(state.theta.times_constant(-1))

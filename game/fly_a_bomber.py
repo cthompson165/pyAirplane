@@ -66,7 +66,7 @@ class Plane(pygame.sprite.Sprite):
         if self.dead:
             return 0
         else:
-            return self._airplane.current_state().vel.x
+            return self._airplane.current_state().ground_speed().x
 
     def _increment_elevator(self):
         self.elevator_percent = min(

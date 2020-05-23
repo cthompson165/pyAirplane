@@ -1,20 +1,24 @@
+# TODO
+# * when cut string need to move center of gravity back to CG
+# * move cp to middle as aoa gets larger (middle at 90, 1/4 at 45)
+
 import pygame
 from pygame.locals import (
     RLEACCEL,
     K_ESCAPE,
+    K_SPACE,
+    K_RIGHT,
+    K_LEFT,
     KEYDOWN,
     QUIT,
 )
 
 from aerodynamics.simulator import Simulator
-from game.kite.point_kite import PointKite
 from game.kite.box_kite import BoxKite
 from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
-
-USE_BOX_KITE = True
 
 
 class Kite(pygame.sprite.Sprite):
@@ -29,11 +33,7 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        if USE_BOX_KITE:
-            self.kite = BoxKite(10, .9, .35, .2, 1.1, 1)
-        else:
-            self.kite = PointKite()
-
+        self.kite = BoxKite(10, .9, .35, .2, 1.1, 1)
         self.dead = False
 
         projector.center_x(self.kite.pos())
@@ -76,6 +76,17 @@ def run_game():
                     running = False
             elif event.type == QUIT or event.type == GAME_OVER:
                 running = False
+
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[K_SPACE]:
+            kite.kite.cut_string()
+            simulator.atmosphere.wind_speed = Vector2D(0, 0)
+        if pressed_keys[K_RIGHT]:
+            simulator.atmosphere.wind_speed = \
+                    simulator.atmosphere.wind_speed.add(Vector2D(-1, 0))
+        if pressed_keys[K_LEFT]:
+            simulator.atmosphere.wind_speed = \
+                    simulator.atmosphere.wind_speed.add(Vector2D(1, 0))
 
         if not running:
             break
@@ -122,6 +133,7 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(kite)
 
 simulator = Simulator()
+simulator.atmosphere.wind_speed = Vector2D(-5, 0)
 simulator.register(kite.kite)
 
 clouds = pygame.sprite.Group()

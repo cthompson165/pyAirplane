@@ -16,6 +16,9 @@ class Simulator:
 
     def step(self, time):
         for rigid_body in self._rigid_bodies:
+
+            rigid_body._state.wind_speed = self.atmosphere.wind_speed
+
             ''' Apply forces and update state '''
             rigid_body._state = self._integrator.integrate(
                 rigid_body, time, self._calculate_change)

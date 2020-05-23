@@ -5,8 +5,8 @@ from aerodynamics.airplane import Airplane
 
 
 class SimplePlane(Airplane):
-    def __init__(self, pos, vel):
-        state = State(pos, vel, Angle(0), 0)
+    def __init__(self, pos, velocity):
+        state = State(pos, velocity, Angle(0), 0)
         Airplane.__init__(self, state, self._mass(),
                           self._mass_moment_of_inertia())
 
@@ -17,7 +17,7 @@ class SimplePlane(Airplane):
         raise NotImplementedError()
 
     def calculate_forces(self, state, atmosphere):
-        force_vectors = self.get_force_vectors(self._mass, state.vel)
+        force_vectors = self.get_force_vectors(self._mass, state.airspeed())
         forces = []
         for force_vector in force_vectors:
             forces.append(Force(Force.Source.other, "any", self.cg(),

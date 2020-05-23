@@ -15,7 +15,7 @@ from pygame.locals import (
 
 from bomber import Bomber
 from util.vector_2d import Vector2D
-from physics.simulator import Simulator
+from aerodynamics.simulator import Simulator
 from projector import Projector
 
 

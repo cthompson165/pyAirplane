@@ -56,7 +56,7 @@ class Airplane(RigidBody):
         forces.append(gravity)
         return forces
 
-    def calculate_forces(self, state):
+    def calculate_forces(self, state, atmosphere):
         local_velocity = RigidBody.get_local_velocity(state)
         local_forces = self.caculate_local_forces(
             local_velocity, state.theta_vel)

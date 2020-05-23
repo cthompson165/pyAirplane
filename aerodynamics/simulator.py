@@ -1,5 +1,6 @@
 from util.vector_2d import Vector2D
 from physics.integrator import EulerIntegrator
+from physics.atmosphere import Atmosphere
 
 
 class Simulator:
@@ -7,6 +8,7 @@ class Simulator:
     def __init__(self):
         self._rigid_bodies = []
         self._integrator = EulerIntegrator()
+        self.atmosphere = Atmosphere()
 
     def register(self, rigid_body):
         # TODO - make this a keyed collection and add deregister
@@ -32,7 +34,7 @@ class Simulator:
 
     def _calculate_change(self, rigid_body, state):
 
-        forces = rigid_body.calculate_forces(state)
+        forces = rigid_body.calculate_forces(state, self.atmosphere)
 
         [acceleration, theta_acceleration] = \
             Simulator._calculate_acceleration(

@@ -6,12 +6,12 @@ from pygame.locals import (
     QUIT,
 )
 
+from aerodynamics.simulator import Simulator
 from game.kite.point_kite import PointKite
 from game.kite.box_kite import BoxKite
 from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
-from physics.simulator import Simulator
 from projector import Projector
 
 USE_BOX_KITE = True

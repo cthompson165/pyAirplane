@@ -16,7 +16,7 @@ class SimplePlane(Airplane):
     def get_force_vectors(self, velocity):
         raise NotImplementedError()
 
-    def calculate_forces(self, state):
+    def calculate_forces(self, state, atmosphere):
         force_vectors = self.get_force_vectors(self._mass, state.vel)
         forces = []
         for force_vector in force_vectors:

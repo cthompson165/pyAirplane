@@ -19,7 +19,7 @@ class RigidBody:
     def current_state(self):
         return self._state.copy()
 
-    def calculate_forces(self, state):
+    def calculate_forces(self, state, atmosphere):
         raise NotImplementedError()
 
     @staticmethod

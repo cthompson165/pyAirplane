@@ -80,7 +80,7 @@ class BoxKite(RigidBody):
             global_forces.append(local_force.rotate(state.theta))
         return global_forces
 
-    def calculate_forces(self, state):
+    def calculate_forces(self, state, atmosphere):
 
         wind_speed = Vector2D(5, 0)
         wind_state = State(

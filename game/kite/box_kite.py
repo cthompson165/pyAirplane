@@ -8,11 +8,13 @@ from game.kite.bridle import Bridle
 
 
 class BoxKite(RigidBody):
-    def __init__(self, string_length, mass, length, width, cell_length,
+    def __init__(self, string_length, length, width, cell_length,
                  bridle_length, knot_length):
 
+        mass = self.calculate_mass(length, width, cell_length, cell_length)
+
         state = State(Vector2D(-string_length, 1),
-                      Vector2D(0, 0), Angle(80), 0)
+                      Vector2D(0, 0), Angle(20), 0)
 
         self.string_length = string_length
 
@@ -52,6 +54,18 @@ class BoxKite(RigidBody):
                     angular_velocity))
         return local_forces
 
+    def calculate_mass(self, length, width, cell_length1, cell_length2):
+        dowel_weight = .00216  # kg/m
+        plastic_weight = .004752  # kg/m2
+
+        cell_1_weight = cell_length1 * width * 4 * plastic_weight
+        cell_2_weight = cell_length2 * width * 4 * plastic_weight
+        stick_weight = dowel_weight * length * 4
+        cross_piece_weight = dowel_weight * width * 4
+
+        return cell_1_weight + cell_2_weight + \
+            stick_weight + cross_piece_weight
+
     def calculate_global_forces(self, state):
         forces = []
         gravity = Force(Force.Source.gravity,
@@ -68,7 +82,7 @@ class BoxKite(RigidBody):
 
     def calculate_forces(self, state):
 
-        wind_speed = Vector2D(3, 0)
+        wind_speed = Vector2D(5, 0)
         wind_state = State(
             state.pos, state.vel.add(wind_speed),
             state.theta, state.theta_vel)

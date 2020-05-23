@@ -13,7 +13,7 @@ class Cell(Surface):
         area = self.calculate_area(span, length)
         aspect_ratio = self.calculate_aspect_ratio(span, area)
 
-        lift_curve = Naca63006EmpiricalLift()
+        lift_curve = Naca63006EmpiricalLift(aspect_ratio)
         drag_curve = FlatPlateDrag(aspect_ratio)
 
         aerodynamic_center = Vector2D(position.x - (length / 4.0), position.y)

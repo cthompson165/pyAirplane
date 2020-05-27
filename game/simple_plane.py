@@ -1,4 +1,5 @@
 from util.angle import Angle
+from util.vector_2d import Vector2D
 from physics.state import State
 from physics.force import Force
 from aerodynamics.airplane import Airplane
@@ -20,8 +21,10 @@ class SimplePlane(Airplane):
         force_vectors = self.get_force_vectors(self._mass, state.airspeed())
         forces = []
         for force_vector in force_vectors:
-            forces.append(Force(Force.Source.other, "any", self.cg(),
-                                force_vector))
+            forces.append(Force(
+                Force.Source.other, "any",
+                self.cg().add(Vector2D(-40, 0)),
+                force_vector))
 
         return forces
 

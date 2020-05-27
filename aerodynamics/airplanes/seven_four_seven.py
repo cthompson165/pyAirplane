@@ -43,10 +43,14 @@ class SevenFourSeven(Airplane):
         # don't have yaw forces (or a 3rd axis) to put engines out on wings
         # so they all go at cg
         self._engines = []
-        self._engines.append(Engine("test1", self.cg(), Angle(0), 0, 275000))
-        self._engines.append(Engine("test2", self.cg(), Angle(0), 0, 275000))
-        self._engines.append(Engine("test3", self.cg(), Angle(0), 0, 275000))
-        self._engines.append(Engine("test4", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(
+            Engine("engine 1", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(
+            Engine("engine 2", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(
+            Engine("engine 3", self.cg(), Angle(0), 0, 275000))
+        self._engines.append(
+            Engine("engine 4", self.cg(), Angle(0), 0, 275000))
 
     def apply_pitch_control(self, percent):
         self._horizontal_stabilizer.angle = \
@@ -61,7 +65,7 @@ class SevenFourSeven(Airplane):
         # radius = 4.5
         # cylinder
         # 1/12 * mass * length^2 + 1/4 * mass * radius^2
-        return 1000000  # 112875928
+        return 112875928
 
     def surfaces(self):
         return self._surfaces

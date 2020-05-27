@@ -5,9 +5,13 @@ class RigidBody:
         self._state = state
         self._mass = mass
         self._mass_moment_of_inertia = mass_moment_of_inertia
+        self.body = None
 
     def mass(self):
         return self._mass
+
+    def moment(self):
+        return self._mass_moment_of_inertia
 
     def pos(self):
         return self._state.pos.copy()

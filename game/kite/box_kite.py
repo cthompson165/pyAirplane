@@ -3,6 +3,7 @@ from util.vector_2d import Vector2D
 from physics.state import State
 from physics.force import Force
 from physics.rigid_body import RigidBody
+from physics.point import Point
 from game.kite.cell import Cell
 from game.kite.bridle import Bridle
 
@@ -22,28 +23,29 @@ class BoxKite(RigidBody):
 
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
-        # get positions relative to
+        # get positions relative to cg
         bottom_back = Vector2D(-length / 2.0, -width / 2.0)
         bridle = Bridle(bridle_length, knot_length, length)
         bridle_position = bottom_back.add(bridle.get_position())
+        self.bridle_point = Point(bridle_position)
         front_surface_position = Vector2D(bottom_back.x + length, 0)
         back_surface_position = Vector2D(bottom_back.x + cell_length, 0)
 
         # adjust all positions so bridle position is at 0
         # to make torque calculations easier
         self.front_cell = Cell(
-            "front", front_surface_position.subtract(bridle_position),
+            "front", front_surface_position,
             cell_length, width)
 
         self.back_cell = Cell(
-            "back", back_surface_position.subtract(bridle_position),
+            "back", back_surface_position,
             cell_length, width)
 
         self._surfaces = []
         self._surfaces.append(self.front_cell)
         self._surfaces.append(self.back_cell)
 
-        self.kite_cg = Vector2D(0, 0).subtract(bridle_position)
+        self.kite_cg = Vector2D(0, 0)
 
         self.on_string = True
 
@@ -100,7 +102,8 @@ class BoxKite(RigidBody):
             force_sum = self.sum_forces(forces)
             string_force = self.calculate_string_force(state, force_sum)
             forces.append(Force(
-                Force.Source.other, "String", Vector2D(0, 0), string_force))
+                Force.Source.other, "String",
+                self.bridle_point.position, string_force))
 
         '''
         print("FORCES:")
@@ -110,7 +113,7 @@ class BoxKite(RigidBody):
         '''
 
         print("Orientation: " + str(round(state.theta, 2)))
-        # print("Height: " + str(round(state.pos.y, 2)))
+        # print("Height: " + str(round(bridle_position.y, 2)))
         print("Airspeed: " + str(round(state.airspeed(), 2)))
 
         return forces
@@ -126,33 +129,40 @@ class BoxKite(RigidBody):
 
     def calculate_string_force(self, state, other_forces_sum):
 
+        # need to find velocity relative to the string which is ground-based
+        # so use global coordinates and ground speed
+        bridle_position = state.pos.add(self.bridle_point.position)
+        bridle_velocity = self.bridle_point.total_velocity(
+            state.ground_speed(),
+            state.theta_vel)
+
         alpha = 1
         beta = 1
 
-        distance = state.pos.magnitude()
+        distance = bridle_position.magnitude()
         if distance < (self.string_length - 1):
             # TODO - how small a number under string length
             # we can get away with. 1 is too big
             return Vector2D(0, 0)  # don't apply force
-        elif distance > (self.string_length + 1):
+        elif distance > (self.string_length + 3):
             self.cut_string()
             return Vector2D(0, 0)
         else:
-            N = state.pos.scale(1/distance)
+            N = bridle_position.scale(1/distance)
 
             print("distance: " + str(round(distance)))
 
-            N_dot_term = state.pos.dot(state.ground_speed()) \
-                / state.pos.dot(state.pos)
-            N_dot = state.ground_speed().subtract(state.pos.scale(N_dot_term))
+            N_dot_term = bridle_position.dot(bridle_velocity) \
+                / bridle_position.dot(bridle_position)
+            N_dot = bridle_velocity.subtract(bridle_position.scale(N_dot_term))
             N_dot = N_dot.scale(1 / distance)
 
             N_dot_N = N.dot(N)
 
             C = distance - self.string_length
-            C_dot = N.dot(state.ground_speed())
+            C_dot = N.dot(bridle_velocity)
 
-            t1 = self.mass() * N_dot.dot(state.ground_speed())
+            t1 = self.mass() * N_dot.dot(bridle_velocity)
             t2 = N.dot(other_forces_sum)
             feedback_term = self.mass() * (alpha * C + beta * C_dot)
 

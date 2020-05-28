@@ -14,7 +14,7 @@ class Simulator:
         self.space = pymunk.Space()
 
     def register(self, rigid_body):
-        # TODO - make this a keyed collection and add deregister
+
         self._rigid_bodies.append(rigid_body)
         body = pymunk.Body(rigid_body.mass(), rigid_body.moment())
         body.position = rigid_body._state.pos.array()
@@ -22,6 +22,9 @@ class Simulator:
         poly = pymunk.Poly.create_box(body)
         rigid_body.body = body
         self.space.add(body, poly)
+
+    def register_pymunk(self, pymunk_body, joint):
+        self.space.add(pymunk_body, joint)
 
     def step(self, time):
         for rigid_body in self._rigid_bodies:

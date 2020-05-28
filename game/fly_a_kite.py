@@ -19,6 +19,7 @@ from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
+import pymunk
 
 
 class Kite(pygame.sprite.Sprite):
@@ -33,7 +34,7 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.kite = BoxKite(10, .9, .35, .2, 1.1, 1)
+        self.kite = BoxKite(10, .9, .35, .2, 1.2, .9)
         self.dead = False
 
         projector.center_x(self.kite.pos())
@@ -98,6 +99,12 @@ def run_game():
                          (0, SCREEN_HEIGHT - GROUND_HEIGHT,
                           SCREEN_WIDTH, GROUND_HEIGHT))
 
+        origin = projector.project(Vector2D(0, 0))
+
+        pygame.draw.circle(
+            screen, Colors.RED,
+            (int(origin.x), int(origin.y)), 5, 3)
+
         explosions.update()
         for explosion in explosions:
             screen.blit(explosion.image, explosion.rect)
@@ -135,6 +142,22 @@ all_sprites.add(kite)
 simulator = Simulator()
 simulator.atmosphere.wind_speed = Vector2D(-5, 0)
 simulator.register(kite.kite)
+
+pilot = pymunk.Body(body_type=pymunk.Body.STATIC)  # 1
+pilot.position = (0, 0)
+
+string = pymunk.SlideJoint(
+    kite.kite.body, pilot,
+    kite.kite.bridle_position.array(),
+    (0, 0), 0,
+    kite.kite.string_length)
+
+'''string = pymunk.PinJoint(
+    kite.kite.body, pilot,
+    kite.kite.bridle_position.array(),
+    (0, 0))'''
+
+simulator.register_pymunk(pilot, string)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

@@ -6,6 +6,7 @@ from physics.rigid_body import RigidBody
 from physics.point import Point
 from game.kite.cell import Cell
 from game.kite.bridle import Bridle
+import math
 
 
 class BoxKite(RigidBody):
@@ -13,9 +14,31 @@ class BoxKite(RigidBody):
                  bridle_length, knot_length):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
+        initial_orientation = Angle(20)
 
-        state = State(Vector2D(-string_length, 1),
-                      Vector2D(0, 0), Angle(20), 0)
+        # get positions relative to cg
+        bottom_back = Vector2D(-length / 2.0, -width / 2.0)
+        bridle = Bridle(bridle_length, knot_length, length)
+        self.bridle_position = bottom_back.add(bridle.get_position())
+        self.bridle_point = Point(self.bridle_position)
+        front_surface_position = Vector2D(bottom_back.x + length, 0)
+        back_surface_position = Vector2D(bottom_back.x + cell_length, 0)
+
+        initial_angle = math.asin(1/string_length)
+        initial_x = math.cos(initial_angle) * string_length
+
+        initial_bridle_global = Vector2D(-initial_x, 1)
+        print("Initial: " + str(round(initial_bridle_global.magnitude(), 2)))
+
+        rotated_bridle_point = self.bridle_position.rotate(initial_orientation)
+
+        initial_pos = initial_bridle_global.subtract(rotated_bridle_point)
+
+        print("Bridle distance: " + str(round(initial_pos.add(
+            self.bridle_position.rotate(initial_orientation)).magnitude(), 3)))
+
+        state = State(initial_pos,
+                      Vector2D(0, 0), initial_orientation, 0)
 
         self.string_length = string_length
 
@@ -23,16 +46,6 @@ class BoxKite(RigidBody):
 
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
-        # get positions relative to cg
-        bottom_back = Vector2D(-length / 2.0, -width / 2.0)
-        bridle = Bridle(bridle_length, knot_length, length)
-        bridle_position = bottom_back.add(bridle.get_position())
-        self.bridle_point = Point(bridle_position)
-        front_surface_position = Vector2D(bottom_back.x + length, 0)
-        back_surface_position = Vector2D(bottom_back.x + cell_length, 0)
-
-        # adjust all positions so bridle position is at 0
-        # to make torque calculations easier
         self.front_cell = Cell(
             "front", front_surface_position,
             cell_length, width)
@@ -98,23 +111,27 @@ class BoxKite(RigidBody):
         forces = self.convert_local_forces_to_global(state, local_forces)
         forces.extend(self.calculate_global_forces(state))
 
+        '''
         if self.on_string:
             force_sum = self.sum_forces(forces)
             string_force = self.calculate_string_force(state, force_sum)
             forces.append(Force(
                 Force.Source.other, "String",
                 self.bridle_point.position, string_force))
+        '''
+        # print("Orientation: " + str(round(state.theta, 2)))
+        print("Height: " + str(round(state.pos.y, 2)))
+        print("Bridle distance: " + str(round(state.pos.add(
+            self.bridle_position.rotate(state.theta)).magnitude(), 3)))
+        # print("Airspeed: " + str(round(state.airspeed(), 2)))
 
         '''
         print("FORCES:")
         for force in forces:
             print("\t" + force.name + " " +
-                  str(round(force.vector.magnitude(), 2)))
+                  str(round(force.vector, 2)))
         '''
-
-        print("Orientation: " + str(round(state.theta, 2)))
-        # print("Height: " + str(round(bridle_position.y, 2)))
-        print("Airspeed: " + str(round(state.airspeed(), 2)))
+        print("------")
 
         return forces
 
@@ -131,10 +148,8 @@ class BoxKite(RigidBody):
 
         # need to find velocity relative to the string which is ground-based
         # so use global coordinates and ground speed
-        bridle_position = state.pos.add(self.bridle_point.position)
-        bridle_velocity = self.bridle_point.total_velocity(
-            state.ground_speed(),
-            state.theta_vel)
+        bridle_position = state.pos
+        bridle_velocity = state.ground_speed()
 
         alpha = 1
         beta = 1

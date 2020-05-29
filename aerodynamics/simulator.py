@@ -38,19 +38,27 @@ class Simulator:
             state.wind_speed = self.atmosphere.wind_speed
 
             local_airspeed = Simulator.get_local_airspeed(state)
-            local_forces = rigid_body.calculate_local_forces(
+            surface_forces = rigid_body.calculate_surface_forces(
                 local_airspeed, state.theta_vel)
 
-            for local_force in local_forces:
-                body.apply_force_at_local_point(
-                    local_force.vector.array(),
-                    local_force.pos.array())
+            if surface_forces is not None:
+                for surface_force in surface_forces:
+                    body.apply_force_at_local_point(
+                        surface_force.vector.array(),
+                        surface_force.pos.array())
 
-            global_forces = rigid_body.calculate_global_forces(state)
-            for global_force in global_forces:
+            thrust_forces = rigid_body.calculate_thrust_forces()
+            if thrust_forces is not None:
+                for thrust_force in thrust_forces:
+                    body.apply_force_at_local_point(
+                        thrust_force.vector.array(),
+                        thrust_force.pos.array())
+
+            weight_force = rigid_body.calculate_weight_force(state)
+            if weight_force is not None:
                 body.apply_force_at_world_point(
-                    global_force.vector.array(),
-                    global_force.pos.array())
+                    weight_force.vector.array(),
+                    weight_force.pos.array())
 
         self.space.step(time)
 

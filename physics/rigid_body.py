@@ -26,24 +26,25 @@ class RigidBody:
     def current_state(self):
         return self._state.copy()
 
-    def calculate_local_forces(self, local_velocity, angular_velocity):
-        local_forces = []
+    def calculate_surface_forces(self, local_velocity, angular_velocity):
+        surface_forces = []
 
         if self.surfaces() is not None:
             for surface in self.surfaces():
-                local_forces.extend(
+                surface_forces.extend(
                     surface.calculate_forces(
                         local_velocity,
                         angular_velocity))
 
-        return local_forces
+        return surface_forces
 
-    def calculate_global_forces(self, state):
-        forces = []
-        gravity = Force(Force.Source.gravity,
-                        "gravity", state.pos, self.weight())
-        forces.append(gravity)
-        return forces
+    def calculate_thrust_forces(self):
+        return None
+
+    def calculate_weight_force(self, state):
+        weight = Force(Force.Source.gravity,
+                       "weight", state.pos, self.weight())
+        return weight
 
     def weight(self):
         return Vector2D(0, -9.8 * self.mass())

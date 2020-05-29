@@ -26,17 +26,31 @@ class Simulator:
     def register_pymunk(self, pymunk_body, joint):
         self.space.add(pymunk_body, joint)
 
+    @staticmethod
+    def get_local_airspeed(state):
+        return state.airspeed().rotate(state.theta.times_constant(-1))
+
     def step(self, time):
         for rigid_body in self._rigid_bodies:
+
             body = rigid_body.body
             state = rigid_body._state
             state.wind_speed = self.atmosphere.wind_speed
-            forces = rigid_body.calculate_forces(state, self.atmosphere)
-            for force in forces:
-                world_pos = force.pos.add(state.pos)
+
+            local_airspeed = Simulator.get_local_airspeed(state)
+            local_forces = rigid_body.calculate_local_forces(
+                local_airspeed, state.theta_vel)
+
+            for local_force in local_forces:
+                body.apply_force_at_local_point(
+                    local_force.vector.array(),
+                    local_force.pos.array())
+
+            global_forces = rigid_body.calculate_global_forces(state)
+            for global_force in global_forces:
                 body.apply_force_at_world_point(
-                    force.vector.array(),
-                    world_pos.array())
+                    global_force.vector.array(),
+                    global_force.pos.array())
 
         self.space.step(time)
 

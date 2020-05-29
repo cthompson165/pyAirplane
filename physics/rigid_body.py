@@ -1,3 +1,7 @@
+from util.vector_2d import Vector2D
+from physics.force import Force
+
+
 class RigidBody:
     ''' Calculates state based on forces '''
 
@@ -22,9 +26,24 @@ class RigidBody:
     def current_state(self):
         return self._state.copy()
 
-    def calculate_forces(self, state, atmosphere):
-        raise NotImplementedError()
+    def calculate_local_forces(self, local_velocity, angular_velocity):
+        local_forces = []
 
-    @staticmethod
-    def get_local_airspeed(state):
-        return state.airspeed().rotate(state.theta.times_constant(-1))
+        if self.surfaces() is not None:
+            for surface in self.surfaces():
+                local_forces.extend(
+                    surface.calculate_forces(
+                        local_velocity,
+                        angular_velocity))
+
+        return local_forces
+
+    def calculate_global_forces(self, state):
+        forces = []
+        gravity = Force(Force.Source.gravity,
+                        "gravity", state.pos, self.weight())
+        forces.append(gravity)
+        return forces
+
+    def weight(self):
+        return Vector2D(0, -9.8 * self.mass())

@@ -18,14 +18,12 @@ class Airplane(RigidBody):
             for engine in self.engines():
                 engine.set_throttle(percent)
 
-    def calculate_local_forces(self, local_velocity, angular_velocity):
-        local_forces = super().calculate_local_forces(
-            local_velocity, angular_velocity)
-
+    def calculate_thrust_forces(self):
+        thrust_forces = []
         if self.engines() is not None:
             for engine in self.engines():
-                local_forces.append(engine.get_thrust())
-        return local_forces
+                thrust_forces.append(engine.get_thrust())
+        return thrust_forces
 
     def engines(self):
         raise NotImplementedError

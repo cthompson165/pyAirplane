@@ -34,7 +34,7 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.kite = BoxKite(10, .9, .35, .2, 1.2, .9)
+        self.kite = BoxKite(10, .7, .35, .175, .7875, .525)
         self.dead = False
 
         projector.center_x(self.kite.pos())
@@ -80,8 +80,11 @@ def run_game():
 
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_SPACE]:
-            kite.kite.cut_string()
-            simulator.atmosphere.wind_speed = Vector2D(0, 0)
+            global string
+            if string is not None:
+                simulator.space.remove(string)
+                # simulator.atmosphere.wind_speed = Vector2D(0, 0)
+                string = None
         if pressed_keys[K_RIGHT]:
             simulator.atmosphere.wind_speed = \
                     simulator.atmosphere.wind_speed.add(Vector2D(-1, 0))
@@ -116,7 +119,7 @@ def run_game():
 
         # update the display and clock
         pygame.display.flip()
-        time = clock.tick(30)
+        time = clock.tick(50)
 
 
 pygame.init()
@@ -151,13 +154,13 @@ string = pymunk.SlideJoint(
     kite.kite.bridle_position.array(),
     (0, 0), 0,
     kite.kite.string_length)
-
-'''string = pymunk.PinJoint(
+'''
+string = pymunk.PinJoint(
     kite.kite.body, pilot,
     kite.kite.bridle_position.array(),
-    (0, 0))'''
-
-simulator.register_pymunk(pilot, string)
+    (0, 0))
+'''
+simulator.space.add(pilot, string)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

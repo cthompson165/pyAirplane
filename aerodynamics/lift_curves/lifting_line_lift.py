@@ -1,5 +1,6 @@
 import math
 from aerodynamics.lift_curves.linear_lift import LinearLift
+from util.angle import Angle
 
 
 class LiftingLineLift(LinearLift):
@@ -17,3 +18,6 @@ class LiftingLineLift(LinearLift):
 
     def calculate_3d_lift_slope(aspect_ratio, lift_slope2d):
         return lift_slope2d * (aspect_ratio / (2 + aspect_ratio))
+
+    def stall_angle(self):
+        return Angle(20)  # TODO

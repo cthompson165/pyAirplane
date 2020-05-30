@@ -2,17 +2,50 @@ import unittest
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from physics.force import Force
+from physics.state import State
+from aerodynamics.simulator import Simulator
 from aerodynamics.surface import Surface
 from aerodynamics.lift_curves.linear_lift import LinearLift
 from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
+from aerodynamics.lift_curves.flat_plate_empirical_lift \
+    import FlatPlateEmpiricalLift
+from aerodynamics.drag_curves.flat_plate_drag import FlatPlateDrag
 from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
 
 
 class TestSurface(unittest.TestCase):
 
     def get_surface(self, relative_degrees):
-        return Surface("test", Vector2D(0, 0), Angle(relative_degrees),
+        return Surface("test", Vector2D(0, 0), 0, Angle(relative_degrees),
                        10, None, None)
+
+    def test_lift_unit_leading_edge_positive_aoa(self):
+        velocity = Vector2D(1, -1)
+        surface = self.get_surface(0)
+        lift_unit = Surface.get_lift_unit(surface.aoa(velocity), velocity)
+        self.assertAlmostEqual(.7071, lift_unit.x, 4)
+        self.assertAlmostEqual(.7071, lift_unit.y, 4)
+
+    def test_lift_unit_leading_edge_negative_aoa(self):
+        velocity = Vector2D(1, 1)
+        surface = self.get_surface(0)
+        lift_unit = Surface.get_lift_unit(surface.aoa(velocity), velocity)
+        self.assertAlmostEqual(-.7071, lift_unit.x, 4)
+        self.assertAlmostEqual(.7071, lift_unit.y, 4)
+
+    def test_lift_unit_trailing_edge_positive_aoa(self):
+        velocity = Vector2D(-1, -1)
+        surface = self.get_surface(0)
+        lift_unit = Surface.get_lift_unit(surface.aoa(velocity), velocity)
+        self.assertAlmostEqual(-.7071, lift_unit.x, 4)
+        self.assertAlmostEqual(.7071, lift_unit.y, 4)
+
+    def test_lift_unit_trailing_edge_negative_aoa(self):
+        velocity = Vector2D(-1, 1)
+        surface = self.get_surface(0)
+        lift_unit = Surface.get_lift_unit(surface.aoa(velocity), velocity)
+        self.assertAlmostEqual(.7071, lift_unit.x, 4)
+        self.assertAlmostEqual(.7071, lift_unit.y, 4)
 
     def test_surface_aoa(self):
         surface = self.get_surface(0)
@@ -50,7 +83,7 @@ class TestSurface(unittest.TestCase):
         wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
         wing_drag_curve = LiftingLineDrag(6.98, 0.0305, 0.75)
         return Surface(
-            "boeing wing", Vector2D(0, 0), Angle(2.4), 510.97,
+            "boeing wing", Vector2D(0, 0), 0, Angle(2.4), 510.97,
             wing_lift_curve, wing_drag_curve)
 
     def get_cessna_wing(self):
@@ -58,15 +91,23 @@ class TestSurface(unittest.TestCase):
         wing_lift_curve = LiftingLineLift(7.37)
         wing_drag_curve = LiftingLineDrag(7.37, 0.027, 0.75)
         return Surface(
-            "cessna 172 wing", Vector2D(0, 0), Angle(0), 16.2,
+            "cessna 172 wing", Vector2D(0, 0), 0, Angle(0), 16.2,
             wing_lift_curve, wing_drag_curve)
 
     def get_lift(self, velocity, surface, angle):
-
-        forces = surface.calculate_forces(velocity.rotate(angle), 0)
+        state = State(Vector2D(0, 0), velocity, angle, 0)
+        local_velocity = Simulator.get_local_airspeed(state)
+        forces = surface.calculate_forces(local_velocity, 0)
         lift = [force for force in forces if force.source == Force.Source.lift]
         if len(lift) == 1:
-            return lift[0].vector.magnitude()
+            return lift[0].vector
+        else:
+            return None
+
+    def get_lift_mag(self, velocity, surface, angle):
+        vec = self.get_lift(velocity, surface, angle)
+        if vec is not None:
+            return vec.magnitude()
         else:
             return None
 
@@ -83,7 +124,7 @@ class TestSurface(unittest.TestCase):
 
         velocity = Vector2D(265.5, 0)
         surface = self.get_boeing_wing()
-        lift = self.get_lift(velocity, surface, Angle(0))
+        lift = self.get_lift_mag(velocity, surface, Angle(0))
 
         self.assertAlmostEqual(2836530, lift, 0)
 
@@ -92,13 +133,13 @@ class TestSurface(unittest.TestCase):
         velocity = Vector2D(100, 0)
         wing = self.get_cessna_wing()
 
-        lift = self.get_lift(velocity, wing, Angle(0))
+        lift = self.get_lift_mag(velocity, wing, Angle(0))
         self.assertAlmostEqual(0, lift, 4, "0")
 
-        lift = self.get_lift(velocity, wing, Angle(1))
+        lift = self.get_lift_mag(velocity, wing, Angle(1))
         self.assertAlmostEqual(2114.655024, lift, 4, "1")
 
-        lift = self.get_lift(velocity, wing, Angle(7))
+        lift = self.get_lift_mag(velocity, wing, Angle(7))
         self.assertAlmostEqual(14802.58517, lift, 4, "7")
 
     def test_cessna_drag(self):
@@ -114,6 +155,51 @@ class TestSurface(unittest.TestCase):
 
         drag = self.get_drag(velocity, wing, Angle(7))
         self.assertAlmostEqual(1176.62500, drag, 4, "7")
+
+    ############
+    # FLAT PLATE
+    ############
+
+    def get_flat_plate(self):
+        wing_lift_curve = FlatPlateEmpiricalLift(0)
+        wing_drag_curve = FlatPlateDrag(0)
+        return Surface("plate", Vector2D(0, 0), 0, Angle(0),
+                       10, wing_lift_curve, wing_drag_curve)
+
+    def test_flat_plate_lift(self):
+        velocity = Vector2D(5, 0)
+        wing = self.get_flat_plate()
+        lift = self.get_lift(velocity, wing, Angle(10))
+        self.assertAlmostEqual(6.5697617, lift.x, 4)
+        self.assertAlmostEqual(37.2589703, lift.y, 4)
+
+    def test_flat_plate_lift_neg(self):
+        velocity = Vector2D(5, 0)
+        wing = self.get_flat_plate()
+        lift = self.get_lift(velocity, wing, Angle(-10))
+        self.assertAlmostEqual(6.5697617, lift.x, 4)
+        self.assertAlmostEqual(-37.2589703, lift.y, 4)
+
+    def test_flat_plate_lift_neg_vert(self):
+        velocity = Vector2D(5, 0)
+        wing = self.get_flat_plate()
+        lift = self.get_lift(velocity, wing, Angle(-90))
+        self.assertAlmostEqual(0, lift.x, 4)
+        self.assertAlmostEqual(0, lift.y, 4)
+
+    def test_flat_plate_lift_neg_backward(self):
+        velocity = Vector2D(5, 0)
+        wing = self.get_flat_plate()
+        lift = self.get_lift(velocity, wing, Angle(-170))
+        self.assertAlmostEqual(-6.5697617, lift.x, 4)
+        self.assertAlmostEqual(-37.2589703, lift.y, 4)
+
+    def test_flat_plate_lift_pos_backward(self):
+        velocity = Vector2D(5, 0)
+        wing = self.get_flat_plate()
+        lift = self.get_lift(velocity, wing, Angle(170))
+        self.assertAlmostEqual(-6.5697617, lift.x, 4)
+        self.assertAlmostEqual(37.2589703, lift.y, 4)
 
 
 # Some code to make the tests actually run.

@@ -1,4 +1,5 @@
 from aerodynamics.lift_curve import LiftCurve
+from util.angle import Angle
 
 
 class LinearLift(LiftCurve):
@@ -11,3 +12,6 @@ class LinearLift(LiftCurve):
 
     def calculate_lift_coefficient(self, aoa):
         return self.CL0 + self.lift_slope_3d * aoa.relative_radians()
+
+    def stall_angle(self):
+        return Angle(20)  # TODO

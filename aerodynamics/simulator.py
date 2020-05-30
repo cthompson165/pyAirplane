@@ -23,9 +23,6 @@ class Simulator:
         rigid_body.body = body
         self.space.add(body, poly)
 
-    def register_pymunk(self, pymunk_body, joint):
-        self.space.add(pymunk_body, joint)
-
     @staticmethod
     def get_local_airspeed(state):
         return state.airspeed().rotate(state.theta.times_constant(-1))

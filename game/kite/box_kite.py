@@ -3,6 +3,7 @@ from util.vector_2d import Vector2D
 from physics.state import State
 from physics.rigid_body import RigidBody
 from physics.point import Point
+# from physics.force import Force
 from game.kite.cell import Cell
 from game.kite.bridle import Bridle
 import math
@@ -13,6 +14,7 @@ class BoxKite(RigidBody):
                  bridle_length, knot_length):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
+        print (mass)
         initial_orientation = Angle(20)
 
         # get positions relative to cg
@@ -57,22 +59,76 @@ class BoxKite(RigidBody):
         self._surfaces.append(self.front_cell)
         self._surfaces.append(self.back_cell)
 
-        self.on_string = True
+        self.nasa(width * 100)
 
     def surfaces(self):
         return self._surfaces
+
+    '''
+    def calculate_surface_forces(self, local_velocity, angular_velocity):
+        surface_forces = super().calculate_surface_forces(
+            local_velocity, angular_velocity)
+        total = Vector2D(0, 0)
+        for force in surface_forces:
+            total = total.add(force.vector)
+        print("Aerodynamic force: "
+              + str(round(total, 2)) + ": "
+              + str(round(total.magnitude(), 2)))
+
+        return surface_forces
+    '''
+
+    def calculate_thrust_forces(self):
+        # print(str(self._state.theta))
+        return None
+
+    def nasa(self, w1):
+
+        h1 = .5 * w1
+        h2 = w1
+        lbrid = 2.25 * w1
+        lknot = 1.5 * w1
+
+        wtarea = .0004752  # plastic
+        wtlngs = .0216  # quarter birch dowel
+        # wttail = .0004752  # 1" plastic
+
+        # length: g/cm
+        # area: g/cm2
+
+        wtail = 0
+        ltail = 0
+
+        lkite = 2.0 * h1 + h2
+        area = 4.0 * h1 * w1
+        lengstk = 4.0 * lkite + 4.0 * w1
+        weight = area * wtarea + lengstk * wtlngs + wtail
+        cg = ((h1 + .5 * h2) * (weight - wtail) +
+              wtail * (-ltail/2.0)) / weight
+        cp = h1 + .5 * h2 + .25*h1
+        ar = w1 / h1
+        # kbase = w1 / 2.0
+
+        print("NASA:")
+        print("kite: " + str(w1) + "x" + str(lkite))
+        print("Bridle: " + str(lbrid))
+        print("Knot: " + str(lknot))
+        print("Cell length: " + str(h1))
+
+        print("cg: " + str(cg))
+        print("cp: " + str(cp))
+        print("ar: " + str(ar))
+        print("weight: " + str(weight))
 
     def calculate_mass(self, length, width, cell_length1, cell_length2):
         dowel_weight = .00216  # kg/m
         plastic_weight = .004752  # kg/m2
 
-        cell_1_weight = cell_length1 * width * 4 * plastic_weight
-        cell_2_weight = cell_length2 * width * 4 * plastic_weight
-        stick_weight = dowel_weight * length * 4
-        cross_piece_weight = dowel_weight * width * 4
+        area = (cell_length1 * width * 4 +
+                cell_length2 * width * 4)
 
-        return cell_1_weight + cell_2_weight + \
-            stick_weight + cross_piece_weight
+        cell_weight = area * plastic_weight
+        stick_length = length * 4 + width * 4
+        stick_weight = stick_length * dowel_weight
 
-    def cut_string(self):
-        self.on_string = False
+        return cell_weight + stick_weight

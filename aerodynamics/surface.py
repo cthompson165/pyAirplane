@@ -1,3 +1,4 @@
+from aerodynamics.cp import CP
 from physics.force import Force
 from physics.point import Point
 from util.angle import Angle
@@ -11,7 +12,7 @@ class Surface:
     # is approximately 0.30267 kg/m3
     air_density = 0.30267
 
-    def __init__(self, name, relative_pos,
+    def __init__(self, name, relative_pos, chord_length,
                  angle, area, lift_curve, drag_curve):
 
         self._point = Point(relative_pos)
@@ -23,8 +24,14 @@ class Surface:
         self.lift_curve = lift_curve
         self.drag_curve = drag_curve
 
-    def aoa(self, velocity):
+        if lift_curve is not None:
+            stall_angle = lift_curve.stall_angle()
+        else:
+            stall_angle = None
 
+        self.cp = CP(relative_pos, chord_length, stall_angle)
+
+    def aoa(self, velocity):
         vel_angle = velocity.angle()
         return self.angle.minus(vel_angle)
 
@@ -43,10 +50,10 @@ class Surface:
         if self.lift_curve is not None:
             CL = self.lift_curve.calculate_lift_coefficient(aoa)
             lift_mag = self.calculate_lift(CL, velocity_magnitude)
-            lift_dir = surface_velocity.rotate(Angle(90)).unit()
+            lift_dir = Surface.get_lift_unit(aoa, surface_velocity)
             lift_force = lift_dir.scale(lift_mag)
             forces.append(Force(Force.Source.lift, "lift",
-                                self._point.position, lift_force))
+                                self.cp.calculate(aoa), lift_force))
 
         CD = 0
         if self.drag_curve is not None:
@@ -55,10 +62,17 @@ class Surface:
             drag_dir = surface_velocity.reverse().unit()
             drag_vector = drag_dir.scale(drag_mag)
             drag_force = Force(Force.Source.drag, "drag",
-                               self._point.position, drag_vector)
+                               self.cp.calculate(aoa), drag_vector)
             forces.append(drag_force)
 
         return forces
+
+    def get_lift_unit(aoa, surface_velocity):
+        if abs(aoa.relative_degrees()) <= 90:
+            return surface_velocity.rotate(Angle(90)).unit()
+        else:
+            # trailing edge is leading so velocity vector is reversed
+            return surface_velocity.rotate(Angle(-90)).unit()
 
     def calculate_lift(self, CL, velocity_magnitude):
         return (Surface.air_density * velocity_magnitude**2 * self.area * CL) \

@@ -9,6 +9,10 @@ class FlatPlateDrag(DragCurve):
 
     def calculate_drag_coefficient(self, aoa, CL):
         cd0 = 1.28 * math.sin(aoa.radians())
-        downwash = (CL**2) \
-            / (.7 * math.pi * self._aspect_ratio)
-        return cd0 + downwash
+
+        if self._aspect_ratio > 0:
+            downwash = (CL**2) \
+                / (.7 * math.pi * self._aspect_ratio)
+            return cd0 + downwash
+        else:
+            return cd0

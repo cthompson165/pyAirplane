@@ -4,3 +4,6 @@ class LiftCurve:
     def calculate_lift_coefficient(self, aoa):
         ''' Get CL for AoA '''
         raise NotImplementedError()
+
+    def stall_speed(self):
+        raise NotImplementedError()

@@ -24,17 +24,16 @@ class EmpiricalLift(LiftCurve):
         if aoa_degrees > 180 or aoa_degrees < -180:
             raise ValueError()
         elif aoa_degrees > 90:
-            # upside down and backward with negative aoa
+            # upside down and backward with positive aoa
             # on trailing edge
-            factor = -1
             aoa_degrees = 180 - aoa_degrees
         elif aoa_degrees < 0 and aoa_degrees >= -90:
             factor = -1
             aoa_degrees = -aoa_degrees
         elif aoa_degrees >= -180 and aoa_degrees < -90:
-            # upside down and backward with positive aoa
+            # upside down and backward with negative aoa
             # on trailing edge
-            factor = 1
+            factor = -1
             aoa_degrees = aoa_degrees + 180
 
         previous_point = self._points[0]

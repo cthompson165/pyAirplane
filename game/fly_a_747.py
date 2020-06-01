@@ -9,6 +9,8 @@ from pygame.locals import (
     K_LEFT,
     K_RIGHT,
     K_ESCAPE,
+    K_s,
+    K_p,
     KEYDOWN,
     QUIT,
 )
@@ -84,7 +86,7 @@ class Plane(pygame.sprite.Sprite):
         self.throttle_percent = max(
             0, self.throttle_percent - Plane.THROTTLE_STEP)
 
-    def control(self, pressed_keys, joystick, time):
+    def control(self, pressed_keys, joystick):
 
         if joystick is not None:
 
@@ -111,7 +113,6 @@ class Plane(pygame.sprite.Sprite):
 
         self._airplane.apply_pitch_control(self.elevator_percent)
         self._airplane.set_throttle(self.throttle_percent)
-        simulator.step(time)  # TODO - move out
 
         # print("elevator: " + str(self.elevator_percent))
         # print("throttle: " + str(self.throttle_percent))
@@ -137,6 +138,7 @@ class Plane(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
+            simulator.space.remove(plane._airplane)
 
     def get_joystick_elevator(self, joystick):
         control = joystick.get_axis(1)  # -1 to 1
@@ -215,10 +217,10 @@ def run_game():
 
     clock = pygame.time.Clock()
     running = True
-    time = 0
+    paused = False
 
     while running:
-
+        step = False
         # for loop through the event queue
         for event in pygame.event.get():
             # Check for KEYDOWN event
@@ -226,6 +228,10 @@ def run_game():
                 # If the Esc key is pressed, then exit the main loop
                 if event.key == K_ESCAPE:
                     running = False
+                if event.key == K_s:
+                    step = True
+                if event.key == K_p:
+                    paused = not paused
             # Check for QUIT event. If QUIT, then set running to false.
             elif event.type == QUIT or event.type == GAME_OVER:
                 running = False
@@ -249,23 +255,45 @@ def run_game():
 
         pressed_keys = pygame.key.get_pressed()
 
-        clouds.update()
-        for cloud in clouds:
-            screen.blit(cloud.surf, cloud.rect)
+        if step or not paused:
 
-        explosions.update()
-        for explosion in explosions:
-            screen.blit(explosion.image, explosion.rect)
+            simulator.step(1/40.0)
 
-        if not plane.dead:
-            plane.control(pressed_keys, joystick, time /
-                          1000)  # convert t to seconds
+            if not plane.dead:
+                plane.control(pressed_keys, joystick)
+
+            clouds.update()
+            for cloud in clouds:
+                screen.blit(cloud.surf, cloud.rect)
+
+            explosions.update()
+            for explosion in explosions:
+                screen.blit(explosion.image, explosion.rect)
+
             plane.update()
             screen.blit(plane.image, plane.rect)
 
-        # update the display and clock
-        pygame.display.flip()
-        time = clock.tick(30)
+            surface_forces = simulator.preview_forces
+            for force in surface_forces:
+                start_pos = projector.project(force.global_start)
+                end_pos = projector.project(force.global_end)
+
+                pygame.draw.line(
+                    screen, Colors.RED,
+                    start_pos.array(), end_pos.array(), 2)
+
+            airspeed = plane._airplane._state.airspeed()
+            pos = plane._airplane._state.pos
+            end_pos = pos.add(airspeed)
+
+            pygame.draw.line(
+                    screen, Colors.GREEN,
+                    projector.project(pos).array(),
+                    projector.project(end_pos).array(), 2)
+
+            # update the display and clock
+            pygame.display.flip()
+            clock.tick(30)
 
 
 pygame.init()

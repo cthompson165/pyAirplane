@@ -8,6 +8,8 @@ class Force:
         self.pos = pos
         self.vector = vector
         self.source = source
+        self.global_start = None
+        self.global_end = None
 
     def rotate(self, angle):
         return Force(self.source, self.name, self.pos.rotate(angle),

@@ -14,7 +14,7 @@ class BoxKite(RigidBody):
                  bridle_length, knot_length):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
-        print (mass)
+        print(mass)
         initial_orientation = Angle(20)
 
         # get positions relative to cg
@@ -63,20 +63,6 @@ class BoxKite(RigidBody):
 
     def surfaces(self):
         return self._surfaces
-
-    '''
-    def calculate_surface_forces(self, local_velocity, angular_velocity):
-        surface_forces = super().calculate_surface_forces(
-            local_velocity, angular_velocity)
-        total = Vector2D(0, 0)
-        for force in surface_forces:
-            total = total.add(force.vector)
-        print("Aerodynamic force: "
-              + str(round(total, 2)) + ": "
-              + str(round(total.magnitude(), 2)))
-
-        return surface_forces
-    '''
 
     def calculate_thrust_forces(self):
         # print(str(self._state.theta))

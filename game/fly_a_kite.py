@@ -9,6 +9,9 @@ from pygame.locals import (
     K_SPACE,
     K_RIGHT,
     K_LEFT,
+    K_s,
+    K_f,
+    K_p,
     KEYDOWN,
     QUIT,
 )
@@ -34,13 +37,10 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.kite = BoxKite(10, .7, .35, .175, .7875, .525)
+        self.kite = BoxKite(10, .7, .35, .175, .8, .55)
         self.dead = False
 
         projector.center_x(self.kite.pos())
-
-    def control(self, time):
-        simulator.step(time)  # TODO - move out
 
     def update(self):
         pos = self.kite.pos()
@@ -61,36 +61,43 @@ class Kite(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
+            simulator.space.remove(kite.kite.body)
 
 
 def run_game():
 
     clock = pygame.time.Clock()
     running = True
-    time = 0
+
+    paused = False
+    show_forces = True
 
     while running:
-
+        step = False
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     running = False
+                if event.key == K_SPACE:
+                    global string
+                    if string is not None:
+                        simulator.space.remove(string)
+                        string = None
+                if event.key == K_RIGHT:
+                    simulator.atmosphere.wind_speed = \
+                            simulator.atmosphere.wind_speed.add(
+                                Vector2D(-1, 0))
+                if event.key == K_LEFT:
+                    simulator.atmosphere.wind_speed = \
+                            simulator.atmosphere.wind_speed.add(Vector2D(1, 0))
+                if event.key == K_s:
+                    step = True
+                if event.key == K_p:
+                    paused = not paused
+                if event.key == K_f:
+                    show_forces = not show_forces
             elif event.type == QUIT or event.type == GAME_OVER:
                 running = False
-
-        pressed_keys = pygame.key.get_pressed()
-        if pressed_keys[K_SPACE]:
-            global string
-            if string is not None:
-                simulator.space.remove(string)
-                # simulator.atmosphere.wind_speed = Vector2D(0, 0)
-                string = None
-        if pressed_keys[K_RIGHT]:
-            simulator.atmosphere.wind_speed = \
-                    simulator.atmosphere.wind_speed.add(Vector2D(-1, 0))
-        if pressed_keys[K_LEFT]:
-            simulator.atmosphere.wind_speed = \
-                    simulator.atmosphere.wind_speed.add(Vector2D(1, 0))
 
         if not running:
             break
@@ -112,14 +119,34 @@ def run_game():
         for explosion in explosions:
             screen.blit(explosion.image, explosion.rect)
 
-        if not kite.dead:
-            kite.control(time / 1000)  # convert t to seconds
-            kite.update()
-            screen.blit(kite.image, kite.rect)
+        if step or not paused:
+            simulator.step(1/40)
 
-        # update the display and clock
-        pygame.display.flip()
-        time = clock.tick(50)
+            if not kite.dead:
+                kite.update()
+                screen.blit(kite.image, kite.rect)
+
+            if show_forces:
+                surface_forces = simulator.preview_forces
+                for force in surface_forces:
+                    start_pos = projector.project(force.global_start)
+                    end_pos = projector.project(force.global_end)
+
+                    pygame.draw.line(
+                        screen, Colors.RED,
+                        start_pos.array(), end_pos.array(), 2)
+
+                airspeed = kite.kite._state.airspeed()
+                pos = kite.kite._state.pos
+                end_pos = pos.add(airspeed)
+
+                pygame.draw.line(
+                        screen, Colors.GREEN,
+                        projector.project(pos).array(),
+                        projector.project(end_pos).array(), 2)
+
+            pygame.display.flip()
+            clock.tick(40)
 
 
 pygame.init()
@@ -154,12 +181,7 @@ string = pymunk.SlideJoint(
     kite.kite.bridle_position.array(),
     (0, 0), 0,
     kite.kite.string_length)
-'''
-string = pymunk.PinJoint(
-    kite.kite.body, pilot,
-    kite.kite.bridle_position.array(),
-    (0, 0))
-'''
+
 simulator.space.add(pilot, string)
 
 clouds = pygame.sprite.Group()

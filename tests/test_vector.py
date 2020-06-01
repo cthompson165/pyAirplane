@@ -59,11 +59,17 @@ class TestVector(unittest.TestCase):
         vec = Vector2D(0, -1)
         self.assertAlmostEqual(270, vec.angle().degrees())
 
-    def test_rotate(self):
+    def test_rotate_90(self):
         vec = Vector2D(1, 0)
         u_rot = vec.rotate(Angle(90)).round(2)
         expected = Vector2D(0, 1)
         self.assertTrue(expected.equals(u_rot))
+
+    def test_rotate_45(self):
+        vec = Vector2D(1, 0)
+        u_rot = vec.rotate(Angle(45))
+        self.assertAlmostEqual(0.70710678, u_rot.x)
+        self.assertAlmostEqual(0.70710678, u_rot.y)
 
     def test_unit(self):
         vec = Vector2D(-2, 1)

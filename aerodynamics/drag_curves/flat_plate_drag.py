@@ -9,6 +9,7 @@ class FlatPlateDrag(DragCurve):
 
     def calculate_drag_coefficient(self, aoa, CL):
         cd0 = 1.28 * math.sin(aoa.radians())
+        cd0 = abs(cd0)  # negative drag does bad things...
 
         if self._aspect_ratio > 0:
             downwash = (CL**2) \

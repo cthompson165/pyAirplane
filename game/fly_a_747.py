@@ -10,6 +10,7 @@ from pygame.locals import (
     K_RIGHT,
     K_ESCAPE,
     K_s,
+    K_f,
     K_p,
     KEYDOWN,
     QUIT,
@@ -138,6 +139,7 @@ class Plane(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
+            simulator.space.remove(plane._airplane.body)
 
     def get_joystick_elevator(self, joystick):
         control = joystick.get_axis(1)  # -1 to 1
@@ -217,6 +219,7 @@ def run_game():
     clock = pygame.time.Clock()
     running = True
     paused = False
+    show_forces = False
 
     while running:
         step = False
@@ -231,6 +234,8 @@ def run_game():
                     step = True
                 if event.key == K_p:
                     paused = not paused
+                if event.key == K_f:
+                    show_forces = not show_forces
             # Check for QUIT event. If QUIT, then set running to false.
             elif event.type == QUIT or event.type == GAME_OVER:
                 running = False
@@ -260,6 +265,8 @@ def run_game():
 
             if not plane.dead:
                 plane.control(pressed_keys, joystick)
+                plane.update()
+                screen.blit(plane.image, plane.rect)
 
             clouds.update()
             for cloud in clouds:
@@ -269,33 +276,19 @@ def run_game():
             for explosion in explosions:
                 screen.blit(explosion.image, explosion.rect)
 
-            plane.update()
-            screen.blit(plane.image, plane.rect)
+            if show_forces:
+                surface_forces = simulator.preview_forces
+                for force in surface_forces:
+                    start_pos = projector.project(force.global_start)
+                    end_pos = projector.project(force.global_end)
 
-            surface_forces = simulator.preview_forces
-            for force in surface_forces:
-                start_pos = projector.project(force.global_start)
-                end_pos = projector.project(force.global_end)
-
-                pygame.draw.line(
-                    screen, Colors.RED,
-                    start_pos.array(), end_pos.array(), 2)
-
-            airspeed = plane._airplane._state.airspeed()
-            pos = plane._airplane._state.pos
-            end_pos = pos.add(airspeed)
-
-            pygame.draw.line(
-                    screen, Colors.GREEN,
-                    projector.project(pos).array(),
-                    projector.project(end_pos).array(), 2)
+                    pygame.draw.line(
+                        screen, Colors.RED,
+                        start_pos.array(), end_pos.array(), 2)
 
             # update the display and clock
             pygame.display.flip()
             clock.tick(30)
-
-            if plane.dead:
-                simulator.space.remove(plane._airplane.body)
 
 
 pygame.init()

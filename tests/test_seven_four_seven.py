@@ -85,9 +85,9 @@ class TestSevenFourSeven(unittest.TestCase):
         self.run_test(actual, expected)
 
     def run_test(self, actual, expected):
-        self.assertAlmostEqual(expected[0], actual[0], 6)
-        self.assertAlmostEqual(expected[1], actual[1], 6)
-        self.assertAlmostEqual(expected[2], actual[2], 6)
+        self.assertAlmostEqual(expected[0], actual[0], 1)
+        self.assertAlmostEqual(expected[1], actual[1], 1)
+        self.assertAlmostEqual(expected[2], actual[2], 1)
 
     def adjust_angle(self, angle):
         if angle.degrees() < 300:

@@ -138,7 +138,6 @@ class Plane(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
-            simulator.space.remove(plane._airplane)
 
     def get_joystick_elevator(self, joystick):
         control = joystick.get_axis(1)  # -1 to 1
@@ -294,6 +293,9 @@ def run_game():
             # update the display and clock
             pygame.display.flip()
             clock.tick(30)
+
+            if plane.dead:
+                simulator.space.remove(plane._airplane.body)
 
 
 pygame.init()

@@ -83,6 +83,7 @@ def run_game():
                     global string
                     if string is not None:
                         simulator.space.remove(string)
+                        simulator.atmosphere.wind_speed = Vector2D(0, 0)
                         string = None
                 if event.key == K_RIGHT:
                     simulator.atmosphere.wind_speed = \

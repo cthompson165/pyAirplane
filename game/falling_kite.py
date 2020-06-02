@@ -82,7 +82,7 @@ def run_game():
     clock = pygame.time.Clock()
     running = True
 
-    paused = False
+    paused = True
     show_forces = True
 
     kite_body = kite.kite.body

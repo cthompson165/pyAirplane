@@ -18,8 +18,8 @@ class Point:
 
         if self.position.x != 0 or self.position.y != 0:
 
-            magnitude = math.tan(math.radians(
-                angular_velocity)) * self._distance_to_origin
+            magnitude = math.radians(angular_velocity) \
+                * self._distance_to_origin
 
             return self._tangent_unit_vector.scale(magnitude)
         else:

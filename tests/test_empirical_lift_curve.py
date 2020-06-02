@@ -45,7 +45,7 @@ class TestEmpiricalLiftCurve(unittest.TestCase):
 
     def test_95(self):
         cl = FakeLiftCurve().calculate_lift_coefficient(Angle(95))
-        self.assertAlmostEqual(-0.214, cl, 3)
+        self.assertAlmostEqual(0.214, cl, 3)
 
     def test_180(self):
         cl = FakeLiftCurve().calculate_lift_coefficient(Angle(180))
@@ -53,7 +53,7 @@ class TestEmpiricalLiftCurve(unittest.TestCase):
 
     def test_185(self):
         cl = FakeLiftCurve().calculate_lift_coefficient(Angle(185))
-        self.assertEqual(1, cl)
+        self.assertEqual(-1, cl)
 
     def test_360(self):
         cl = FakeLiftCurve().calculate_lift_coefficient(Angle(360))

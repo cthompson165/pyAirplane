@@ -69,7 +69,7 @@ class Simulator:
                 Vector2D(body.position.x, body.position.y),
                 Vector2D(body.velocity.x, body.velocity.y),
                 Angle(math.degrees(body.angle)),
-                body.angular_velocity)
+                math.degrees(body.angular_velocity))
 
         self.preview_step(time)
 

@@ -44,45 +44,43 @@ class TestSevenFourSeven(unittest.TestCase):
                 [self.adjust_angle(state.theta), state.pos.x, state.pos.y])
             simulator.step(t)
 
-        expected = [359.15770786089723, 88.3260962917008, 0.15924856394764386]
+        expected = [359.1734832, 88.3262049, 0.156133215]
         actual = actuals[0]
         self.run_test(actual, expected)
 
-        expected = [356.18048407279366,
-                    264.2500441732677, -0.10456317247022187]
+        expected = [356.4833968, 264.2501987, -0.131940265]
         actual = actuals[20]
         self.run_test(actual, expected)
 
-        expected = [355.4821708735367, 439.32124573927024, -3.277970413590195]
+        expected = [356.0934039, 439.3203082, -3.119856627]
         actual = actuals[40]
         self.run_test(actual, expected)
 
-        expected = [356.91781024517104, 613.5795649633196, -9.20931833529732]
+        expected = [357.4315431, 613.5767113, -8.437581475]
         actual = actuals[60]
         self.run_test(actual, expected)
 
-        expected = [359.0576642323963, 787.0634324136869, -16.137307502303603]
+        expected = [359.0736694, 787.0448122, -14.48680516]
         actual = actuals[80]
         self.run_test(actual, expected)
 
-        expected = [360.39288393239275, 959.7517046853794, -22.20637260594219]
+        expected = [359.9018635, 959.702809, -19.86053268]
         actual = actuals[100]
         self.run_test(actual, expected)
 
-        expected = [360.2731314364735, 1131.5815439074154, -26.6456670564564]
+        expected = [359.6644, 1131.512925, -24.14061808]
         actual = actuals[120]
         self.run_test(actual, expected)
 
-        expected = [359.07658000769356,
-                    1302.5364564757956, -29.977348409802495]
+        expected = [358.8184732, 1302.473496, -27.81778772]
         actual = actuals[140]
         self.run_test(actual, expected)
 
-        expected = [357.71827921872017, 1472.6574244571432, -33.39182465905179]
+        expected = [358.0114411, 1472.615047, -31.70299646]
         actual = actuals[160]
         self.run_test(actual, expected)
 
-        expected = [356.9728763676182, 1641.9933428910135, -37.89605797259146]
+        expected = [357.637848, 1641.972261, -36.36384464]
         actual = actuals[180]
         self.run_test(actual, expected)
 

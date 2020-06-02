@@ -88,7 +88,7 @@ class Vector2D:
     def equals(self, other):
         return self.x == other.x and self.y == other.y
 
-    def round(self, precision):
+    def round(self, precision=None):
         return Vector2D(
             round(self.x, precision),
             round(self.y, precision))

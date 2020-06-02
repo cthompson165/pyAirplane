@@ -18,18 +18,18 @@ from pygame.locals import (
 
 from aerodynamics.simulator import Simulator
 from game.kite.box_kite import BoxKite
-from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
 import pymunk
+from pymunk.vec2d import Vec2d
 
 
 class Kite(pygame.sprite.Sprite):
 
     def __init__(self):
         super(Kite, self).__init__()
-        self.original_image = pygame.image.load("images/box_kite.png")
+        self.original_image = pygame.image.load("images/box_kite_big.png")
         self.image = self.original_image
         self.image.set_colorkey([255, 255, 255], RLEACCEL)
         self.rect = self.image.get_rect(
@@ -38,12 +38,13 @@ class Kite(pygame.sprite.Sprite):
             ))
 
         self.kite = BoxKite(10, .7, .35, .175, .8, .55, initial_pos)
-        self.dead = False
 
         projector.center_x(self.kite.pos())
 
     def update(self):
         pos = self.kite.pos()
+
+        projector.center(pos)
 
         screen_pos = projector.project(pos)
 
@@ -53,16 +54,27 @@ class Kite(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)
         self.rect.center = screen_pos.toint().array()
 
-        if (screen_pos.y >= (SCREEN_HEIGHT - GROUND_HEIGHT - 20)):
-            self.kill()
-            self.dead = True
-            x_pos = int(round(screen_pos.x, 0))
-            y_pos = SCREEN_HEIGHT - GROUND_HEIGHT
-            expl = Explosion((x_pos, y_pos), 'sm')
-            all_sprites.add(expl)
-            explosions.add(expl)
-            pygame.time.set_timer(GAME_OVER, 1000)
-            simulator.space.remove(kite.kite.body)
+
+def local_to_world(kite_body, point):
+    world_point = kite_body.local_to_world(Vec2d(point.x, point.y))
+    return Vector2D(world_point.x, world_point.y)
+
+
+def draw_local_point(kite_body, point):
+    world_point = local_to_world(kite_body, point)
+    pygame.draw.circle(
+        screen, Colors.BLUE,
+        projector.project(world_point).round().array(), 1)
+
+
+def draw_local_vector(kite_body, start, vector, color):
+    world_start = local_to_world(kite_body, start)
+    local_end = start.add(vector)
+    world_end = local_to_world(kite_body, local_end)
+    pygame.draw.line(
+         screen, color,
+         projector.project(world_start).array(),
+         projector.project(world_end).array(), 2)
 
 
 def run_game():
@@ -73,6 +85,8 @@ def run_game():
     paused = False
     show_forces = True
 
+    kite_body = kite.kite.body
+
     while running:
         step = False
         for event in pygame.event.get():
@@ -80,17 +94,15 @@ def run_game():
                 if event.key == K_ESCAPE:
                     running = False
                 if event.key == K_SPACE:
-                    global string
-                    if string is not None:
-                        simulator.space.remove(string)
-                        string = None
+                    paused = not paused
                 if event.key == K_RIGHT:
                     simulator.atmosphere.wind_speed = \
-                            simulator.atmosphere.wind_speed.add(
-                                Vector2D(-1, 0))
+                        simulator.atmosphere.wind_speed.add(
+                            Vector2D(-1, 0))
                 if event.key == K_LEFT:
                     simulator.atmosphere.wind_speed = \
-                            simulator.atmosphere.wind_speed.add(Vector2D(1, 0))
+                        simulator.atmosphere.wind_speed.add(
+                            Vector2D(1, 0))
                 if event.key == K_s:
                     step = True
                 if event.key == K_p:
@@ -105,27 +117,11 @@ def run_game():
 
         screen.fill(Colors.SKYBLUE)
 
-        pygame.draw.rect(screen,
-                         Colors.FOREST_GREEN,
-                         (0, SCREEN_HEIGHT - GROUND_HEIGHT,
-                          SCREEN_WIDTH, GROUND_HEIGHT))
-
-        origin = projector.project(Vector2D(0, 0))
-
-        pygame.draw.circle(
-            screen, Colors.RED,
-            (int(origin.x), int(origin.y)), 5, 3)
-
-        explosions.update()
-        for explosion in explosions:
-            screen.blit(explosion.image, explosion.rect)
-
         if step or not paused:
             simulator.step(1/40)
 
-            if not kite.dead:
-                kite.update()
-                screen.blit(kite.image, kite.rect)
+            kite.update()
+            screen.blit(kite.image, kite.rect)
 
             if show_forces:
                 surface_forces = simulator.preview_forces
@@ -137,14 +133,30 @@ def run_game():
                         screen, Colors.RED,
                         start_pos.array(), end_pos.array(), 2)
 
+                for surface in kite.kite.surfaces():
+                    draw_local_vector(
+                        kite_body,
+                        surface.current_cp, surface.velocity,
+                        Colors.GREEN)
+
                 airspeed = kite.kite._state.airspeed()
                 pos = kite.kite._state.pos
                 end_pos = pos.add(airspeed)
 
                 pygame.draw.line(
-                        screen, Colors.GREEN,
-                        projector.project(pos).array(),
-                        projector.project(end_pos).array(), 2)
+                    screen, Colors.PURPLE,
+                    projector.project(pos).array(),
+                    projector.project(end_pos).array(), 2)
+
+            draw_local_point(kite_body, kite.kite.front_surface_position)
+            draw_local_point(kite_body, kite.kite.back_surface_position)
+            draw_local_point(kite_body, kite.kite.front_back)
+            draw_local_point(kite_body, kite.kite.back_back)
+
+            print("velocity: " + str(
+                round(kite.kite._state.vel.magnitude(), 2)))
+            print("angular: " + str(
+                round(kite.kite._state.theta_vel, 2)))
 
             pygame.display.flip()
             clock.tick(40)
@@ -153,22 +165,20 @@ def run_game():
 pygame.init()
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
-CLOUD_BASE = 300
-GROUND_HEIGHT = 30
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Kite Simulator")
 
 GAME_OVER = pygame.USEREVENT + 3
 
-# meters per pixel: image is 34 pixels wide
-# a kite is .9 meters. So m/p = .9/34 = .026
+# meters per pixel: image is 300 pixels wide
+# a kite is .7 meters. So m/p = .7/300 = .00233
 
-# big image is 300 pixes
+# big image is 300 pixels
 # m/p = 0.003
 projector = Projector(Vector2D(
-    SCREEN_WIDTH, SCREEN_HEIGHT - GROUND_HEIGHT), .026)
+    SCREEN_WIDTH, SCREEN_HEIGHT), .00233)
 
-on_string = True
+on_string = False
 if not on_string:
     initial_pos = Vector2D(0, 3)
 else:
@@ -200,9 +210,6 @@ if on_string:
     pilot.position = (0, 0)
 else:
     simulator.atmosphere.wind_speed = Vector2D(0, 0)
-
-clouds = pygame.sprite.Group()
-explosions = pygame.sprite.Group()
 
 run_game()
 pygame.quit()

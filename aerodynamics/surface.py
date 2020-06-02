@@ -2,6 +2,7 @@ from aerodynamics.cp import CP
 from physics.force import Force
 from physics.point import Point
 from util.angle import Angle
+from util.vector_2d import Vector2D
 
 
 class Surface:
@@ -31,6 +32,9 @@ class Surface:
 
         self.cp = CP(relative_pos, chord_length, stall_angle)
 
+        self.velocity = Vector2D(0, 0)
+        self.current_cp = Vector2D(0, 0)
+
     def aoa(self, velocity):
         vel_angle = velocity.angle()
         return self.angle.minus(vel_angle)
@@ -41,10 +45,15 @@ class Surface:
             translation_velocity,
             angular_velocity)
 
+        self.velocity = surface_velocity
+
         velocity_magnitude = surface_velocity.magnitude()
         aoa = self.aoa(surface_velocity)
 
         forces = []
+
+        current_cp = self.cp.calculate(aoa)
+        self.current_cp = current_cp
 
         CL = 0
         if self.lift_curve is not None:
@@ -53,7 +62,7 @@ class Surface:
             lift_dir = Surface.get_lift_unit(aoa, surface_velocity)
             lift_force = lift_dir.scale(lift_mag)
             forces.append(Force(Force.Source.lift, "lift",
-                                self.cp.calculate(aoa), lift_force))
+                                current_cp, lift_force))
 
         CD = 0
         if self.drag_curve is not None:
@@ -62,7 +71,7 @@ class Surface:
             drag_dir = surface_velocity.reverse().unit()
             drag_vector = drag_dir.scale(drag_mag)
             drag_force = Force(Force.Source.drag, "drag",
-                               self.cp.calculate(aoa), drag_vector)
+                               current_cp, drag_vector)
             forces.append(drag_force)
 
         return forces

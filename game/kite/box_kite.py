@@ -11,32 +11,41 @@ import math
 
 class BoxKite(RigidBody):
     def __init__(self, string_length, length, width, cell_length,
-                 bridle_length, knot_length):
+                 bridle_length, knot_length, initial_pos=None):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
         print(mass)
-        initial_orientation = Angle(20)
+        initial_orientation = Angle(70)
 
         # get positions relative to cg
+
+        self.back_back = Vector2D(-length / 2.0, 0)
+        self.front = Vector2D(length / 2.0, 0)
+        self.front_back = Vector2D(self.front.x - cell_length, 0)
+
         bottom_back = Vector2D(-length / 2.0, -width / 2.0)
         bridle = Bridle(bridle_length, knot_length, length)
         self.bridle_position = bottom_back.add(bridle.get_position())
         self.bridle_point = Point(self.bridle_position)
-        front_surface_position = Vector2D(bottom_back.x + length, 0)
-        back_surface_position = Vector2D(bottom_back.x + cell_length, 0)
+        self.front_surface_position = Vector2D(bottom_back.x + length, 0)
+        self.back_surface_position = Vector2D(bottom_back.x + cell_length, 0)
 
-        initial_angle = math.asin(1/string_length)
-        initial_x = math.cos(initial_angle) * string_length
+        if initial_pos is None:
+            initial_angle = math.asin(1/string_length)
+            initial_x = math.cos(initial_angle) * string_length
 
-        initial_bridle_global = Vector2D(-initial_x, 1)
-        print("Initial: " + str(round(initial_bridle_global.magnitude(), 2)))
+            initial_bridle_global = Vector2D(-initial_x, 1)
+            print("Initial: " +
+                  str(round(initial_bridle_global.magnitude(), 2)))
 
-        rotated_bridle_point = self.bridle_position.rotate(initial_orientation)
+            rotated_bridle_point = self.bridle_position.rotate(
+                initial_orientation)
 
-        initial_pos = initial_bridle_global.subtract(rotated_bridle_point)
+            initial_pos = initial_bridle_global.subtract(rotated_bridle_point)
 
-        print("Bridle distance: " + str(round(initial_pos.add(
-            self.bridle_position.rotate(initial_orientation)).magnitude(), 3)))
+            print("Bridle distance: " + str(round(initial_pos.add(
+                self.bridle_position.rotate(
+                    initial_orientation)).magnitude(), 3)))
 
         state = State(initial_pos,
                       Vector2D(0, 0), initial_orientation, 0)
@@ -48,11 +57,11 @@ class BoxKite(RigidBody):
         RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
 
         self.front_cell = Cell(
-            "front", front_surface_position,
+            "front", self.front_surface_position,
             cell_length, width)
 
         self.back_cell = Cell(
-            "back", back_surface_position,
+            "back", self.back_surface_position,
             cell_length, width)
 
         self._surfaces = []
@@ -63,10 +72,6 @@ class BoxKite(RigidBody):
 
     def surfaces(self):
         return self._surfaces
-
-    def calculate_thrust_forces(self):
-        # print(str(self._state.theta))
-        return None
 
     def nasa(self, w1):
 

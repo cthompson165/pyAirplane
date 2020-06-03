@@ -133,12 +133,6 @@ def run_game():
                         screen, Colors.RED,
                         start_pos.array(), end_pos.array(), 2)
 
-                for surface in kite.kite.surfaces():
-                    draw_local_vector(
-                        kite_body,
-                        surface.current_cp, surface.velocity,
-                        Colors.GREEN)
-
                 airspeed = kite.kite._state.airspeed()
                 pos = kite.kite._state.pos
                 end_pos = pos.add(airspeed)
@@ -152,11 +146,6 @@ def run_game():
             draw_local_point(kite_body, kite.kite.back_surface_position)
             draw_local_point(kite_body, kite.kite.front_back)
             draw_local_point(kite_body, kite.kite.back_back)
-
-            print("velocity: " + str(
-                round(kite.kite._state.vel.magnitude(), 2)))
-            print("angular: " + str(
-                round(kite.kite._state.theta_vel, 2)))
 
             pygame.display.flip()
             clock.tick(40)

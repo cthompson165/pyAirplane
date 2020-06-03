@@ -14,7 +14,6 @@ class BoxKite(RigidBody):
                  bridle_length, knot_length, initial_pos=None):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
-        print(mass)
         initial_orientation = Angle(70)
 
         # get positions relative to cg
@@ -68,7 +67,8 @@ class BoxKite(RigidBody):
         self._surfaces.append(self.front_cell)
         self._surfaces.append(self.back_cell)
 
-        self.nasa(width * 100)
+        # print(mass)
+        # self.nasa(width * 100)
 
     def surfaces(self):
         return self._surfaces

@@ -1,4 +1,3 @@
-import sys
 from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
 from aerodynamics.simulator import Simulator
 from util.vector_2d import Vector2D
@@ -28,21 +27,11 @@ def run_sim(steps):
     # neutral pitch to check oscillations
     airplane.apply_pitch_control(0)
     for i in range(0, steps):
-        if i == 0 or i % 20 == 0:
-            write(time, airplane, f)
-
+        write(time, airplane, f)
         simulator.step(t)
         time += t
 
     f.close()
-
-
-def check(index, expected):
-    global success
-    actual = orientations[index]
-    if round(expected, 5) != round(actual, 5):
-        print("Not equal " + str(index))
-        success = False
 
 
 def write(time, airplane, f):
@@ -65,13 +54,6 @@ def adjust_angle(angle):
         return angle.degrees()
 
 
-steps = 200
-if len(sys.argv) > 1:
-    steps = int(sys.argv[1])
-
-print("running for " + str(steps) + " steps")
-run_sim(steps)
+print("generating curve data...")
+run_sim(200)
 print("done")
-
-if success:
-    print("Checked out")

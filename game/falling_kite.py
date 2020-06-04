@@ -21,7 +21,6 @@ from game.kite.box_kite import BoxKite
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
-from pymunk.vec2d import Vec2d
 
 
 class Kite(pygame.sprite.Sprite):
@@ -54,26 +53,11 @@ class Kite(pygame.sprite.Sprite):
         self.rect.center = screen_pos.toint().array()
 
 
-def local_to_world(kite_body, point):
-    world_point = kite_body.local_to_world(Vec2d(point.x, point.y))
-    return Vector2D(world_point.x, world_point.y)
-
-
-def draw_local_point(kite_body, point):
-    world_point = local_to_world(kite_body, point)
+def draw_local_point(kite, point):
+    world_point = kite.local_to_global(point)
     pygame.draw.circle(
         screen, Colors.BLUE,
         projector.project(world_point).round().array(), 1)
-
-
-def draw_local_vector(kite_body, start, vector, color):
-    world_start = local_to_world(kite_body, start)
-    local_end = start.add(vector)
-    world_end = local_to_world(kite_body, local_end)
-    pygame.draw.line(
-         screen, color,
-         projector.project(world_start).array(),
-         projector.project(world_end).array(), 2)
 
 
 def run_game():
@@ -83,8 +67,6 @@ def run_game():
 
     paused = True
     show_forces = True
-
-    kite_body = kite.kite.body
 
     while running:
         step = False
@@ -137,14 +119,14 @@ def run_game():
                 end_pos = pos.add(airspeed)
 
                 pygame.draw.line(
-                    screen, Colors.PURPLE,
+                    screen, Colors.GREEN,
                     projector.project(pos).array(),
                     projector.project(end_pos).array(), 2)
 
-            draw_local_point(kite_body, kite.kite.front_surface_position)
-            draw_local_point(kite_body, kite.kite.back_surface_position)
-            draw_local_point(kite_body, kite.kite.front_back)
-            draw_local_point(kite_body, kite.kite.back_back)
+            draw_local_point(kite.kite, kite.kite.front_surface_position)
+            draw_local_point(kite.kite, kite.kite.back_surface_position)
+            draw_local_point(kite.kite, kite.kite.front_back)
+            draw_local_point(kite.kite, kite.kite.back_back)
 
             pygame.display.flip()
             clock.tick(40)

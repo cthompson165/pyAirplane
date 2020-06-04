@@ -27,6 +27,9 @@ class RigidBody:
     def current_state(self):
         return self._state.copy()
 
+    def local_to_global(self, position):
+        return position.rotate(self.orientation()).add(self.pos())
+
     def calculate_surface_forces(self, local_velocity, angular_velocity):
         surface_forces = []
 

@@ -11,7 +11,7 @@ class TestSevenFourSeven(unittest.TestCase):
         pos = Vector2D(200, 200)
         airplane = SevenFourSeven(pos, velocity)
         simulator = Simulator()
-        simulator.register(airplane)
+        simulator.register_flying_object(airplane)
 
         simulator.step(1)
         self.assertEqual(0, round(airplane.current_state().airspeed().y, 2))

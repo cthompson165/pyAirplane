@@ -20,9 +20,10 @@ from aerodynamics.simulator import Simulator
 from game.kite.box_kite import BoxKite
 from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
+from physics.stationary_object import StationaryObject
 from util.vector_2d import Vector2D
+from util.angle import Angle
 from projector import Projector
-import pymunk
 
 
 class Kite(pygame.sprite.Sprite):
@@ -37,7 +38,7 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.kite = BoxKite(10, .7, .35, .175, .8, .55, initial_pos)
+        self.kite = BoxKite(10, .7, .35, .175, .8, .55, initial_pos, Angle(30))
         self.dead = False
 
         projector.center_x(self.kite.pos())
@@ -62,7 +63,7 @@ class Kite(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
-            simulator.space.remove(kite.kite.body)
+            simulator.unregister(kite.kite)
 
 
 def run_game():
@@ -81,10 +82,8 @@ def run_game():
                     running = False
                 if event.key == K_SPACE:
                     global string
-                    if string is not None:
-                        simulator.space.remove(string)
-                        simulator.atmosphere.wind_speed = Vector2D(0, 0)
-                        string = None
+                    simulator.untether(kite.kite)
+                    simulator.atmosphere.wind_speed = Vector2D(0, 0)
                 if event.key == K_RIGHT:
                     simulator.atmosphere.wind_speed = \
                             simulator.atmosphere.wind_speed.add(
@@ -182,23 +181,16 @@ all_sprites.add(kite)
 
 simulator = Simulator()
 
-simulator.register(kite.kite)
+simulator.register_flying_object(kite.kite)
 
 if on_string:
-    pilot = pymunk.Body(body_type=pymunk.Body.STATIC)  # 1
-    pilot.position = (0, 0)
-
-    string = pymunk.SlideJoint(
-        kite.kite.body, pilot,
-        kite.kite.bridle_position.array(),
-        (0, 0), 0,
-        kite.kite.string_length)
+    pilot = StationaryObject(Vector2D(0, 0))
+    simulator.register_stationary_object(pilot, Vector2D(0, 0))
+    simulator.tether(
+        kite.kite, pilot, kite.kite.bridle_position,
+        Vector2D(0, 0), kite.kite.string_length)
 
     simulator.atmosphere.wind_speed = Vector2D(-5, 0)
-
-    simulator.space.add(pilot, string)
-    pilot = pymunk.Body(body_type=pymunk.Body.STATIC)  # 1
-    pilot.position = (0, 0)
 else:
     simulator.atmosphere.wind_speed = Vector2D(0, 0)
 

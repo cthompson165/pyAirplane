@@ -67,7 +67,7 @@ class TestSimulations(unittest.TestCase):
             10, .7, .35, .175, .8, .55, Vector2D(0, 1000))
 
         simulator = Simulator()
-        simulator.register(kite)
+        simulator.register_flying_object(kite)
         steps = 2000
         step_size = 100
 
@@ -90,7 +90,7 @@ class TestSimulations(unittest.TestCase):
                                   Vector2D(265.3581764, 0))
 
         simulator = Simulator()
-        simulator.register(airplane)
+        simulator.register_flying_object(airplane)
         t = 1.0/30
 
         # pitch up for 10 seconds

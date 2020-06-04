@@ -21,7 +21,6 @@ from game.kite.box_kite import BoxKite
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
-import pymunk
 from pymunk.vec2d import Vec2d
 
 
@@ -179,26 +178,8 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(kite)
 
 simulator = Simulator()
-
-simulator.register(kite.kite)
-
-if on_string:
-    pilot = pymunk.Body(body_type=pymunk.Body.STATIC)  # 1
-    pilot.position = (0, 0)
-
-    string = pymunk.SlideJoint(
-        kite.kite.body, pilot,
-        kite.kite.bridle_position.array(),
-        (0, 0), 0,
-        kite.kite.string_length)
-
-    simulator.atmosphere.wind_speed = Vector2D(-5, 0)
-
-    simulator.space.add(pilot, string)
-    pilot = pymunk.Body(body_type=pymunk.Body.STATIC)  # 1
-    pilot.position = (0, 0)
-else:
-    simulator.atmosphere.wind_speed = Vector2D(0, 0)
+simulator.register_flying_object(kite.kite)
+simulator.atmosphere.wind_speed = Vector2D(0, 0)
 
 run_game()
 pygame.quit()

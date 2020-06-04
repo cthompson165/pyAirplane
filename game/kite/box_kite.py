@@ -11,10 +11,10 @@ import math
 
 class BoxKite(RigidBody):
     def __init__(self, string_length, length, width, cell_length,
-                 bridle_length, knot_length, initial_pos=None):
+                 bridle_length, knot_length, initial_pos=None,
+                 initial_orientation=Angle(70)):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
-        initial_orientation = Angle(70)
 
         # get positions relative to cg
 

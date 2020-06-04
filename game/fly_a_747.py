@@ -139,7 +139,7 @@ class Plane(pygame.sprite.Sprite):
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
-            simulator.space.remove(plane._airplane.body)
+            simulator.unregister(plane._airplane)
 
     def get_joystick_elevator(self, joystick):
         control = joystick.get_axis(1)  # -1 to 1
@@ -323,7 +323,7 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(plane)
 
 simulator = Simulator()
-simulator.register(plane._airplane)
+simulator.register_flying_object(plane._airplane)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

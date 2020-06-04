@@ -10,6 +10,7 @@ class RigidBody:
         self._mass = mass
         self._mass_moment_of_inertia = mass_moment_of_inertia
         self.body = None
+        self.key = 0
 
     def mass(self):
         return self._mass

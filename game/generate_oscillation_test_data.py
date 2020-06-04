@@ -8,7 +8,7 @@ def run_sim():
                               Vector2D(265.3581764, 0))
 
     simulator = Simulator()
-    simulator.register(airplane)
+    simulator.register_flying_object(airplane)
     t = 1.0/30
 
     # pitch up for 10 seconds

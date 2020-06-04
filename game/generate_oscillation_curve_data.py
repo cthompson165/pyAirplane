@@ -11,7 +11,7 @@ def run_sim(steps):
                               Vector2D(265.3581764, 0))
 
     simulator = Simulator()
-    simulator.register(airplane)
+    simulator.register_flying_object(airplane)
 
     t = 1.0/30
     time = 0

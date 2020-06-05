@@ -36,7 +36,7 @@ def run_sim(steps):
 
 def write(time, airplane, f):
     orientation = adjust_angle(airplane.orientation())
-    position = airplane.pos()
+    position = airplane.position()
     f.write(
         str(time) + ","
         + str(orientation) + ","

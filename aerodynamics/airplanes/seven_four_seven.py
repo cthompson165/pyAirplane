@@ -14,8 +14,8 @@ class SevenFourSeven(Airplane):
 
     MAX_ELEVATOR_DEGREES = 10
 
-    def __init__(self, pos, velocity):
-        state = State(pos, velocity, Angle(0), 0)
+    def __init__(self, position, velocity):
+        state = State(position, velocity, Angle(0), 0)
         Airplane.__init__(self, state, self._mass(),
                           self._mass_moment_of_inertia())
 

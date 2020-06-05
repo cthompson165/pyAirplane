@@ -1,11 +1,11 @@
 from util.vector_2d import Vector2D
-from physics.rigid_body import RigidBody
+from physics.flying_object import FlyingObject
 
 
-class Airplane(RigidBody):
+class Airplane(FlyingObject):
 
     def __init__(self, initial_state, mass, mass_moment_of_inertia):
-        RigidBody.__init__(
+        FlyingObject.__init__(
             self, mass,
             mass_moment_of_inertia,
             initial_state)

@@ -8,8 +8,8 @@ class TestSevenFourSeven(unittest.TestCase):
 
     def test_forces_balance(self):
         velocity = Vector2D(265.3581764, 0)
-        pos = Vector2D(200, 200)
-        airplane = SevenFourSeven(pos, velocity)
+        position = Vector2D(200, 200)
+        airplane = SevenFourSeven(position, velocity)
         simulator = Simulator()
         simulator.register_flying_object(airplane)
 

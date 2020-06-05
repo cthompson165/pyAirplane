@@ -25,10 +25,10 @@ class Vector2D:
     def scale(self, number):
         return Vector2D(self.x * number, self.y * number)
 
-    def rotate(self, theta):
+    def rotate(self, orientation):
         ''' rotates counter clockwise '''
-        cos_val = theta.cos()
-        sin_val = theta.sin()
+        cos_val = orientation.cos()
+        sin_val = orientation.sin()
 
         x_new = self.x * cos_val - self.y * sin_val
         y_new = self.x * sin_val + self.y * cos_val

@@ -29,7 +29,7 @@ def run_sim():
 def write(airplane):
     orientation = airplane.orientation().degrees()
     precision = 8
-    position = airplane.pos()
+    position = airplane.position()
     print("[" + str(round(orientation, precision)) + ", "
           + str(round(position.x, precision)) + ", "
           + str(round(position.y, precision)) + "],")

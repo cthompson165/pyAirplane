@@ -4,8 +4,8 @@ from physics.force import Force
 
 class Engine:
 
-    def __init__(self, name, pos, angle, idle_thrust, max_thrust):
-        self.pos = pos
+    def __init__(self, name, position, angle, idle_thrust, max_thrust):
+        self.position = position
         self.angle = angle
         self.idle_thrust = idle_thrust
         self.max_thrust = max_thrust
@@ -28,4 +28,4 @@ class Engine:
 
     def get_thrust(self):
         thrust = self._orientation_unit.scale(self._current_thrust)
-        return Force(self.name, self.pos, thrust)
+        return Force(self.name, self.position, thrust)

@@ -1,6 +1,6 @@
 import unittest
 from util.vector_2d import Vector2D
-from util.projector import Projector
+from game.projector import Projector
 
 
 class TestProjector(unittest.TestCase):

@@ -41,12 +41,12 @@ class Kite(pygame.sprite.Sprite):
         self.kite = BoxKite(10, .7, .35, .175, .8, .55, initial_pos, Angle(30))
         self.dead = False
 
-        projector.center_x(self.kite.pos())
+        projector.center_x(self.kite.position())
 
     def update(self):
-        pos = self.kite.pos()
+        position = self.kite.position()
 
-        screen_pos = projector.project(pos)
+        screen_pos = projector.project(position)
 
         self.image = pygame.transform.rotate(
             self.original_image, self.kite.orientation().degrees())
@@ -131,8 +131,8 @@ def run_game():
                 surface_forces = kite.kite.local_forces()
                 for force in surface_forces:
                     global_force = force.local_to_global(
-                        kite.kite.pos(), kite.kite.orientation())
-                    start_pos = projector.project(global_force.pos)
+                        kite.kite.position(), kite.kite.orientation())
+                    start_pos = projector.project(global_force.position)
                     end_pos = projector.project(global_force.endpoint())
 
                     pygame.draw.line(
@@ -140,12 +140,12 @@ def run_game():
                         start_pos.array(), end_pos.array(), 2)
 
                 airspeed = kite.kite.airspeed()
-                pos = kite.kite.pos()
-                end_pos = pos.add(airspeed)
+                position = kite.kite.position()
+                end_pos = position.add(airspeed)
 
                 pygame.draw.line(
                         screen, Colors.GREEN,
-                        projector.project(pos).array(),
+                        projector.project(position).array(),
                         projector.project(end_pos).array(), 2)
 
             pygame.display.flip()

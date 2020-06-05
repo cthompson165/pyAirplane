@@ -19,7 +19,7 @@ def run_sim():
 def write(kite):
     orientation = kite.orientation().degrees()
     precision = 8
-    position = kite.pos()
+    position = kite.position()
     print("[" + str(round(orientation, precision)) + ", "
           + str(round(position.x, precision)) + ", "
           + str(round(position.y, precision)) + "],")

@@ -2,7 +2,7 @@ from util.vector_2d import Vector2D
 from util.angle import Angle
 from physics.atmosphere import Atmosphere
 from physics.state import State
-from physics.rigid_body import RigidBody
+from physics.flying_object import FlyingObject
 from physics.stationary_object import StationaryObject
 import pymunk
 import math
@@ -22,7 +22,7 @@ class Simulator:
     def register_flying_object(self, flying_object):
 
         body = pymunk.Body(flying_object.mass(), flying_object.moment())
-        body.position = flying_object.pos().array()
+        body.position = flying_object.position().array()
         body.velocity = flying_object.velocity().array()
         body.angle = flying_object.orientation().radians()
 
@@ -39,7 +39,7 @@ class Simulator:
 
         self.untether(object)
 
-        if isinstance(object, RigidBody):
+        if isinstance(object, FlyingObject):
             physical_object = self._flying_objects.pop(object.key)
             self.space.remove(physical_object.body)
         elif isinstance(object, StationaryObject):
@@ -87,7 +87,7 @@ class Simulator:
 
     @staticmethod
     def get_local_airspeed(state):
-        return state.airspeed().rotate(state.theta.times_constant(-1))
+        return state.airspeed().rotate(state.orientation.times_constant(-1))
 
     def add_forces(self):
         for physical_object in self._flying_objects.values():
@@ -99,7 +99,7 @@ class Simulator:
 
             local_airspeed = Simulator.get_local_airspeed(state)
             flying_object.calculate_surface_forces(
-                local_airspeed, state.theta_vel)
+                local_airspeed, state.angular_velocity)
 
             flying_object.calculate_thrust_forces()
             flying_object.calculate_weight_force(state)
@@ -107,12 +107,12 @@ class Simulator:
             for force in flying_object.local_forces():
                 body.apply_force_at_local_point(
                     force.vector.array(),
-                    force.pos.array())
+                    force.position.array())
 
             for force in flying_object.global_forces():
                 body.apply_force_at_world_point(
                     force.vector.array(),
-                    force.pos.array())
+                    force.position.array())
 
     def apply_forces(self, time):
         self.space.step(time)

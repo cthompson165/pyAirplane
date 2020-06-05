@@ -1,7 +1,7 @@
 from util.angle import Angle
 from util.vector_2d import Vector2D
 from physics.state import State
-from physics.rigid_body import RigidBody
+from physics.flying_object import FlyingObject
 from physics.point import Point
 # from physics.force import Force
 from game.kite.cell import Cell
@@ -9,7 +9,7 @@ from game.kite.bridle import Bridle
 import math
 
 
-class BoxKite(RigidBody):
+class BoxKite(FlyingObject):
     def __init__(self, string_length, length, width, cell_length,
                  bridle_length, knot_length, initial_pos=None,
                  initial_orientation=Angle(70)):
@@ -53,7 +53,7 @@ class BoxKite(RigidBody):
 
         mass_moment_of_inertia = mass * (length**2 + width**2) / 12
 
-        RigidBody.__init__(self, mass, mass_moment_of_inertia, state)
+        FlyingObject.__init__(self, mass, mass_moment_of_inertia, state)
 
         self.front_cell = Cell(
             "front", self.front_surface_position,

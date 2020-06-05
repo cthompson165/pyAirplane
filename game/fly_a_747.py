@@ -63,7 +63,7 @@ class Plane(pygame.sprite.Sprite):
         self.elevator_percent = 0
         self.throttle_percent = 60
 
-        projector.center(self._airplane.pos())
+        projector.center(self._airplane.position())
 
     def x_velocity(self):
         if self.dead:
@@ -120,9 +120,9 @@ class Plane(pygame.sprite.Sprite):
 
     def update(self):
         ''' update the sprite based on plane's state '''
-        pos = self._airplane.pos()
-        projector.center_x(pos)
-        screen_pos = projector.project(pos)
+        position = self._airplane.position()
+        projector.center_x(position)
+        screen_pos = projector.project(position)
 
         self.image = pygame.transform.rotate(
             self.original_image, self._airplane.orientation().degrees())
@@ -281,9 +281,9 @@ def run_game():
                 for force in surface_forces:
                     if "engine" not in force.name:
                         global_force = force.local_to_global(
-                            plane._airplane.pos(),
+                            plane._airplane.position(),
                             plane._airplane.orientation())
-                        start_pos = projector.project(global_force.pos)
+                        start_pos = projector.project(global_force.position)
                         end_pos = projector.project(global_force.endpoint())
 
                         pygame.draw.line(

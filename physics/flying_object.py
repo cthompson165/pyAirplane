@@ -2,7 +2,7 @@ from util.vector_2d import Vector2D
 from physics.force import Force
 
 
-class RigidBody:
+class FlyingObject:
     ''' Calculates state based on forces '''
 
     def __init__(self, mass, mass_moment_of_inertia, state):
@@ -22,20 +22,20 @@ class RigidBody:
     def moment(self):
         return self._mass_moment_of_inertia
 
-    def pos(self):
-        return self._state.pos
+    def position(self):
+        return self._state.position
 
     def velocity(self):
-        return self._state.vel
+        return self._state.velocity
 
     def airspeed(self):
         return self._state.airspeed()
 
     def orientation(self):
-        return self._state.theta
+        return self._state.orientation
 
     def angular_velocity(self):
-        return self._state.theta_vel
+        return self._state.angular_velocity
 
     def global_forces(self):
         return self.step_forces
@@ -49,7 +49,7 @@ class RigidBody:
 
     def add_local_forces(self, forces):
         for force in forces:
-            self.add_local_force(force.name, force.pos, force.vector)
+            self.add_local_force(force.name, force.position, force.vector)
 
     def add_local_force(self, name, position, vector):
         self.step_local_forces.append(Force(name, position, vector))
@@ -58,7 +58,7 @@ class RigidBody:
         self.step_forces.append(Force(name, position, vector))
 
     def local_to_global(self, position):
-        return position.rotate(self.orientation()).add(self.pos())
+        return position.rotate(self.orientation()).add(self.position())
 
     def calculate_surface_forces(self, local_velocity, angular_velocity):
         surface_forces = []
@@ -75,7 +75,7 @@ class RigidBody:
         return None
 
     def calculate_weight_force(self, state):
-        self.add_global_force("weight", state.pos, self._weight)
+        self.add_global_force("weight", state.position, self._weight)
 
     def weight(self):
         return self._weight

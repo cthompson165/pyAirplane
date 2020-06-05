@@ -75,7 +75,7 @@ class TestSimulations(unittest.TestCase):
         actual_data = []
         for i in range(0, steps):
             simulator.step(t)
-            position = kite.pos()
+            position = kite.position()
 
             if i == 0 or i % step_size == 0:
                 actual = [kite.orientation().degrees(),
@@ -108,7 +108,7 @@ class TestSimulations(unittest.TestCase):
         actual_data = []
         for i in range(0, steps):
             if i == 0 or i % step_size == 0:
-                position = airplane.pos()
+                position = airplane.position()
                 actual = [airplane.orientation().degrees(),
                           position.x, position.y]
                 actual_data.append(actual)

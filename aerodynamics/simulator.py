@@ -74,7 +74,6 @@ class Simulator:
             tether = self._tethers[object1.key]
             self._tethers.pop(tether.object1.key)
             self._tethers.pop(tether.object2.key)
-
             self.space.remove(tether.joint)
 
     def _find_body(self, object):
@@ -95,7 +94,6 @@ class Simulator:
             body = physical_object.body
 
             state = flying_object._state
-            state.wind_speed = self.atmosphere.wind_speed
 
             local_airspeed = Simulator.get_local_airspeed(state)
             flying_object.calculate_surface_forces(
@@ -121,11 +119,14 @@ class Simulator:
             flying_object = physical_object.object
             body = physical_object.body
 
+            previous_state = flying_object._state
+
             flying_object._state = State(
                 Vector2D(body.position.x, body.position.y),
                 Vector2D(body.velocity.x, body.velocity.y),
                 Angle(math.degrees(body.angle)),
-                math.degrees(body.angular_velocity))
+                math.degrees(body.angular_velocity),
+                previous_state.atmosphere)
 
             flying_object.clear_forces()
 

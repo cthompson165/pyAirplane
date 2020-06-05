@@ -2,6 +2,7 @@ import unittest
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from physics.state import State
+from physics.atmosphere import Atmosphere
 from aerodynamics.simulator import Simulator
 from aerodynamics.surface import Surface
 from aerodynamics.lift_curves.linear_lift import LinearLift
@@ -16,7 +17,7 @@ class TestSurface(unittest.TestCase):
 
     def get_surface(self, relative_degrees):
         return Surface("test", Vector2D(0, 0), 0, Angle(relative_degrees),
-                       10, None, None)
+                       10, None, None, Atmosphere())
 
     def test_lift_unit_leading_edge_positive_aoa(self):
         velocity = Vector2D(1, -1)
@@ -83,7 +84,7 @@ class TestSurface(unittest.TestCase):
         wing_drag_curve = LiftingLineDrag(6.98, 0.0305, 0.75)
         return Surface(
             "boeing wing", Vector2D(0, 0), 0, Angle(2.4), 510.97,
-            wing_lift_curve, wing_drag_curve)
+            wing_lift_curve, wing_drag_curve, Atmosphere())
 
     def get_cessna_wing(self):
 
@@ -91,12 +92,12 @@ class TestSurface(unittest.TestCase):
         wing_drag_curve = LiftingLineDrag(7.37, 0.027, 0.75)
         return Surface(
             "cessna 172 wing", Vector2D(0, 0), 0, Angle(0), 16.2,
-            wing_lift_curve, wing_drag_curve)
+            wing_lift_curve, wing_drag_curve, Atmosphere())
 
     def get_lift(self, velocity, surface, angle):
-        state = State(Vector2D(0, 0), velocity, angle, 0)
+        state = State(Vector2D(0, 0), velocity, angle, 0, Atmosphere())
         local_velocity = Simulator.get_local_airspeed(state)
-        forces = surface.calculate_forces(local_velocity, 0)
+        forces = surface.calculate_forces(local_velocity, 0, 12192)
         lift = [force for force in forces if force.name == "lift"]
         if len(lift) == 1:
             return lift[0].vector
@@ -112,7 +113,7 @@ class TestSurface(unittest.TestCase):
 
     def get_drag(self, velocity, surface, angle):
 
-        forces = surface.calculate_forces(velocity.rotate(angle), 0)
+        forces = surface.calculate_forces(velocity.rotate(angle), 0, 12192)
         drag = [force for force in forces if force.name == "drag"]
         if len(drag) == 1:
             return drag[0].vector.magnitude()
@@ -163,7 +164,8 @@ class TestSurface(unittest.TestCase):
         wing_lift_curve = FlatPlateEmpiricalLift(0)
         wing_drag_curve = FlatPlateDrag(0)
         return Surface("plate", Vector2D(0, 0), 0, Angle(0),
-                       10, wing_lift_curve, wing_drag_curve)
+                       10, wing_lift_curve, wing_drag_curve,
+                       Atmosphere())
 
     def test_flat_plate_lift(self):
         velocity = Vector2D(5, 0)

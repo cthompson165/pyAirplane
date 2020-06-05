@@ -3,6 +3,7 @@ from util.vector_2d import Vector2D
 from aerodynamics.simulator import Simulator
 from game.kite.box_kite import BoxKite
 from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
+from physics.atmosphere import Atmosphere
 
 
 class TestSimulations(unittest.TestCase):
@@ -64,7 +65,7 @@ class TestSimulations(unittest.TestCase):
     def get_box_kite_data(self):
 
         kite = BoxKite(
-            10, .7, .35, .175, .8, .55, Vector2D(0, 1000))
+            10, .7, .35, .175, .8, .55, Atmosphere(), Vector2D(0, 1000))
 
         simulator = Simulator()
         simulator.register_flying_object(kite)

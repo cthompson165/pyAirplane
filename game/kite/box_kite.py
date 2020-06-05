@@ -10,7 +10,9 @@ import math
 
 class BoxKite(FlyingObject):
     def __init__(self, string_length, length, width, cell_length,
-                 bridle_length, knot_length, initial_pos=None,
+                 bridle_length, knot_length,
+                 atmosphere,
+                 initial_pos=None,
                  initial_orientation=Angle(70)):
 
         mass = self.calculate_mass(length, width, cell_length, cell_length)
@@ -46,21 +48,23 @@ class BoxKite(FlyingObject):
                     initial_orientation)).magnitude(), 3)))
 
         state = State(initial_pos,
-                      Vector2D(0, 0), initial_orientation, 0)
+                      Vector2D(0, 0), initial_orientation, 0,
+                      atmosphere)
 
         self.string_length = string_length
 
         mass_moment_of_inertia = mass * (length**2 + width**2) / 12
 
-        FlyingObject.__init__(self, mass, mass_moment_of_inertia, state)
+        FlyingObject.__init__(self, mass, mass_moment_of_inertia, state,
+                              atmosphere)
 
         self.front_cell = Cell(
             "front", self.front_surface_position,
-            cell_length, width)
+            cell_length, width, atmosphere)
 
         self.back_cell = Cell(
             "back", self.back_surface_position,
-            cell_length, width)
+            cell_length, width, atmosphere)
 
         self._surfaces = []
         self._surfaces.append(self.front_cell)

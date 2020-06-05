@@ -4,11 +4,12 @@ from physics.flying_object import FlyingObject
 
 class Airplane(FlyingObject):
 
-    def __init__(self, initial_state, mass, mass_moment_of_inertia):
+    def __init__(self, initial_state, mass,
+                 mass_moment_of_inertia, atmosphere):
+
         FlyingObject.__init__(
-            self, mass,
-            mass_moment_of_inertia,
-            initial_state)
+            self, mass, mass_moment_of_inertia,
+            initial_state, atmosphere)
 
     def apply_pitch_control(self, percent):
         raise NotImplementedError

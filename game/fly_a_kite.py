@@ -21,6 +21,7 @@ from game.kite.box_kite import BoxKite
 from game.sprites.explosion import Explosion
 from game.enums.colors import Colors
 from physics.stationary_object import StationaryObject
+from physics.atmosphere import Atmosphere
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from projector import Projector
@@ -38,7 +39,10 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.kite = BoxKite(10, .7, .35, .175, .8, .55, initial_pos, Angle(30))
+        global atmosphere
+        self.kite = BoxKite(
+            10, .7, .35, .175, .8, .55, atmosphere,
+            initial_pos, Angle(30))
         self.dead = False
 
         projector.center_x(self.kite.position())
@@ -83,14 +87,13 @@ def run_game():
                 if event.key == K_SPACE:
                     global string
                     simulator.untether(kite.kite)
-                    simulator.atmosphere.wind_speed = Vector2D(0, 0)
+                    atmosphere.wind_speed = Vector2D(0, 0)
                 if event.key == K_RIGHT:
-                    simulator.atmosphere.wind_speed = \
-                            simulator.atmosphere.wind_speed.add(
-                                Vector2D(-1, 0))
+                    atmosphere.wind_speed = \
+                        atmosphere.wind_speed.add(Vector2D(-1, 0))
                 if event.key == K_LEFT:
-                    simulator.atmosphere.wind_speed = \
-                            simulator.atmosphere.wind_speed.add(Vector2D(1, 0))
+                    atmosphere.wind_speed = \
+                        atmosphere.wind_speed.add(Vector2D(1, 0))
                 if event.key == K_s:
                     step = True
                 if event.key == K_p:
@@ -177,7 +180,7 @@ if not on_string:
 else:
     initial_pos = None
 
-# create plane and add to the list of sprites
+atmosphere = Atmosphere()
 kite = Kite()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(kite)
@@ -193,9 +196,9 @@ if on_string:
         kite.kite, pilot, kite.kite.bridle_position,
         Vector2D(0, 0), kite.kite.string_length)
 
-    simulator.atmosphere.wind_speed = Vector2D(-5, 0)
+    atmosphere.wind_speed = Vector2D(-5, 0)
 else:
-    simulator.atmosphere.wind_speed = Vector2D(0, 0)
+    atmosphere.wind_speed = Vector2D(0, 0)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

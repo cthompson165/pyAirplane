@@ -21,6 +21,7 @@ from game.kite.box_kite import BoxKite
 from game.enums.colors import Colors
 from util.vector_2d import Vector2D
 from projector import Projector
+from physics.atmosphere import Atmosphere
 
 
 class Kite(pygame.sprite.Sprite):
@@ -35,7 +36,8 @@ class Kite(pygame.sprite.Sprite):
                 200, 200
             ))
 
-        self.kite = BoxKite(10, .7, .35, .175, .8, .55, initial_pos)
+        self.kite = BoxKite(
+            10, .7, .35, .175, .8, .55, Atmosphere(), initial_pos)
 
         projector.center_x(self.kite.position())
 
@@ -65,7 +67,7 @@ def run_game():
     clock = pygame.time.Clock()
     running = True
 
-    paused = True
+    paused = False
     show_forces = True
 
     while running:

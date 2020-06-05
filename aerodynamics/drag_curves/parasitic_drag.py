@@ -1,6 +1,3 @@
-import enum
-
-
 class ParasiticDrag:
 
     def __init__(self, drag_coefficient):

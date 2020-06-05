@@ -43,7 +43,7 @@ class Plane(pygame.sprite.Sprite):
 
     def __init__(self):
         super(Plane, self).__init__()
-        self.original_image = pygame.image.load("images/plane4.png")
+        self.original_image = pygame.image.load("game/images/plane4.png")
         self.image = self.original_image
         self.image.set_colorkey([53, 60, 41], RLEACCEL)
         self.rect = self.image.get_rect(
@@ -194,7 +194,7 @@ class Explosion(pygame.sprite.Sprite):
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
-        self.surf = pygame.image.load("images/cloud7.png").convert()
+        self.surf = pygame.image.load("game/images/cloud7.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         # The starting position is randomly generated
         self.rect = self.surf.get_rect(

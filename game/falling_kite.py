@@ -28,7 +28,7 @@ class Kite(pygame.sprite.Sprite):
 
     def __init__(self):
         super(Kite, self).__init__()
-        self.original_image = pygame.image.load("images/box_kite_big.png")
+        self.original_image = pygame.image.load("game/images/box_kite_big.png")
         self.image = self.original_image
         self.image.set_colorkey([255, 255, 255], RLEACCEL)
         self.rect = self.image.get_rect(

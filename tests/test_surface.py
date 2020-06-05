@@ -1,7 +1,6 @@
 import unittest
 from util.vector_2d import Vector2D
 from util.angle import Angle
-from physics.force import Force
 from physics.state import State
 from aerodynamics.simulator import Simulator
 from aerodynamics.surface import Surface
@@ -98,7 +97,7 @@ class TestSurface(unittest.TestCase):
         state = State(Vector2D(0, 0), velocity, angle, 0)
         local_velocity = Simulator.get_local_airspeed(state)
         forces = surface.calculate_forces(local_velocity, 0)
-        lift = [force for force in forces if force.source == Force.Source.lift]
+        lift = [force for force in forces if force.name == "lift"]
         if len(lift) == 1:
             return lift[0].vector
         else:
@@ -114,7 +113,7 @@ class TestSurface(unittest.TestCase):
     def get_drag(self, velocity, surface, angle):
 
         forces = surface.calculate_forces(velocity.rotate(angle), 0)
-        drag = [force for force in forces if force.source == Force.Source.drag]
+        drag = [force for force in forces if force.name == "drag"]
         if len(drag) == 1:
             return drag[0].vector.magnitude()
         else:

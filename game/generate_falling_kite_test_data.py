@@ -17,12 +17,12 @@ def run_sim():
 
 
 def write(kite):
-    state = kite.current_state()
-    orientation = state.theta.degrees()
+    orientation = kite.orientation().degrees()
     precision = 8
+    position = kite.pos()
     print("[" + str(round(orientation, precision)) + ", "
-          + str(round(state.pos.x, precision)) + ", "
-          + str(round(state.pos.y, precision)) + "],")
+          + str(round(position.x, precision)) + ", "
+          + str(round(position.y, precision)) + "],")
 
 
 run_sim()

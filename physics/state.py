@@ -21,16 +21,6 @@ class State:
         return State(self.pos.copy(), self.vel.copy(), self.theta.copy(),
                      self.theta_vel)
 
-    def add(self, other):
-        return State(
-            self.pos.add(other.pos), self.vel.add(other.vel),
-            self.theta.plus(other.theta), self.theta_vel + other.theta_vel)
-
-    def times(self, t):
-        return State(
-            self.pos.scale(t), self.vel.scale(t), self.theta.times_constant(t),
-            self.theta_vel * t)
-
     def __str__(self):
         return ("pos: " + str(self.pos.round(4)) +
                 "\nvel: " + str(self.vel.round(4)) +

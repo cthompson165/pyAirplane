@@ -23,7 +23,7 @@ class Airplane(RigidBody):
         if self.engines() is not None:
             for engine in self.engines():
                 thrust_forces.append(engine.get_thrust())
-        return thrust_forces
+        self.add_local_forces(thrust_forces)
 
     def engines(self):
         raise NotImplementedError

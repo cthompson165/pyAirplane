@@ -69,7 +69,7 @@ class Plane(pygame.sprite.Sprite):
         if self.dead:
             return 0
         else:
-            return self._airplane.current_state().ground_speed().x
+            return self._airplane.velocity().x
 
     def _increment_elevator(self):
         self.elevator_percent = min(
@@ -261,12 +261,7 @@ def run_game():
 
         if step or not paused:
 
-            simulator.step(1/40.0)
-
-            if not plane.dead:
-                plane.control(pressed_keys, joystick)
-                plane.update()
-                screen.blit(plane.image, plane.rect)
+            simulator.add_forces()
 
             clouds.update()
             for cloud in clouds:
@@ -276,18 +271,27 @@ def run_game():
             for explosion in explosions:
                 screen.blit(explosion.image, explosion.rect)
 
+            if not plane.dead:
+                plane.control(pressed_keys, joystick)
+                plane.update()
+                screen.blit(plane.image, plane.rect)
+
             if show_forces:
-                surface_forces = simulator.preview_forces
+                surface_forces = plane._airplane.local_forces()
                 for force in surface_forces:
-                    start_pos = projector.project(force.global_start)
-                    end_pos = projector.project(force.global_end)
+                    if "engine" not in force.name:
+                        global_force = force.local_to_global(
+                            plane._airplane.pos(),
+                            plane._airplane.orientation())
+                        start_pos = projector.project(global_force.pos)
+                        end_pos = projector.project(global_force.endpoint())
 
-                    pygame.draw.line(
-                        screen, Colors.RED,
-                        start_pos.array(), end_pos.array(), 2)
+                        pygame.draw.line(
+                            screen, Colors.RED,
+                            start_pos.array(), end_pos.array(), 2)
 
-            # update the display and clock
             pygame.display.flip()
+            simulator.apply_forces(1/40.0)
             clock.tick(30)
 
 

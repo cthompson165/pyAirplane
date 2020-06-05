@@ -1,26 +1,17 @@
-import enum
-
-
 class Force:
 
-    def __init__(self, source, name, pos, vector):
+    def __init__(self, name, pos, vector):
         self.name = name
         self.pos = pos
         self.vector = vector
-        self.source = source
-        self.global_start = None
-        self.global_end = None
 
-    def rotate(self, angle):
-        return Force(self.source, self.name, self.pos.rotate(angle),
-                     self.vector.rotate(angle))
+    def local_to_global(self, body_position, body_orientation):
+        force_position = self.pos.rotate(body_orientation).add(body_position)
+        force_vector = self.vector.rotate(body_orientation)
+        return Force(self.name, force_position, force_vector)
+
+    def endpoint(self):
+        return self.pos.add(self.vector)
 
     def __str__(self):
         return self.name + ": " + str(self.vector) + " at " + str(self.pos)
-
-    class Source(enum.Enum):
-        lift = 1
-        drag = 2
-        thrust = 3
-        gravity = 4
-        other = 5

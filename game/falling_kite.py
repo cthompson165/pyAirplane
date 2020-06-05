@@ -99,23 +99,24 @@ def run_game():
         screen.fill(Colors.SKYBLUE)
 
         if step or not paused:
-            simulator.step(1/40)
+            simulator.add_forces()
 
-            kite.update()
             screen.blit(kite.image, kite.rect)
 
             if show_forces:
-                surface_forces = simulator.preview_forces
+                surface_forces = kite.kite.local_forces()
                 for force in surface_forces:
-                    start_pos = projector.project(force.global_start)
-                    end_pos = projector.project(force.global_end)
+                    global_force = force.local_to_global(
+                        kite.kite.pos(), kite.kite.orientation())
+                    start_pos = projector.project(global_force.pos)
+                    end_pos = projector.project(global_force.endpoint())
 
                     pygame.draw.line(
                         screen, Colors.RED,
                         start_pos.array(), end_pos.array(), 2)
 
-                airspeed = kite.kite._state.airspeed()
-                pos = kite.kite._state.pos
+                airspeed = kite.kite.airspeed()
+                pos = kite.kite.pos()
                 end_pos = pos.add(airspeed)
 
                 pygame.draw.line(
@@ -129,6 +130,9 @@ def run_game():
             draw_local_point(kite.kite, kite.kite.back_back)
 
             pygame.display.flip()
+
+            simulator.apply_forces(1/40)
+            kite.update()
             clock.tick(40)
 
 

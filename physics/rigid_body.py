@@ -9,8 +9,12 @@ class RigidBody:
         self._state = state
         self._mass = mass
         self._mass_moment_of_inertia = mass_moment_of_inertia
+        self._weight = Vector2D(0, -9.8 * self._mass)
         self.body = None
         self.key = 0
+
+        self.step_forces = []
+        self.step_local_forces = []
 
     def mass(self):
         return self._mass
@@ -19,13 +23,39 @@ class RigidBody:
         return self._mass_moment_of_inertia
 
     def pos(self):
-        return self._state.pos.copy()
+        return self._state.pos
+
+    def velocity(self):
+        return self._state.vel
+
+    def airspeed(self):
+        return self._state.airspeed()
 
     def orientation(self):
         return self._state.theta
 
-    def current_state(self):
-        return self._state.copy()
+    def angular_velocity(self):
+        return self._state.theta_vel
+
+    def global_forces(self):
+        return self.step_forces
+
+    def local_forces(self):
+        return self.step_local_forces
+
+    def clear_forces(self):
+        self.step_forces.clear()
+        self.step_local_forces.clear()
+
+    def add_local_forces(self, forces):
+        for force in forces:
+            self.add_local_force(force.name, force.pos, force.vector)
+
+    def add_local_force(self, name, position, vector):
+        self.step_local_forces.append(Force(name, position, vector))
+
+    def add_global_force(self, name, position, vector):
+        self.step_forces.append(Force(name, position, vector))
 
     def local_to_global(self, position):
         return position.rotate(self.orientation()).add(self.pos())
@@ -35,10 +65,9 @@ class RigidBody:
 
         if self.surfaces() is not None:
             for surface in self.surfaces():
-                surface_forces.extend(
+                self.add_local_forces(
                     surface.calculate_forces(
-                        local_velocity,
-                        angular_velocity))
+                        local_velocity, angular_velocity))
 
         return surface_forces
 
@@ -46,9 +75,7 @@ class RigidBody:
         return None
 
     def calculate_weight_force(self, state):
-        weight = Force(Force.Source.gravity,
-                       "weight", state.pos, self.weight())
-        return weight
+        self.add_global_force("weight", state.pos, self._weight)
 
     def weight(self):
-        return Vector2D(0, -9.8 * self.mass())
+        return self._weight

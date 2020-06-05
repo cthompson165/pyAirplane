@@ -59,10 +59,10 @@ class Angle:
             return self._radians - Angle.twoPi
 
     def _normalize(angle):
-        while angle >= 360:
-            angle -= 360
         while angle < 0:
             angle += 360
+        while angle >= 360:
+            angle -= 360
         return angle
 
     def __str__(self):

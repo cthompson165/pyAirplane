@@ -35,13 +35,13 @@ def run_sim(steps):
 
 
 def write(time, airplane, f):
-    state = airplane.current_state()
-    orientation = adjust_angle(state.theta)
+    orientation = adjust_angle(airplane.orientation())
+    position = airplane.pos()
     f.write(
         str(time) + ","
         + str(orientation) + ","
-        + str(state.pos.x) + ","
-        + str(state.pos.y)
+        + str(position.x) + ","
+        + str(position.y)
         + "\n")
 
     orientations.append(orientation)

@@ -1,12 +1,10 @@
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from physics.atmosphere import Atmosphere
-from physics.force import Force
 from physics.state import State
 from physics.rigid_body import RigidBody
 from physics.stationary_object import StationaryObject
 import pymunk
-from pymunk.vec2d import Vec2d
 import math
 
 
@@ -24,9 +22,9 @@ class Simulator:
     def register_flying_object(self, flying_object):
 
         body = pymunk.Body(flying_object.mass(), flying_object.moment())
-        body.position = flying_object._state.pos.array()
-        body.velocity = flying_object._state.vel.array()
-        body.angle = flying_object._state.theta.radians()
+        body.position = flying_object.pos().array()
+        body.velocity = flying_object.velocity().array()
+        body.angle = flying_object.orientation().radians()
 
         poly = pymunk.Poly.create_box(body)
         flying_object.body = body
@@ -91,7 +89,7 @@ class Simulator:
     def get_local_airspeed(state):
         return state.airspeed().rotate(state.theta.times_constant(-1))
 
-    def step(self, time):
+    def add_forces(self):
         for physical_object in self._flying_objects.values():
             flying_object = physical_object.object
             body = physical_object.body
@@ -100,28 +98,23 @@ class Simulator:
             state.wind_speed = self.atmosphere.wind_speed
 
             local_airspeed = Simulator.get_local_airspeed(state)
-            surface_forces = flying_object.calculate_surface_forces(
+            flying_object.calculate_surface_forces(
                 local_airspeed, state.theta_vel)
 
-            if surface_forces is not None:
-                for surface_force in surface_forces:
-                    body.apply_force_at_local_point(
-                        surface_force.vector.array(),
-                        surface_force.pos.array())
+            flying_object.calculate_thrust_forces()
+            flying_object.calculate_weight_force(state)
 
-            thrust_forces = flying_object.calculate_thrust_forces()
-            if thrust_forces is not None:
-                for thrust_force in thrust_forces:
-                    body.apply_force_at_local_point(
-                        thrust_force.vector.array(),
-                        thrust_force.pos.array())
+            for force in flying_object.local_forces():
+                body.apply_force_at_local_point(
+                    force.vector.array(),
+                    force.pos.array())
 
-            weight_force = flying_object.calculate_weight_force(state)
-            if weight_force is not None:
+            for force in flying_object.global_forces():
                 body.apply_force_at_world_point(
-                    weight_force.vector.array(),
-                    weight_force.pos.array())
+                    force.vector.array(),
+                    force.pos.array())
 
+    def apply_forces(self, time):
         self.space.step(time)
 
         for physical_object in self._flying_objects.values():
@@ -134,43 +127,11 @@ class Simulator:
                 Angle(math.degrees(body.angle)),
                 math.degrees(body.angular_velocity))
 
-        self.preview_step(time)
+            flying_object.clear_forces()
 
-    def preview_step(self, time):
-        for physical_object in self._flying_objects.values():
-            flying_object = physical_object.object
-            body = physical_object.body
-
-            state = flying_object._state
-            state.wind_speed = self.atmosphere.wind_speed
-
-            local_airspeed = Simulator.get_local_airspeed(state)
-            surface_forces = flying_object.calculate_surface_forces(
-                local_airspeed, state.theta_vel)
-
-            self.preview_forces = []
-
-            if surface_forces is not None:
-                for surface_force in surface_forces:
-                    pos = surface_force.pos
-                    vec = surface_force.vector.scale(10)
-                    end = pos.add(vec)
-
-                    global_pos = body.local_to_world(Vec2d(pos.x, pos.y))
-                    global_end = body.local_to_world(Vec2d(end.x, end.y))
-
-                    global_force = Force(
-                        surface_force.source,
-                        surface_force.name,
-                        None,
-                        None)
-
-                    global_force.global_start = Vector2D(
-                        global_pos.x, global_pos.y)
-                    global_force.global_end = Vector2D(
-                        global_end.x, global_end.y)
-
-                    self.preview_forces.append(global_force)
+    def step(self, time):
+        self.add_forces()
+        self.apply_forces(time)
 
 
 class _PhysicalObject:

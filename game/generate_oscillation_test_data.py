@@ -27,12 +27,12 @@ def run_sim():
 
 
 def write(airplane):
-    state = airplane.current_state()
-    orientation = state.theta.degrees()
+    orientation = airplane.orientation().degrees()
     precision = 8
+    position = airplane.pos()
     print("[" + str(round(orientation, precision)) + ", "
-          + str(round(state.pos.x, precision)) + ", "
-          + str(round(state.pos.y, precision)) + "],")
+          + str(round(position.x, precision)) + ", "
+          + str(round(position.y, precision)) + "],")
 
 
 run_sim()

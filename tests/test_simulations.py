@@ -23,13 +23,13 @@ class TestSimulations(unittest.TestCase):
                 [0.0, -20.24046438, 944.28296917],
                 [360.0, -20.24046438, 939.29334487],
                 [0.0, -20.24046438, 934.30372057],
-                [0.0, -20.24046438, 929.31409626],
-                [0.0, -20.24046438, 924.32447196],
-                [0.0, -20.24046438, 919.33484766],
+                [360.0, -20.24046438, 929.31409626],
+                [360.0, -20.24046438, 924.32447196],
+                [360.0, -20.24046438, 919.33484766],
                 [0.0, -20.24046438, 914.34522336],
                 [0.0, -20.24046438, 909.35559905],
-                [360.0, -20.24046438, 904.36597475],
-                [360.0, -20.24046438, 899.37635045]]
+                [0.0, -20.24046438, 904.36597475],
+                [0.0, -20.24046438, 899.37635045]]
 
         self.run_tests(self.get_box_kite_data(), expected_data)
 
@@ -75,11 +75,11 @@ class TestSimulations(unittest.TestCase):
         actual_data = []
         for i in range(0, steps):
             simulator.step(t)
-            state = kite.current_state()
+            position = kite.pos()
 
             if i == 0 or i % step_size == 0:
-                actual = [state.theta.degrees(),
-                          state.pos.x, state.pos.y]
+                actual = [kite.orientation().degrees(),
+                          position.x, position.y]
                 actual_data.append(actual)
 
         return actual_data
@@ -107,11 +107,10 @@ class TestSimulations(unittest.TestCase):
         t = 1/30.0
         actual_data = []
         for i in range(0, steps):
-            state = airplane.current_state()
-
             if i == 0 or i % step_size == 0:
-                actual = [state.theta.degrees(),
-                          state.pos.x, state.pos.y]
+                position = airplane.pos()
+                actual = [airplane.orientation().degrees(),
+                          position.x, position.y]
                 actual_data.append(actual)
 
             simulator.step(t)

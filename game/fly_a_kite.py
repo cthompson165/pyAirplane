@@ -1,7 +1,3 @@
-# TODO
-# * when cut string need to move center of gravity back to CG
-# * move cp to middle as aoa gets larger (middle at 90, 1/4 at 45)
-
 import pygame
 from pygame.locals import (
     RLEACCEL,

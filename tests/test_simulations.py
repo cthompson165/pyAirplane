@@ -65,7 +65,7 @@ class TestSimulations(unittest.TestCase):
     def get_box_kite_data(self):
 
         kite = BoxKite(
-            10, .7, .35, .175, .8, .55, Atmosphere(), Vector2D(0, 1000))
+            10, .7, .35, .175, .8, .55, Atmosphere(), Vector2D(0, 14000))
 
         simulator = Simulator()
         simulator.register_flying_object(kite)
@@ -80,14 +80,14 @@ class TestSimulations(unittest.TestCase):
 
             if i == 0 or i % step_size == 0:
                 actual = [kite.orientation().degrees(),
-                          position.x, position.y]
+                          position.x, position.y - 13000]
                 actual_data.append(actual)
 
         return actual_data
 
     def get_747_data(self):
 
-        airplane = SevenFourSeven(Vector2D(0, 0),
+        airplane = SevenFourSeven(Vector2D(0, 14000),
                                   Vector2D(265.3581764, 0))
 
         simulator = Simulator()
@@ -111,7 +111,7 @@ class TestSimulations(unittest.TestCase):
             if i == 0 or i % step_size == 0:
                 position = airplane.position()
                 actual = [airplane.orientation().degrees(),
-                          position.x, position.y]
+                          position.x, position.y - 14000]
                 actual_data.append(actual)
 
             simulator.step(t)

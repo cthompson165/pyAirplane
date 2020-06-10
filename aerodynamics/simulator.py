@@ -63,6 +63,7 @@ class Simulator:
 
         joint = pymunk.SlideJoint(body1, body2, position1.array(),
                                   position2.array(), 0, length)
+
         self.space.add(joint)
 
         tether = _Tether(object1, object2, joint)

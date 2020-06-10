@@ -10,5 +10,7 @@ kite = BoxKite(
 simulator = Simulator()
 simulator.register_flying_object(kite)
 t = 1/40.0
+print("start")
 for i in range(0, 2000):
     simulator.step(t)
+print("done")

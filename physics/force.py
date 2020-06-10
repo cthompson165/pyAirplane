@@ -11,8 +11,8 @@ class Force:
         force_vector = self.vector.rotate(body_orientation)
         return Force(self.name, force_position, force_vector)
 
-    def endpoint(self):
-        return self.position.add(self.vector)
+    def endpoint(self, scaling_factor=1):
+        return self.position.add(self.vector.scale(scaling_factor))
 
     def __str__(self):
         return self.name + ": " + str(self.vector) \

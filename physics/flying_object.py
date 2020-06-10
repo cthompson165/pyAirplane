@@ -77,6 +77,9 @@ class FlyingObject:
     def calculate_thrust_forces(self):
         return None
 
+    def surfaces(self):
+        return None
+
     def calculate_weight_force(self, state):
         self.add_global_force("weight", state.position, self._weight)
 

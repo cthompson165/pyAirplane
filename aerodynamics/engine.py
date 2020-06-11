@@ -28,4 +28,4 @@ class Engine:
 
     def get_thrust(self):
         thrust = self._orientation_unit.scale(self._current_thrust)
-        return Force(self.name, self.position, thrust)
+        return Force(self.name, Force.THRUST, self.position, thrust)

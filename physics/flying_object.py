@@ -50,13 +50,14 @@ class FlyingObject:
 
     def add_local_forces(self, forces):
         for force in forces:
-            self.add_local_force(force.name, force.position, force.vector)
+            self.add_local_force(force.name, force.source,
+                                 force.position, force.vector)
 
-    def add_local_force(self, name, position, vector):
-        self.step_local_forces.append(Force(name, position, vector))
+    def add_local_force(self, name, source, position, vector):
+        self.step_local_forces.append(Force(name, source, position, vector))
 
-    def add_global_force(self, name, position, vector):
-        self.step_forces.append(Force(name, position, vector))
+    def add_global_force(self, name, source, position, vector):
+        self.step_forces.append(Force(name, source, position, vector))
 
     def local_to_global(self, position):
         return position.rotate(self.orientation()).add(self.position())
@@ -81,7 +82,8 @@ class FlyingObject:
         return None
 
     def calculate_weight_force(self, state):
-        self.add_global_force("weight", state.position, self._weight)
+        self.add_global_force("weight", Force.GRAVITY,
+                              state.position, self._weight)
 
     def weight(self):
         return self._weight

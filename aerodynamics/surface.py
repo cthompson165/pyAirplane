@@ -61,7 +61,7 @@ class Surface:
             lift_mag = self.calculate_lift(CL, velocity_magnitude, air_density)
             lift_dir = Surface.get_lift_unit(aoa, surface_velocity)
             lift_force = lift_dir.scale(lift_mag)
-            forces.append(Force("lift",
+            forces.append(Force("lift", Force.LIFT,
                                 current_cp, lift_force))
 
         CD = 0
@@ -71,7 +71,7 @@ class Surface:
                 CD, velocity_magnitude, air_density)
             drag_dir = surface_velocity.reverse().unit()
             drag_vector = drag_dir.scale(drag_mag)
-            drag_force = Force("drag",
+            drag_force = Force("drag", Force.DRAG,
                                current_cp, drag_vector)
             forces.append(drag_force)
 

@@ -18,6 +18,7 @@ from physics.atmosphere import Atmosphere
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from projector import Projector
+from debug_draw import DebugDraw
 
 
 class Kite(pygame.sprite.Sprite):
@@ -94,30 +95,7 @@ def run_game():
             simulator.add_forces()
 
             if show_forces:
-                surface_forces = kite.kite.local_forces()
-                total = Vector2D(0, 0)
-                for force in surface_forces:
-                    global_force = force.local_to_global(
-                        kite.kite.position(), kite.kite.orientation())
-                    start_pos = projector.project(global_force.position)
-                    end_pos = projector.project(global_force.endpoint())
-
-                    total = total.add(force.vector)
-
-                    pygame.draw.line(
-                        screen, Colors.RED,
-                        start_pos.array(), end_pos.array(), 2)
-
-                airspeed = kite.kite.airspeed()
-                position = kite.kite.position()
-                end_pos = position.add(airspeed)
-
-                pygame.draw.line(
-                    screen, Colors.GREEN,
-                    projector.project(position).array(),
-                    projector.project(end_pos).array(), 2)
-
-                print("AF: " + str(round(total.magnitude(), 1)))
+                debug_draw.draw_forces(kite.kite)
 
             global_bridle = kite.kite.position().add(
                 bridle_position.rotate(
@@ -156,6 +134,8 @@ kite_position = anchor_position.subtract(Vector2D(1, -1))
 # m/p = 0.003
 projector = Projector(Vector2D(
     SCREEN_WIDTH, SCREEN_HEIGHT), .0133)
+
+debug_draw = DebugDraw(screen, projector)
 
 pygame.font.init()
 font = pygame.font.SysFont('Comic Sans MS', 30)

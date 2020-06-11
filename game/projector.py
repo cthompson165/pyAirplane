@@ -3,12 +3,16 @@ from util.vector_2d import Vector2D
 
 class Projector:
 
-    def __init__(self, screen_size, meters_per_pixel):
+    def __init__(self, screen_size, meters_per_pixel=1.0):
         self._screen_size = screen_size  # pixels
         self._meters_per_pixel = meters_per_pixel
         self._centering_offset = screen_size.scale(.5)  # pixels
         self._origin_offset = Vector2D(0, 0)  # pixels
 
+        self.set_meters_per_pixel(meters_per_pixel)
+
+    def set_meters_per_pixel(self, meters_per_pixel):
+        self._meters_per_pixel = meters_per_pixel
         self._pixels_per_meter = 1.0 / meters_per_pixel
 
     def project(self, real_pos):
@@ -17,7 +21,7 @@ class Projector:
 
         # translate to origin
         screen_pos = screen_pos.subtract(self._origin_offset)
-        return screen_pos
+        return Vector2D(int(screen_pos.x), int(screen_pos.y))
 
     def _map_to_pixels(self, real_pos):
         ''' get pixel position from world position '''

@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import (
-    RLEACCEL,
     K_ESCAPE,
     K_RIGHT,
     K_LEFT,
@@ -19,34 +18,7 @@ from util.vector_2d import Vector2D
 from util.angle import Angle
 from projector import Projector
 from debug_draw import DebugDraw
-
-
-class Kite(pygame.sprite.Sprite):
-
-    def __init__(self):
-        super(Kite, self).__init__()
-        self.original_image = pygame.image.load("game/images/box_kite_big.png")
-        self.image = self.original_image
-        self.image.set_colorkey([255, 255, 255], RLEACCEL)
-        self.rect = self.image.get_rect(
-            center=(
-                200, 200
-            ))
-
-        global atmosphere
-        self.kite = SurfacelessKite(
-            4, 2, atmosphere,
-            kite_position, Angle(0))
-
-        projector.center_x(self.kite.position())
-
-    def update(self):
-        position = self.kite.position()
-        screen_pos = projector.project(position)
-        self.image = pygame.transform.rotate(
-            self.original_image, self.kite.orientation().degrees())
-        self.rect = self.image.get_rect(center=self.rect.center)
-        self.rect.center = screen_pos.toint().array()
+from game.sprites.kite_sprite import KiteSprite
 
 
 def run_game():
@@ -80,26 +52,24 @@ def run_game():
 
         screen.fill(Colors.SKYBLUE)
 
-        projected_anchor_position = projector.project(anchor_position)
-
         pygame.draw.circle(
             screen, Colors.RED,
-            projected_anchor_position.toint().array(),
+            projector.project(anchor_position).array(),
             5, 3)
 
         if step or not paused:
 
-            kite.update()
-            screen.blit(kite.image, kite.rect)
+            kite_sprite.update()
+            screen.blit(kite_sprite.image, kite_sprite.rect)
 
             simulator.add_forces()
 
             if show_forces:
-                debug_draw.draw_forces(kite.kite)
+                debug_draw.draw_forces(kite)
 
-            global_bridle = kite.kite.position().add(
+            global_bridle = kite.position().add(
                 bridle_position.rotate(
-                    kite.kite.orientation()))
+                    kite.orientation()))
 
             pygame.draw.line(
                 screen, Colors.WHITE,
@@ -127,35 +97,34 @@ pygame.display.set_caption("Wind Tunnel")
 anchor_position = Vector2D(0, 5)
 kite_position = anchor_position.subtract(Vector2D(1, -1))
 
-# meters per pixel: image is 34 pixels wide
-# a kite is .9 meters. So m/p = .9/34 = .026
-
-# big image is 300 pixes
-# m/p = 0.003
 projector = Projector(Vector2D(
-    SCREEN_WIDTH, SCREEN_HEIGHT), .0133)
+    SCREEN_WIDTH, SCREEN_HEIGHT))
 
 debug_draw = DebugDraw(screen, projector)
 
 pygame.font.init()
 font = pygame.font.SysFont('Comic Sans MS', 30)
 
-initial_pos = None
-
 atmosphere = Atmosphere()
-kite = Kite()
+
+kite = SurfacelessKite(
+    4, 2, atmosphere,
+    kite_position, Angle(0))
+
+kite_sprite = KiteSprite(kite, "game/images/box_kite_big.png", projector)
 all_sprites = pygame.sprite.Group()
-all_sprites.add(kite)
+all_sprites.add(kite_sprite)
+projector.set_meters_per_pixel(kite_sprite.get_meters_per_pixel(4))
+projector.center_x(kite.position())
 
 simulator = Simulator()
-simulator.register_flying_object(kite.kite)
+simulator.register_flying_object(kite)
 
 bridle_position = Vector2D(1, -1)
-
 anchor = StationaryObject(anchor_position)
 simulator.register_stationary_object(anchor, anchor_position)
 simulator.tether(
-    kite.kite, anchor, bridle_position,
+    kite, anchor, bridle_position,
     Vector2D(0, 0), 2)
 
 run_game()

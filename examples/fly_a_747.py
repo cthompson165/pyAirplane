@@ -23,19 +23,6 @@ from projector import Projector
 from sprites.explosion import Explosion
 
 
-class Colors:
-    ''' colors enum '''
-    GREEN = (20, 255, 140)
-    FOREST_GREEN = (11, 102, 35)
-    GREY = (210, 210, 210)
-    WHITE = (255, 255, 255)
-    RED = (255, 0, 0)
-    BLUE = (0, 0, 255)
-    PURPLE = (255, 0, 255)
-    SKYBLUE = (135, 206, 250)
-    BLACK = (0, 0, 0)
-
-
 class Plane(pygame.sprite.Sprite):
     ''' Plane sprite '''
 
@@ -44,7 +31,7 @@ class Plane(pygame.sprite.Sprite):
 
     def __init__(self):
         super(Plane, self).__init__()
-        self.original_image = pygame.image.load("game/images/plane4.png")
+        self.original_image = pygame.image.load("examples/images/plane4.png")
         self.image = self.original_image
         self.image.set_colorkey([53, 60, 41], RLEACCEL)
         self.rect = self.image.get_rect(
@@ -157,7 +144,7 @@ class Plane(pygame.sprite.Sprite):
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
-        self.surf = pygame.image.load("game/images/cloud7.png").convert()
+        self.surf = pygame.image.load("examples/images/cloud7.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         # The starting position is randomly generated
         self.rect = self.surf.get_rect(
@@ -213,10 +200,10 @@ def run_game():
         if not running:
             break
 
-        screen.fill(Colors.SKYBLUE)
+        screen.fill(pygame.Color("skyblue"))
 
         pygame.draw.rect(screen,
-                         Colors.FOREST_GREEN,
+                         pygame.Color("forestgreen"),
                          (0, SCREEN_HEIGHT - GROUND_HEIGHT,
                           SCREEN_WIDTH, GROUND_HEIGHT))
 
@@ -250,7 +237,7 @@ def run_game():
                         end_pos = projector.project(global_force.endpoint())
 
                         pygame.draw.line(
-                            screen, Colors.RED,
+                            screen, pygame.Color("red"),
                             start_pos.array(), end_pos.array(), 2)
 
             pygame.display.flip()

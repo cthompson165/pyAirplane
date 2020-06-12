@@ -4,20 +4,13 @@ import pygame
 
 class DebugDraw:
 
-    GREEN = (0, 200, 0)
-    BLUE = (0, 0, 128)
-    LIGHTBLUE = (0, 0, 255)
-    RED = (200, 0, 0)
-    GREY = (210, 210, 210)
-    PURPLE = (102, 0, 102)
-
     def __init__(self, screen, projector):
         self.colors = {
-            Force.LIFT: DebugDraw.BLUE,
-            Force.DRAG: DebugDraw.LIGHTBLUE,
-            Force.THRUST: DebugDraw.RED,
-            Force.GRAVITY: DebugDraw.GREY,
-            Force.OTHER: DebugDraw.PURPLE
+            Force.LIFT: pygame.Color("blue"),
+            Force.DRAG: pygame.Color("dodgerblue"),
+            Force.THRUST: pygame.Color("red"),
+            Force.GRAVITY: pygame.Color("grey"),
+            Force.OTHER: pygame.Color("purple")
         }
         self.projector = projector
         self.screen = screen
@@ -42,6 +35,6 @@ class DebugDraw:
         end_pos = position.add(airspeed)
 
         pygame.draw.line(
-            self.screen, DebugDraw.GREEN,
+            self.screen, pygame.Color("green"),
             self.projector.project(position).array(),
             self.projector.project(end_pos).array(), 2)

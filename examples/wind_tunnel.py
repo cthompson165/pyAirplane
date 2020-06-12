@@ -11,14 +11,13 @@ from pygame.locals import (
 
 from aerodynamics.simulator import Simulator
 from aerodynamics.kites.box_kite import BoxKite
-from game.enums.colors import Colors
 from physics.stationary_object import StationaryObject
 from physics.atmosphere import Atmosphere
 from util.vector_2d import Vector2D
 from util.angle import Angle
 from projector import Projector
 from debug_draw import DebugDraw
-from game.sprites.kite_sprite import KiteSprite
+from examples.sprites.kite_sprite import KiteSprite
 from aerodynamics.kites.bridle import Bridle
 
 
@@ -56,10 +55,10 @@ def run_game():
         if not running:
             break
 
-        screen.fill(Colors.SKYBLUE)
+        screen.fill(pygame.Color("skyblue"))
 
         pygame.draw.circle(
-            screen, Colors.RED,
+            screen, pygame.Color("red"),
             projector.project(anchor_position).array(),
             5, 3)
 
@@ -74,16 +73,10 @@ def run_game():
                 debug_draw.draw_forces(kite)
 
             pygame.draw.line(
-                screen, Colors.WHITE,
+                screen, pygame.Color("white"),
                 projector.project(anchor_position).array(),
                 projector.project(kite.global_bridle()).array(),
                 1)
-
-            pygame.draw.circle(
-                screen, Colors.BLUE,
-                projector.project(
-                    kite.local_to_global(Vector2D(2, 0))).array(),
-                2, 1)
 
             wind_speed_text = font.render(
                 'Windspeed: ' + str(atmosphere.wind_speed),
@@ -149,7 +142,7 @@ kite = BoxKite(
     bridle=bridle,
     initial_orientation=Angle(0))
 
-kite_sprite = KiteSprite(kite, "game/images/box_kite_big.png", projector)
+kite_sprite = KiteSprite(kite, "examples/images/box_kite_big.png", projector)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(kite_sprite)
 projector.set_meters_per_pixel(kite_sprite.get_meters_per_pixel(4))

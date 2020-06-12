@@ -10,7 +10,7 @@ from pygame.locals import (
 )
 
 from aerodynamics.simulator import Simulator
-from game.kite.box_kite import BoxKite
+from aerodynamics.kites.box_kite import BoxKite
 from game.enums.colors import Colors
 from physics.stationary_object import StationaryObject
 from physics.atmosphere import Atmosphere
@@ -19,7 +19,7 @@ from util.angle import Angle
 from projector import Projector
 from debug_draw import DebugDraw
 from game.sprites.kite_sprite import KiteSprite
-from game.kite.bridle import Bridle
+from aerodynamics.kites.bridle import Bridle
 
 
 def run_game():

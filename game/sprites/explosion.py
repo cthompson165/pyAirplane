@@ -9,7 +9,7 @@ class Explosion(pygame.sprite.Sprite):
         self._explosion_anim['lg'] = []
         self._explosion_anim['sm'] = []
         for i in range(9):
-            filename = 'game/images/regularExplosion0{}.png'.format(i)
+            filename = '/game/images/regularExplosion0{}.png'.format(i)
             img = pygame.image.load(filename).convert()
             img.set_colorkey(Colors.BLACK)
             img_lg = pygame.transform.scale(img, (75, 75))

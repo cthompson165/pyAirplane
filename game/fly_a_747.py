@@ -54,7 +54,7 @@ class Plane(pygame.sprite.Sprite):
         self.pressed_keys = []
 
         self._airplane = SevenFourSeven(
-            Vector2D(5, 5),
+            Vector2D(5, 14000),
             Vector2D(265, 0))
 
         self.dead = False

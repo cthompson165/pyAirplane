@@ -1,4 +1,4 @@
-from game.kite.box_kite import BoxKite
+from aerodynamics.kites.box_kite import BoxKite
 from util.vector_2d import Vector2D
 from aerodynamics.simulator import Simulator
 from physics.atmosphere import Atmosphere

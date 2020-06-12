@@ -5,8 +5,8 @@ from physics.atmosphere import Atmosphere
 
 
 def run_sim():
-    kite = BoxKite(
-        10, .7, .35, .175, .8, .55, Atmosphere(), Vector2D(0, 1000))
+    kite = BoxKite(.7, .35, .175, Atmosphere(),
+                   initial_pos=Vector2D(0, 14000))
 
     simulator = Simulator()
     simulator.register_flying_object(kite)

@@ -10,7 +10,7 @@ from pygame.locals import (
 )
 
 from aerodynamics.simulator import Simulator
-from game.kite.surfaceless_kite import SurfacelessKite
+from game.kite.box_kite import BoxKite
 from game.enums.colors import Colors
 from physics.stationary_object import StationaryObject
 from physics.atmosphere import Atmosphere
@@ -19,6 +19,7 @@ from util.angle import Angle
 from projector import Projector
 from debug_draw import DebugDraw
 from game.sprites.kite_sprite import KiteSprite
+from game.kite.bridle import Bridle
 
 
 def run_game():
@@ -27,6 +28,11 @@ def run_game():
     running = True
     paused = False
     show_forces = True
+
+    target_steps = 500
+    fps = 30
+    spf = int(target_steps/fps)
+    t = 1.0/target_steps
 
     while running:
         step = False
@@ -67,25 +73,53 @@ def run_game():
             if show_forces:
                 debug_draw.draw_forces(kite)
 
-            global_bridle = kite.position().add(
-                bridle_position.rotate(
-                    kite.orientation()))
-
             pygame.draw.line(
                 screen, Colors.WHITE,
                 projector.project(anchor_position).array(),
-                projector.project(global_bridle).array(),
+                projector.project(kite.global_bridle()).array(),
                 1)
 
-            text_surface = font.render(
+            pygame.draw.circle(
+                screen, Colors.BLUE,
+                projector.project(
+                    kite.local_to_global(Vector2D(2, 0))).array(),
+                2, 1)
+
+            wind_speed_text = font.render(
                 'Windspeed: ' + str(atmosphere.wind_speed),
                 False, (0, 0, 0))
 
-            screen.blit(text_surface, (10, 10))
+            lift = kite.total_lift().magnitude()
+            drag = kite.total_drag().magnitude()
+            l_d = 0
+            if drag > 0:
+                l_d = lift / drag
+
+            lift_drag_text = font.render(
+                'L/D: ' + str(round(l_d, 2)),
+                False, (0, 0, 0))
+
+            kite_relative = kite.global_bridle().subtract(anchor_position)
+            angle = kite_relative.angle()
+            degrees = 180 - angle.degrees()
+            if degrees < 0:
+                degrees = 0
+
+            angle_text = font.render(
+                'Angle: ' + str(round(degrees, 2)),
+                False, (0, 0, 0))
+
+            screen.blit(wind_speed_text, (10, 10))
+            screen.blit(lift_drag_text, (10, 50))
+            screen.blit(angle_text, (10, 90))
 
             pygame.display.flip()
-            simulator.apply_forces(1/30.0)
-            clock.tick(30)
+            simulator.apply_forces(t)
+
+            for i in range(0, spf - 1):
+                simulator.step(t)
+
+            clock.tick(fps)
 
 
 pygame.init()
@@ -94,8 +128,7 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Wind Tunnel")
 
-anchor_position = Vector2D(0, 5)
-kite_position = anchor_position.subtract(Vector2D(1, -1))
+anchor_position = Vector2D(0, 3)
 
 projector = Projector(Vector2D(
     SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -106,10 +139,15 @@ pygame.font.init()
 font = pygame.font.SysFont('Comic Sans MS', 30)
 
 atmosphere = Atmosphere()
+atmosphere.wind_speed = Vector2D(-1, 0)
 
-kite = SurfacelessKite(
-    4, 2, atmosphere,
-    kite_position, Angle(0))
+bridle = Bridle(4.1, 3.7, 4)
+bridle.initial_pos = anchor_position.subtract(Vector2D(2, 0))
+
+kite = BoxKite(
+    4, 2, 4/3.0, atmosphere,
+    bridle=bridle,
+    initial_orientation=Angle(0))
 
 kite_sprite = KiteSprite(kite, "game/images/box_kite_big.png", projector)
 all_sprites = pygame.sprite.Group()
@@ -120,11 +158,10 @@ projector.center_x(kite.position())
 simulator = Simulator()
 simulator.register_flying_object(kite)
 
-bridle_position = Vector2D(1, -1)
 anchor = StationaryObject(anchor_position)
 simulator.register_stationary_object(anchor, anchor_position)
 simulator.tether(
-    kite, anchor, bridle_position,
+    kite, anchor, kite.bridle_position,
     Vector2D(0, 0), 2)
 
 run_game()

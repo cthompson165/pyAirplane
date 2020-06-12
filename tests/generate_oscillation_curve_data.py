@@ -7,9 +7,8 @@ success = True
 
 
 def run_sim(steps):
-    airplane = SevenFourSeven(Vector2D(0, 0),
+    airplane = SevenFourSeven(Vector2D(0, 14000),
                               Vector2D(265.3581764, 0))
-
     simulator = Simulator()
     simulator.register_flying_object(airplane)
 
@@ -37,11 +36,15 @@ def run_sim(steps):
 def write(time, airplane, f):
     orientation = adjust_angle(airplane.orientation())
     position = airplane.position()
+
+    # original curve was made at sea level y pos but at 
+    # 747 cruising altitude air density. subtract 14K
+    # to get the two to match up
     f.write(
         str(time) + ","
         + str(orientation) + ","
         + str(position.x) + ","
-        + str(position.y)
+        + str(position.y - 14000)
         + "\n")
 
     orientations.append(orientation)

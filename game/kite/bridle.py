@@ -17,7 +17,9 @@ class Bridle:
         self._x = knot_length * math.cos(bridle_angle)
         self._y = -knot_length * math.sin(bridle_angle)
 
+        self.initial_pos = Vector2D(0, 0)
+
     def get_position(self):
-        ''' position relative to knot angle with kite horizontal and
-        knot angle at the back (negative x) '''
+        ''' position relative to bottom attachment point of the kite
+        with kite horizontal '''
         return Vector2D(self._x, self._y)

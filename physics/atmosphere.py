@@ -7,9 +7,9 @@ class Atmosphere:
 
         # from
         # https://www.engineeringtoolbox.com/standard-atmosphere-d_604.html
-        # (except 13000 which is from nasa report
-        # the density is of air at 12,192 meters
-        # is approximately 0.30267 kg/m3)
+        # (except 13000 which is from nasa exercises
+        # saying air at 12,192 meters is approximately
+        # 0.30267 kg/m3)
         self.air_density = {-1000: 1.347,
                             0: 1.225,
                             1000: 1.112,
@@ -22,7 +22,7 @@ class Atmosphere:
                             8000: 0.5258,
                             9000: 0.4671,
                             10000: 0.4135,
-                            11000: 0.30267,  # from nasa boeing report
+                            11000: 0.30267,  # from nasa boeing exercise
                             15000: 0.1948,
                             20000: 0.08891,
                             25000: 0.04008,

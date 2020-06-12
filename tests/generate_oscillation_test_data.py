@@ -4,7 +4,7 @@ from util.vector_2d import Vector2D
 
 
 def run_sim():
-    airplane = SevenFourSeven(Vector2D(0, 0),
+    airplane = SevenFourSeven(Vector2D(0, 14000),
                               Vector2D(265.3581764, 0))
 
     simulator = Simulator()

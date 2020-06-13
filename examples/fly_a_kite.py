@@ -5,6 +5,7 @@ from pygame.locals import (
     K_LEFT,
     K_s,
     K_p,
+    K_f,
     KEYDOWN,
     QUIT,
 )
@@ -44,6 +45,8 @@ def run_game():
                 if event.key == K_LEFT:
                     atmosphere.wind_speed = \
                         atmosphere.wind_speed.add(Vector2D(.5, 0))
+                if event.key == K_f:
+                    show_forces = not show_forces
                 if event.key == K_s:
                     step = True
                 if event.key == K_p:

@@ -69,7 +69,13 @@ The rock hits the ground after about 4.7 seconds and is blown off course by a li
 
 ## Kite
 fly_a_kite.py simulates flying a box kite. Use the left and right arrows to control the 
-windspeed.
+windspeed. 
+
+For debugging forces, you can use the following keys:
+* f: turn on and off graphical force display. Lift is show in blue, drag in light
+blue, velocity in green, and thrust in red.
+* p: pause and unpause
+* s: when paused, advance one step
 
 ## Airplane
 fly_a_747.py simulates flying a 747 (with a bomber plane image because I am lazy). Use
@@ -77,6 +83,8 @@ the up and down arrows to control the elevator and right and left to control thr
 If you have a flight-stick plugged in the simulation will try to use that. Note that
 the airplane will always explode if you try to land. This would be a fun upgrade if anyone 
 wants to take it on.
+
+The airplane example implements the same debug keys as the kite example.
 
 ## Disclaimers
 I wrote this for fun and don't guarantee the accuracy of any of it. I got a lot of the information

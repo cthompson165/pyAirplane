@@ -15,13 +15,16 @@ class Projector:
         self._meters_per_pixel = meters_per_pixel
         self._pixels_per_meter = 1.0 / meters_per_pixel
 
+    def set_resolution(self, pixels, meters):
+        return self.set_meters_per_pixel(meters / pixels)
+
     def project(self, real_pos):
 
         screen_pos = self._map_to_pixels(real_pos)
 
         # translate to origin
         screen_pos = screen_pos.subtract(self._origin_offset)
-        return Vector2D(int(screen_pos.x), int(screen_pos.y))
+        return (int(screen_pos.x), int(screen_pos.y))
 
     def _map_to_pixels(self, real_pos):
         ''' get pixel position from world position '''
@@ -46,4 +49,4 @@ class Projector:
             projected.x - self._centering_offset.x, self._origin_offset.y)
 
     def get_pixels(self, meters):
-        return meters * self._pixels_per_meter
+        return int(meters * self._pixels_per_meter)

@@ -58,7 +58,7 @@ def run_game():
 
         pygame.draw.circle(
             screen, pygame.Color("red"),
-            projector.project(anchor_position).array(),
+            projector.project(anchor_position),
             5, 3)
 
         if step or not paused:
@@ -73,8 +73,8 @@ def run_game():
 
             pygame.draw.line(
                 screen, pygame.Color("white"),
-                projector.project(anchor_position).array(),
-                projector.project(kite.global_bridle()).array(),
+                projector.project(anchor_position),
+                projector.project(kite.global_bridle()),
                 1)
 
             wind_speed_text = font.render(
@@ -144,7 +144,7 @@ kite = BoxKite(
 kite_sprite = KiteSprite(kite, "examples/images/box_kite_big.png", projector)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(kite_sprite)
-projector.set_meters_per_pixel(kite_sprite.get_meters_per_pixel(4))
+projector.set_resolution(kite_sprite.rect.width, 4)
 projector.center_x(kite.position())
 
 simulator = Simulator()

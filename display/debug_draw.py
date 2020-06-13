@@ -28,7 +28,7 @@ class DebugDraw:
 
                 pygame.draw.line(
                     self.screen, self.colors[force.source],
-                    start_pos.array(), end_pos.array(), 2)
+                    start_pos, end_pos, 2)
 
         airspeed = flying_object.airspeed()
         position = flying_object.position()
@@ -36,5 +36,5 @@ class DebugDraw:
 
         pygame.draw.line(
             self.screen, pygame.Color("green"),
-            self.projector.project(position).array(),
-            self.projector.project(end_pos).array(), 2)
+            self.projector.project(position),
+            self.projector.project(end_pos), 2)

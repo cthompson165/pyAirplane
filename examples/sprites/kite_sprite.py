@@ -26,7 +26,5 @@ class KiteSprite(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(
             self.original_image, self.kite.orientation().degrees())
         self.rect = self.image.get_rect(center=self.rect.center)
-        self.rect.center = screen_pos.toint().array()
+        self.rect.center = screen_pos
 
-    def get_meters_per_pixel(self, kite_length):
-        return kite_length / self.rect.width

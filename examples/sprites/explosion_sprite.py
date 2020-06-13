@@ -1,7 +1,7 @@
 import pygame
 
 
-class Explosion(pygame.sprite.Sprite):
+class ExplosionSprite(pygame.sprite.Sprite):
     def __init__(self, center, size):
 
         self._explosion_anim = {}

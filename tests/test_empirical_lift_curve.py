@@ -1,12 +1,12 @@
 import unittest
-from flight.lift.empirical_lift import EmpiricalLift
+from flight.lift.empirical import Empirical
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
 
 
-class FakeLiftCurve(EmpiricalLift):
+class FakeLiftCurve(Empirical):
     def __init__(self):
-        EmpiricalLift.__init__(self)
+        Empirical.__init__(self)
 
     def get_points(self):
         points = []

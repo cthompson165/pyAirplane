@@ -3,12 +3,10 @@ from physics.angle import Angle
 from flight.airplane import Airplane
 from flight.engine import Engine
 from flight.surface import Surface
-from flight.lift.linear_lift import LinearLift
-from flight.lift.lifting_line_lift import LiftingLineLift
-from flight.drag.lifting_line import LiftingLine
-from flight.drag.parasitic import Parasitic
 from physics.state import State
 from physics.atmosphere import Atmosphere
+import flight.lift as lift
+import flight.drag as drag
 
 
 class SevenFourSeven(Airplane):
@@ -22,19 +20,19 @@ class SevenFourSeven(Airplane):
         Airplane.__init__(self, state, self._mass(),
                           self._mass_moment_of_inertia(), atmosphere)
 
-        wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
-        wing_drag_curve = LiftingLine(6.98, 0.0305, 0.75)
+        wing_lift_curve = lift.Linear(6.98, 0.29, 5.5)
+        wing_drag_curve = drag.LiftingLine(6.98, 0.0305, 0.75)
         self._wing = Surface("wing", Vector2D(0, 0), 0, Angle(2.4),
                              510.97, wing_lift_curve, wing_drag_curve,
                              atmosphere)
 
-        stab_lift_curve = LiftingLineLift(3.62)
-        stab_drag_curve = LiftingLine(3.62, efficiency_factor=0.6)
+        stab_lift_curve = lift.LiftingLine(3.62)
+        stab_drag_curve = drag.LiftingLine(3.62, efficiency_factor=0.6)
         self._horizontal_stabilizer = Surface(
             "stabilizer", Vector2D(-33, 0), 0, Angle(0), 136,
             stab_lift_curve, stab_drag_curve, atmosphere)
 
-        fusilage_drag_curve = Parasitic(0.27)
+        fusilage_drag_curve = drag.Parasitic(0.27)
         # 747 cabin = ~19x6 meters
         self._fusilage = Surface("fusilage", self.cg(), 0, Angle(0), 118, None,
                                  fusilage_drag_curve, atmosphere)

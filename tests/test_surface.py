@@ -5,12 +5,8 @@ from physics.state import State
 from physics.atmosphere import Atmosphere
 from flight.simulator import Simulator
 from flight.surface import Surface
-from flight.lift.linear_lift import LinearLift
-from flight.lift.lifting_line_lift import LiftingLineLift
-from flight.lift.flat_plate_empirical_lift \
-    import FlatPlateEmpiricalLift
-from flight.drag.flat_plate import FlatPlate
-from flight.drag.lifting_line import LiftingLine
+import flight.lift as lift
+import flight.drag as drag
 
 
 class TestSurface(unittest.TestCase):
@@ -80,16 +76,16 @@ class TestSurface(unittest.TestCase):
     # http://www.aerospaceweb.org/question/flight/q0184.shtml
 
     def get_boeing_wing(self):
-        wing_lift_curve = LinearLift(6.98, 0.29, 5.5)
-        wing_drag_curve = LiftingLine(6.98, 0.0305, 0.75)
+        wing_lift_curve = lift.Linear(6.98, 0.29, 5.5)
+        wing_drag_curve = drag.LiftingLine(6.98, 0.0305, 0.75)
         return Surface(
             "boeing wing", Vector2D(0, 0), 0, Angle(2.4), 510.97,
             wing_lift_curve, wing_drag_curve, Atmosphere())
 
     def get_cessna_wing(self):
 
-        wing_lift_curve = LiftingLineLift(7.37)
-        wing_drag_curve = LiftingLine(7.37, 0.027, 0.75)
+        wing_lift_curve = lift.LiftingLine(7.37)
+        wing_drag_curve = drag.LiftingLine(7.37, 0.027, 0.75)
         return Surface(
             "cessna 172 wing", Vector2D(0, 0), 0, Angle(0), 16.2,
             wing_lift_curve, wing_drag_curve, Atmosphere())
@@ -161,8 +157,8 @@ class TestSurface(unittest.TestCase):
     ############
 
     def get_flat_plate(self):
-        wing_lift_curve = FlatPlateEmpiricalLift(0)
-        wing_drag_curve = FlatPlate(0)
+        wing_lift_curve = lift.PlateEmpirical(0)
+        wing_drag_curve = drag.FlatPlate(0)
         return Surface("plate", Vector2D(0, 0), 0, Angle(0),
                        10, wing_lift_curve, wing_drag_curve,
                        Atmosphere())

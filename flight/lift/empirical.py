@@ -1,7 +1,7 @@
 from flight.lift_curve import LiftCurve
 
 
-class EmpiricalLift(LiftCurve):
+class Empirical(LiftCurve):
     ''' Define points on a lift curve
         Assumes symmetrical lift for huge angles
         of attack (flying backward...)

@@ -1,9 +1,9 @@
-from flight.lift.empirical_lift import EmpiricalLift
+from flight.lift.empirical import Empirical
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
 
 
-class FlatPlateEmpiricalLift(EmpiricalLift):
+class PlateEmpirical(Empirical):
     ''' Approximated from curve in NASA paper:
     http://www.aerospaceweb.org/question/airfoils/q0150b.shtml '''
 
@@ -16,7 +16,7 @@ class FlatPlateEmpiricalLift(EmpiricalLift):
             self._downwash_multiplier = aspect_ratio / (2 + aspect_ratio)
             self._downwash_multiplier *= 2  # TODO...
 
-        EmpiricalLift.__init__(self)
+        Empirical.__init__(self)
 
     def stall_angle(self):
         return Angle(13)

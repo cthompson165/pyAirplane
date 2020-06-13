@@ -5,26 +5,24 @@
 # http://www.aerospaceweb.org/question/flight/q0184.shtml
 
 import unittest
-from flight.lift.linear_lift import LinearLift
-from flight.lift.lifting_line_lift import LiftingLineLift
-from flight.drag.lifting_line import LiftingLine
-
+import flight.drag as drag
+import flight.lift as lift
 from physics.angle import Angle
 
 
 class TestForceCurves(unittest.TestCase):
 
     def get_747_lift_curve(self):
-        return LinearLift(6.98, 0.29, 5.5)
+        return lift.Linear(6.98, 0.29, 5.5)
 
     def get_747_drag_curve(self):
-        return LiftingLine(6.98, 0.0305, 0.75)
+        return drag.LiftingLine(6.98, 0.0305, 0.75)
 
     def get_cessna_lift_curve(self):
-        return LiftingLineLift(7.37)
+        return lift.LiftingLine(7.37)
 
     def get_cessna_drag_curve(self):
-        return LiftingLine(7.37, 0.027, 0.75)
+        return drag.LiftingLine(7.37, 0.027, 0.75)
 
     def test_cl_boeing(self):
         lift_curve = self.get_747_lift_curve()
@@ -32,7 +30,7 @@ class TestForceCurves(unittest.TestCase):
         self.assertEqual(.52, round(coefficient_lift, 2))
 
     def test_cla_lifting_line(self):
-        lift_curve = LiftingLineLift(7.37)
+        lift_curve = lift.LiftingLine(7.37)
         self.assertAlmostEqual(4.942, lift_curve.lift_slope_3d, 3)
 
     def test_cl_cesna(self):

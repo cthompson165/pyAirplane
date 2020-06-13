@@ -2,7 +2,7 @@ from flight.lift_curve import LiftCurve
 from physics.angle import Angle
 
 
-class LinearLift(LiftCurve):
+class Linear(LiftCurve):
     ''' Use if you know the 3d lift coefficient.'''
 
     def __init__(self, aspect_ratio, CL0, lift_slope_3d):

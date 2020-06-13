@@ -1,7 +1,7 @@
 from physics.angle import Angle
 from physics.vector_2d import Vector2D
 from physics.state import State
-from physics.flying_object import FlyingObject
+from flight.flying_object import FlyingObject
 from physics.force import Force
 from flight.kites.cell import Cell
 

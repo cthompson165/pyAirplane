@@ -1,5 +1,5 @@
 from physics.vector_2d import Vector2D
-from physics.flying_object import FlyingObject
+from flight.flying_object import FlyingObject
 
 
 class Airplane(FlyingObject):

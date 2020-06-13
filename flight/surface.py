@@ -1,4 +1,5 @@
 from flight.cp import CP
+from flight.atmosphere import Atmosphere
 from physics.force import Force
 from physics.point import Point
 from physics.angle import Angle
@@ -9,9 +10,14 @@ class Surface:
     ''' A plane has multiple services that generate lift
     and drag forces'''
 
-    def __init__(self, name, relative_pos, chord_length,
-                 angle, area, lift_curve, drag_curve,
-                 atmosphere):
+    def __init__(self, name,
+                 relative_pos=Vector2D(0, 0),
+                 chord_length=0,
+                 angle=Angle(0),
+                 area=0,
+                 lift_curve=None,
+                 drag_curve=None,
+                 atmosphere=Atmosphere()):
 
         self._point = Point(relative_pos)
 

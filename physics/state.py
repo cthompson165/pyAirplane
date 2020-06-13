@@ -1,9 +1,13 @@
 from physics.vector_2d import Vector2D
+from physics.angle import Angle
 
 
 class State:
-    def __init__(self, position, velocity, orientation,
-                 angular_velocity, atmosphere):
+    def __init__(self,
+                 position=Vector2D(0, 0),
+                 velocity=Vector2D(0, 0),
+                 orientation=Angle(0),
+                 angular_velocity=0):
 
         self.position = position
         self.velocity = velocity

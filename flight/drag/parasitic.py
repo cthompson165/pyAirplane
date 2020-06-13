@@ -6,7 +6,7 @@ class Parasitic:
     def calculate_drag_coefficient(self, aoa, CL):
         return self._cd
 
-    class _ShapeCoefficients():
+    class ShapeCoefficients():
         # TODO - there's a big range for sphere, might want more
         # sub types (smooth, rough, dimpled, etc...)
         BULLET = .295

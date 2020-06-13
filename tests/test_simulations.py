@@ -3,7 +3,7 @@ from physics.vector_2d import Vector2D
 from flight.simulator import Simulator
 from flight.kites.box_kite import BoxKite
 from flight.planes.seven_four_seven import SevenFourSeven
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 from flight.kites.bridle import Bridle
 
 

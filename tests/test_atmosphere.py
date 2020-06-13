@@ -1,5 +1,5 @@
 import unittest
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 
 
 class TestAtmosphere(unittest.TestCase):

@@ -12,13 +12,12 @@ from pygame.locals import (
 from flight.simulator import Simulator
 from flight.kites.box_kite import BoxKite
 from physics.stationary_object import StationaryObject
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
-from projector import Projector
-from debug_draw import DebugDraw
 from examples.sprites.kite_sprite import KiteSprite
 from flight.kites.bridle import Bridle
+import display
 
 
 def run_game():
@@ -123,10 +122,10 @@ pygame.display.set_caption("Wind Tunnel")
 
 anchor_position = Vector2D(0, 3)
 
-projector = Projector(Vector2D(
+projector = display.Projector(Vector2D(
     SCREEN_WIDTH, SCREEN_HEIGHT))
 
-debug_draw = DebugDraw(screen, projector)
+debug_draw = display.DebugDraw(screen, projector)
 
 pygame.font.init()
 font = pygame.font.SysFont('Comic Sans MS', 30)

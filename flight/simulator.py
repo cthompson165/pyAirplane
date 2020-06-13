@@ -1,6 +1,6 @@
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 from physics.state import State
 from physics.flying_object import FlyingObject
 from physics.stationary_object import StationaryObject

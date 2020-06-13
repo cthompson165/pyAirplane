@@ -2,7 +2,7 @@ import unittest
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
 from physics.state import State
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 from flight.simulator import Simulator
 from flight.surface import Surface
 import flight.lift as lift

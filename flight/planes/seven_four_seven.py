@@ -4,7 +4,7 @@ from flight.airplane import Airplane
 from flight.engine import Engine
 from flight.surface import Surface
 from physics.state import State
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 import flight.lift as lift
 import flight.drag as drag
 

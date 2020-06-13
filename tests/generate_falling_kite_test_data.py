@@ -1,7 +1,7 @@
 from flight.kites.box_kite import BoxKite
 from physics.vector_2d import Vector2D
 from flight.simulator import Simulator
-from physics.atmosphere import Atmosphere
+from flight.atmosphere import Atmosphere
 
 
 def run_sim():

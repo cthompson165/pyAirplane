@@ -19,8 +19,8 @@ from pygame.locals import (
 from flight.planes.seven_four_seven import SevenFourSeven
 from flight.simulator import Simulator
 from physics.vector_2d import Vector2D
-from projector import Projector
 from sprites.explosion import Explosion
+import display
 
 
 class Plane(pygame.sprite.Sprite):
@@ -269,7 +269,7 @@ else:
 
 # meters per pixel: image is 250 pixels
 # a 747 is 77 meters. So m/p = 77/250 = 308
-projector = Projector(Vector2D(SCREEN_WIDTH, SCREEN_HEIGHT), 0.308)
+projector = display.Projector(Vector2D(SCREEN_WIDTH, SCREEN_HEIGHT), 0.308)
 
 # create plane and add to the list of sprites
 plane = Plane()

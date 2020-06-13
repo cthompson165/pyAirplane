@@ -13,8 +13,8 @@ from aerodynamics.simulator import Simulator
 from aerodynamics.kites.box_kite import BoxKite
 from physics.stationary_object import StationaryObject
 from physics.atmosphere import Atmosphere
-from util.vector_2d import Vector2D
-from util.angle import Angle
+from physics.vector_2d import Vector2D
+from physics.angle import Angle
 from projector import Projector
 from debug_draw import DebugDraw
 from examples.sprites.kite_sprite import KiteSprite

@@ -2,7 +2,7 @@ from aerodynamics.surface import Surface
 from aerodynamics.lift_curves.flat_plate_empirical_lift \
     import FlatPlateEmpiricalLift
 from aerodynamics.drag_curves.flat_plate_drag import FlatPlateDrag
-from util.angle import Angle
+from physics.angle import Angle
 import math
 
 

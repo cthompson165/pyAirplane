@@ -1,6 +1,6 @@
 import math
 from aerodynamics.lift_curves.linear_lift import LinearLift
-from util.angle import Angle
+from physics.angle import Angle
 
 
 class LiftingLineLift(LinearLift):

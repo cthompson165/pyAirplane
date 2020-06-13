@@ -1,5 +1,5 @@
 import unittest
-from util.vector_2d import Vector2D
+from physics.vector_2d import Vector2D
 from aerodynamics.simulator import Simulator
 from aerodynamics.kites.box_kite import BoxKite
 from aerodynamics.airplanes.seven_four_seven import SevenFourSeven

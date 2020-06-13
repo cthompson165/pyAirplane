@@ -1,5 +1,5 @@
 import unittest
-from util.vector_2d import Vector2D
+from physics.vector_2d import Vector2D
 from physics.point import Point
 import math
 

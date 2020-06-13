@@ -1,7 +1,7 @@
 import unittest
 import math
-from util.vector_2d import Vector2D
-from util.angle import Angle
+from physics.vector_2d import Vector2D
+from physics.angle import Angle
 
 
 class TestVector(unittest.TestCase):

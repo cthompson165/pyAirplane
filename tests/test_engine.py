@@ -1,6 +1,6 @@
 import unittest
-from util.vector_2d import Vector2D
-from util.angle import Angle
+from physics.vector_2d import Vector2D
+from physics.angle import Angle
 from aerodynamics.engine import Engine
 
 

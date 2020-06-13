@@ -1,6 +1,6 @@
 from aerodynamics.lift_curves.empirical_lift import EmpiricalLift
-from util.vector_2d import Vector2D
-from util.angle import Angle
+from physics.vector_2d import Vector2D
+from physics.angle import Angle
 
 
 class FlatPlateEmpiricalLift(EmpiricalLift):

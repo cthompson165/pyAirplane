@@ -9,7 +9,7 @@ from aerodynamics.lift_curves.linear_lift import LinearLift
 from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
 from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
 
-from util.angle import Angle
+from physics.angle import Angle
 
 
 class TestForceCurves(unittest.TestCase):

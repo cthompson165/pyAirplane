@@ -1,5 +1,5 @@
 import unittest
-from util.angle import Angle
+from physics.angle import Angle
 
 
 class TestAngle(unittest.TestCase):

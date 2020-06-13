@@ -1,8 +1,8 @@
 from aerodynamics.cp import CP
 from physics.force import Force
 from physics.point import Point
-from util.angle import Angle
-from util.vector_2d import Vector2D
+from physics.angle import Angle
+from physics.vector_2d import Vector2D
 
 
 class Surface:

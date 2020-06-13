@@ -1,5 +1,5 @@
 import math
-from util.angle import Angle
+from physics.angle import Angle
 
 
 class Vector2D:

@@ -1,5 +1,5 @@
 from aerodynamics.lift_curve import LiftCurve
-from util.angle import Angle
+from physics.angle import Angle
 
 
 class LinearLift(LiftCurve):

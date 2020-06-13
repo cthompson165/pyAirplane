@@ -2,9 +2,9 @@
 pyAirplane is a simple 2D flight dynamics engine.
 
 ## Structure
-Planes and kites start with flight.flying_object. flying_objects have surfaces that generate
-lift and drag based on the surface's lift and drag curves. flying_object also takes care of 
-collecting and applying the aerodynamic, thrust, and gravity forces acting on a flying object.
+Planes and kites start with `flight.flying_object`. Flying objects have surfaces that generate
+lift and drag based on the surface's lift and drag curves. `flying_object` also takes care of 
+collecting and applying the aerodynamic, thrust, and gravity forces acting on the object.
 
 ## Physics
 The physics in the dynamics engine are generally pretty simple (forces and torques) so originally 
@@ -65,7 +65,7 @@ while rock.position().y > 0:
     print(str(round(time, 1)) + " seconds: " + str(round(rock.position(), 2)))
 ```
 
-The rock hits the ground after 4.7 seconds and is blown off course by a little over .8 meters.
+The rock hits the ground after about 4.7 seconds and is blown off course by a little over .8 meters.
 
 ## Kite
 fly_a_kite.py simulates flying a box kite. Use the left and right arrows to control the 

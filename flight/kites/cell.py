@@ -1,7 +1,7 @@
 from flight.surface import Surface
 from flight.lift.flat_plate_empirical_lift \
     import FlatPlateEmpiricalLift
-from flight.drag.flat_plate_drag import FlatPlateDrag
+from flight.drag.flat_plate import FlatPlate
 from physics.angle import Angle
 import math
 
@@ -13,7 +13,7 @@ class Cell(Surface):
         aspect_ratio = self.calculate_aspect_ratio(span, area)
 
         lift_curve = FlatPlateEmpiricalLift(aspect_ratio)
-        drag_curve = FlatPlateDrag(aspect_ratio)
+        drag_curve = FlatPlate(aspect_ratio)
 
         Surface.__init__(
             self, name, position, length, Angle(0),

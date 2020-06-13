@@ -7,7 +7,7 @@
 import unittest
 from flight.lift.linear_lift import LinearLift
 from flight.lift.lifting_line_lift import LiftingLineLift
-from flight.drag.lifting_line_drag import LiftingLineDrag
+from flight.drag.lifting_line import LiftingLine
 
 from physics.angle import Angle
 
@@ -18,13 +18,13 @@ class TestForceCurves(unittest.TestCase):
         return LinearLift(6.98, 0.29, 5.5)
 
     def get_747_drag_curve(self):
-        return LiftingLineDrag(6.98, 0.0305, 0.75)
+        return LiftingLine(6.98, 0.0305, 0.75)
 
     def get_cessna_lift_curve(self):
         return LiftingLineLift(7.37)
 
     def get_cessna_drag_curve(self):
-        return LiftingLineDrag(7.37, 0.027, 0.75)
+        return LiftingLine(7.37, 0.027, 0.75)
 
     def test_cl_boeing(self):
         lift_curve = self.get_747_lift_curve()

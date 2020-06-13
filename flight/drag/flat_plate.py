@@ -2,7 +2,7 @@ from flight.drag_curve import DragCurve
 import math
 
 
-class FlatPlateDrag(DragCurve):
+class FlatPlate(DragCurve):
     ''' from https://www.grc.nasa.gov/WWW/K-12/airplane/kitedrag.html '''
     def __init__(self, aspect_ratio):
         self._aspect_ratio = aspect_ratio

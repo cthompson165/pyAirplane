@@ -1,4 +1,4 @@
-class ParasiticDrag:
+class Parasitic:
 
     def __init__(self, drag_coefficient):
         self._cd = drag_coefficient

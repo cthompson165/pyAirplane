@@ -2,7 +2,7 @@ import math
 from flight.drag_curve import DragCurve
 
 
-class LiftingLineDrag(DragCurve):
+class LiftingLine(DragCurve):
     ''' Implements drag curve based on lifting line theory '''
 
     def __init__(self, aspect_ratio, cd_min=0.025, efficiency_factor=0.75):

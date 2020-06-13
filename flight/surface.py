@@ -1,4 +1,4 @@
-from aerodynamics.cp import CP
+from flight.cp import CP
 from physics.force import Force
 from physics.point import Point
 from physics.angle import Angle

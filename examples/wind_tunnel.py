@@ -9,8 +9,8 @@ from pygame.locals import (
     QUIT,
 )
 
-from aerodynamics.simulator import Simulator
-from aerodynamics.kites.box_kite import BoxKite
+from flight.simulator import Simulator
+from flight.kites.box_kite import BoxKite
 from physics.stationary_object import StationaryObject
 from physics.atmosphere import Atmosphere
 from physics.vector_2d import Vector2D
@@ -18,7 +18,7 @@ from physics.angle import Angle
 from projector import Projector
 from debug_draw import DebugDraw
 from examples.sprites.kite_sprite import KiteSprite
-from aerodynamics.kites.bridle import Bridle
+from flight.kites.bridle import Bridle
 
 
 def run_game():

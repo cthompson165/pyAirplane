@@ -1,7 +1,7 @@
-from aerodynamics.surface import Surface
-from aerodynamics.lift_curves.flat_plate_empirical_lift \
+from flight.surface import Surface
+from flight.lift.flat_plate_empirical_lift \
     import FlatPlateEmpiricalLift
-from aerodynamics.drag_curves.flat_plate_drag import FlatPlateDrag
+from flight.drag.flat_plate_drag import FlatPlateDrag
 from physics.angle import Angle
 import math
 

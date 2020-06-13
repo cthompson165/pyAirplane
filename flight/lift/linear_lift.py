@@ -1,4 +1,4 @@
-from aerodynamics.lift_curve import LiftCurve
+from flight.lift_curve import LiftCurve
 from physics.angle import Angle
 
 

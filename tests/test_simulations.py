@@ -1,10 +1,10 @@
 import unittest
 from physics.vector_2d import Vector2D
-from aerodynamics.simulator import Simulator
-from aerodynamics.kites.box_kite import BoxKite
-from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
+from flight.simulator import Simulator
+from flight.kites.box_kite import BoxKite
+from flight.planes.seven_four_seven import SevenFourSeven
 from physics.atmosphere import Atmosphere
-from aerodynamics.kites.bridle import Bridle
+from flight.kites.bridle import Bridle
 
 
 class TestSimulations(unittest.TestCase):

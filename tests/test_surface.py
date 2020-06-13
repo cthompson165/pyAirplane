@@ -3,14 +3,14 @@ from physics.vector_2d import Vector2D
 from physics.angle import Angle
 from physics.state import State
 from physics.atmosphere import Atmosphere
-from aerodynamics.simulator import Simulator
-from aerodynamics.surface import Surface
-from aerodynamics.lift_curves.linear_lift import LinearLift
-from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
-from aerodynamics.lift_curves.flat_plate_empirical_lift \
+from flight.simulator import Simulator
+from flight.surface import Surface
+from flight.lift.linear_lift import LinearLift
+from flight.lift.lifting_line_lift import LiftingLineLift
+from flight.lift.flat_plate_empirical_lift \
     import FlatPlateEmpiricalLift
-from aerodynamics.drag_curves.flat_plate_drag import FlatPlateDrag
-from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
+from flight.drag.flat_plate_drag import FlatPlateDrag
+from flight.drag.lifting_line_drag import LiftingLineDrag
 
 
 class TestSurface(unittest.TestCase):
@@ -74,10 +74,10 @@ class TestSurface(unittest.TestCase):
 
     # lift and drag
     # boeing examples from
-    # http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
+    # http://www.aerospaceweb.org/question/flight/q0252.shtml
 
     # cessna from
-    # http://www.aerospaceweb.org/question/aerodynamics/q0184.shtml
+    # http://www.aerospaceweb.org/question/flight/q0184.shtml
 
     def get_boeing_wing(self):
         wing_lift_curve = LinearLift(6.98, 0.29, 5.5)

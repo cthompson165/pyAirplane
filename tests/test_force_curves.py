@@ -1,13 +1,13 @@
 # boeing examples from
-# http://www.aerospaceweb.org/question/aerodynamics/q0252.shtml
+# http://www.aerospaceweb.org/question/flight/q0252.shtml
 
 # cessna from
-# http://www.aerospaceweb.org/question/aerodynamics/q0184.shtml
+# http://www.aerospaceweb.org/question/flight/q0184.shtml
 
 import unittest
-from aerodynamics.lift_curves.linear_lift import LinearLift
-from aerodynamics.lift_curves.lifting_line_lift import LiftingLineLift
-from aerodynamics.drag_curves.lifting_line_drag import LiftingLineDrag
+from flight.lift.linear_lift import LinearLift
+from flight.lift.lifting_line_lift import LiftingLineLift
+from flight.drag.lifting_line_drag import LiftingLineDrag
 
 from physics.angle import Angle
 

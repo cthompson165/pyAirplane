@@ -16,8 +16,8 @@ from pygame.locals import (
     QUIT,
 )
 
-from aerodynamics.airplanes.seven_four_seven import SevenFourSeven
-from aerodynamics.simulator import Simulator
+from flight.planes.seven_four_seven import SevenFourSeven
+from flight.simulator import Simulator
 from physics.vector_2d import Vector2D
 from projector import Projector
 from sprites.explosion import Explosion

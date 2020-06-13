@@ -1,7 +1,7 @@
 import unittest
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
-from aerodynamics.cp import CP
+from flight.cp import CP
 
 
 class TestCP(unittest.TestCase):

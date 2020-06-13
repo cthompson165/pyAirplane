@@ -1,4 +1,4 @@
-from aerodynamics.lift_curves.empirical_lift import EmpiricalLift
+from flight.lift.empirical_lift import EmpiricalLift
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
 

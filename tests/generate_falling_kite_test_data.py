@@ -1,6 +1,6 @@
-from aerodynamics.kites.box_kite import BoxKite
+from flight.kites.box_kite import BoxKite
 from physics.vector_2d import Vector2D
-from aerodynamics.simulator import Simulator
+from flight.simulator import Simulator
 from physics.atmosphere import Atmosphere
 
 

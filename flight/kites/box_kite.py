@@ -3,7 +3,7 @@ from physics.vector_2d import Vector2D
 from physics.state import State
 from physics.flying_object import FlyingObject
 from physics.force import Force
-from aerodynamics.kites.cell import Cell
+from flight.kites.cell import Cell
 
 
 class BoxKite(FlyingObject):

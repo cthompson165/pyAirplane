@@ -1,5 +1,5 @@
 import math
-from aerodynamics.drag_curve import DragCurve
+from flight.drag_curve import DragCurve
 
 
 class LiftingLineDrag(DragCurve):

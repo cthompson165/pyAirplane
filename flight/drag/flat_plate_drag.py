@@ -1,4 +1,4 @@
-from aerodynamics.drag_curve import DragCurve
+from flight.drag_curve import DragCurve
 import math
 
 

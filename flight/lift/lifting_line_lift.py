@@ -1,5 +1,5 @@
 import math
-from aerodynamics.lift_curves.linear_lift import LinearLift
+from flight.lift.linear_lift import LinearLift
 from physics.angle import Angle
 
 

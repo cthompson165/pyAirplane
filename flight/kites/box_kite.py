@@ -29,8 +29,7 @@ class BoxKite(FlyingObject):
                     self.bridle_position.reverse().rotate(initial_orientation))
 
         state = State(initial_pos,
-                      Vector2D(0, 0), initial_orientation, 0,
-                      atmosphere)
+                      Vector2D(0, 0), initial_orientation, 0)
 
         FlyingObject.__init__(self, mass, mass_moment_of_inertia, state,
                               atmosphere)

@@ -12,9 +12,9 @@ class Surface:
 
     def __init__(self, name,
                  relative_pos=Vector2D(0, 0),
-                 chord_length=0,
+                 chord_length=1,
                  angle=Angle(0),
-                 area=0,
+                 area=1,
                  lift_curve=None,
                  drag_curve=None,
                  atmosphere=Atmosphere()):

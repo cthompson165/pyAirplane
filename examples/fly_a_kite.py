@@ -11,7 +11,7 @@ from pygame.locals import (
 
 from flight.simulator import Simulator
 from flight.kites.box_kite import BoxKite
-from physics.stationary_object import StationaryObject
+from flight.stationary_object import StationaryObject
 from flight.atmosphere import Atmosphere
 from physics.vector_2d import Vector2D
 from physics.angle import Angle

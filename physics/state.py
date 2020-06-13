@@ -14,22 +14,12 @@ class State:
         self.orientation = orientation
         self.angular_velocity = angular_velocity
 
-        self.atmosphere = atmosphere
-        self.wind_speed = Vector2D(0, 0)
-
-    def ground_speed(self):
-        return self.velocity
-
-    def airspeed(self):
-        return self.velocity.subtract(self.atmosphere.wind_speed)
-
     def copy(self):
         return State(
             self.position.copy(),
             self.velocity.copy(),
             self.orientation.copy(),
-            self.angular_velocity,
-            self.atmosphere)
+            self.angular_velocity)
 
     def __str__(self):
         return ("position: " + str(self.position.round(4)) +

@@ -29,8 +29,14 @@ class FlyingObject:
     def velocity(self):
         return self._state.velocity
 
+    def ground_speed(self):
+        return self._state.velocity
+
     def airspeed(self):
-        return self._state.airspeed()
+        return self._state.velocity.subtract(self._atmosphere.wind_speed)
+
+    def local_airspeed(self):
+        return self.airspeed().rotate(self.orientation().times_constant(-1))
 
     def orientation(self):
         return self._state.orientation

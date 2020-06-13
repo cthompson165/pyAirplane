@@ -16,7 +16,7 @@ class SevenFourSeven(Airplane):
     def __init__(self, position, velocity):
         atmosphere = Atmosphere()
 
-        state = State(position, velocity, Angle(0), 0, atmosphere)
+        state = State(position, velocity, Angle(0), 0)
         Airplane.__init__(self, state, self._mass(),
                           self._mass_moment_of_inertia(), atmosphere)
 

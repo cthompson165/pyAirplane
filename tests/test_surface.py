@@ -1,9 +1,7 @@
 import unittest
 from physics.vector_2d import Vector2D
 from physics.angle import Angle
-from physics.state import State
 from flight.atmosphere import Atmosphere
-from flight.simulator import Simulator
 from flight.surface import Surface
 import flight.lift as lift
 import flight.drag as drag
@@ -91,8 +89,7 @@ class TestSurface(unittest.TestCase):
             wing_lift_curve, wing_drag_curve, Atmosphere())
 
     def get_lift(self, velocity, surface, angle):
-        state = State(Vector2D(0, 0), velocity, angle, 0, Atmosphere())
-        local_velocity = Simulator.get_local_airspeed(state)
+        local_velocity = velocity.rotate(angle.times_constant(-1))
         forces = surface.calculate_forces(local_velocity, 0, 12192)
         lift = [force for force in forces if force.name == "lift"]
         if len(lift) == 1:

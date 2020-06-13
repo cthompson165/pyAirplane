@@ -85,10 +85,6 @@ class Simulator:
         else:
             raise LookupError()
 
-    @staticmethod
-    def get_local_airspeed(state):
-        return state.airspeed().rotate(state.orientation.times_constant(-1))
-
     def add_forces(self):
         for physical_object in self._flying_objects.values():
             flying_object = physical_object.object
@@ -96,7 +92,7 @@ class Simulator:
 
             state = flying_object._state
 
-            local_airspeed = Simulator.get_local_airspeed(state)
+            local_airspeed = flying_object.local_airspeed()
             flying_object.calculate_surface_forces(
                 local_airspeed, state.angular_velocity)
 
@@ -120,14 +116,11 @@ class Simulator:
             flying_object = physical_object.object
             body = physical_object.body
 
-            previous_state = flying_object._state
-
             flying_object._state = State(
                 Vector2D(body.position.x, body.position.y),
                 Vector2D(body.velocity.x, body.velocity.y),
                 Angle(math.degrees(body.angle)),
-                math.degrees(body.angular_velocity),
-                previous_state.atmosphere)
+                math.degrees(body.angular_velocity))
 
             flying_object.clear_forces()
 

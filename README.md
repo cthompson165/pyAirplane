@@ -1,5 +1,5 @@
 # pyAirplane
-pyAirplane is a simple 2D flight dynamics engine.
+pyAirplane is a simple 2D flight dynamics engine in Python.
 
 ## Structure
 Planes and kites start with `flight.flying_object`. Flying objects have one or more `flight.surface` objects that generate

@@ -80,11 +80,13 @@ blue, velocity in green, and thrust in red.
 ## Airplane
 fly_a_747.py simulates flying a 747 (with a bomber plane image because I am lazy). Use
 the up and down arrows to control the elevator and right and left to control thrust. 
-If you have a flight-stick plugged in the simulation will try to use that. Note that
-the airplane will always explode if you try to land. Adding the ability to land would be a fun upgrade if anyone 
-wants to take it on. You'd need to turn on collisions for stationary objects in `flight.simulator`, setup friction for wheels vs. any other part of the plane, and then determine how big an impulse a plane can experience without damage.
+If you have a flight-stick plugged in the simulation will try to use that. The airplane example 
+implements the same debug keys as the kite example.
 
-The airplane example implements the same debug keys as the kite example.
+Note that the airplane will always explode if you try to land. Adding the ability to land would be 
+a fun upgrade if anyone wants to take it on. You'd need to turn on collisions for stationary objects 
+in `flight.simulator`, setup friction for wheels vs. any other part of the plane, and then determine 
+how big a collision impulse a plane can experience without damage.
 
 ## Disclaimers
 I wrote this for fun and don't guarantee the accuracy of any of it. I got a lot of the information

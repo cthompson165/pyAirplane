@@ -2,16 +2,16 @@
 pyAirplane is a simple 2D flight dynamics engine.
 
 ## Structure
-Planes and kites start with `flight.flying_object`. Flying objects have surfaces that generate
-lift and drag based on the surface's lift and drag curves. `flying_object` also takes care of 
+Planes and kites start with `flight.flying_object`. Flying objects have one or more `flight.surface` objects that generate
+lift and drag based on the surface's `flight.lift_curve` and `flight.drag_curve`. `flying_object` also takes care of 
 collecting and applying the aerodynamic, thrust, and gravity forces acting on the object.
 
 ## Physics
 The physics in the dynamics engine are generally pretty simple (forces and torques) so originally 
-pyAirplane used a custom physics engine. But kites require constraint forces which are a lot more
-complex. I added pyMunk to provide the constraint forces and to replace the custom kinematic integration
+pyAirplane used a roll-your-own physics engine. But kites require constraint forces which are a lot more
+complex. I added pyMunk to provide the constraint forces and to replace the kinematic integration
 logic. pyMunk also provides resting contact forces which could be used to implement ground contact
-in the future. pyMunk is fully wrapped in the flight.simulator class so can be replaced with another engine
+in the future. pyMunk is fully wrapped in the `flight.simulator` class so can be replaced with another engine
 if needed. 
 
 The one thing pyMunk doesn't have that would be nice is a more accurate integrator like
@@ -33,7 +33,7 @@ class Rock(flight.FlyingObject):
         radius = .05  # meters
         mass = 0.8384  # kg (rocks are 1600kg/m**3)
         area = math.pi * radius**2
-        moment = 2/5 * mass * radius**2
+        moment = 2/5 * mass * radius**2  # moment of a solid sphere
         state = physics.State(position=initial_pos)
         flight.FlyingObject.__init__(self, mass, moment, state, atmosphere)
 
@@ -81,12 +81,12 @@ blue, velocity in green, and thrust in red.
 fly_a_747.py simulates flying a 747 (with a bomber plane image because I am lazy). Use
 the up and down arrows to control the elevator and right and left to control thrust. 
 If you have a flight-stick plugged in the simulation will try to use that. Note that
-the airplane will always explode if you try to land. This would be a fun upgrade if anyone 
-wants to take it on.
+the airplane will always explode if you try to land. Adding the ability to land would be a fun upgrade if anyone 
+wants to take it on. You'd need to turn on collisions for stationary objects in `flight.simulator`, setup friction for wheels vs. any other part of the plane, and then determine how big an impulse a plane can experience without damage.
 
 The airplane example implements the same debug keys as the kite example.
 
 ## Disclaimers
 I wrote this for fun and don't guarantee the accuracy of any of it. I got a lot of the information
 from NASA's aerodynamics info website (https://www.grc.nasa.gov/WWW/K-12/airplane/short.html) so
-hopefully it is close. But please don't use it for anything mission critical :-).
+hopefully it is close. But please don't use it for anything important :-).

@@ -1,11 +1,11 @@
 # pyAirplane
-pyAirplane is a simple 2D flight dynamics engine in Python.
+pyAirplane is a simple 2D flight dynamics engine in Python for simulating airplanes and kites.
 
 ## Structure
 Planes and kites start with `flight.flying_object`. Flying objects have one or more `flight.surface` objects that generate lift and drag based on the surface's `flight.lift_curve` and `flight drag_curve`. `flying_object` also takes care of collecting and applying the aerodynamic, thrust, and gravity forces acting on the object.
 
 ## Physics
-The physics in the dynamics engine are generally pretty simple (forces and torques) so originally pyAirplane used a roll-your-own physics engine. But kites require a relatively more complex constraint force to simulate the kite string. I added pyMunk to provide the constraint forces and to replace the kinematic integration logic. pyMunk also provides resting contact forces which could be used to implement ground contact in the future. pyMunk is fully wrapped in the `flight.simulator` class so can be replaced with another engine if needed. 
+The physics in the dynamics engine are generally pretty simple (forces and torques) so originally pyAirplane used a roll-your-own physics engine. But kites require more complex constraint forces to simulate the kite string. I added pyMunk to provide the constraint forces and to replace the kinematic integration logic. pyMunk also provides resting contact forces which could be used to implement ground contact in the future. pyMunk is fully wrapped in the `flight.simulator` class so can be replaced with another engine if needed. 
 
 The one thing pyMunk doesn't have that would be nice is a more accurate integrator like
 runge kutta. Kites experience big forces relative to their mass so require more accurate integration

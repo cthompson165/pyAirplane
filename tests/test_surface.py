@@ -164,15 +164,15 @@ class TestSurface(unittest.TestCase):
         velocity = Vector2D(5, 0)
         wing = self.get_flat_plate()
         lift = self.get_lift(velocity, wing, Angle(10))
-        self.assertAlmostEqual(6.5697617, lift.x, 4)
-        self.assertAlmostEqual(37.2589703, lift.y, 4)
+        self.assertAlmostEqual(3.2848808, lift.x, 4)
+        self.assertAlmostEqual(18.6294851, lift.y, 4)
 
     def test_flat_plate_lift_neg(self):
         velocity = Vector2D(5, 0)
         wing = self.get_flat_plate()
         lift = self.get_lift(velocity, wing, Angle(-10))
-        self.assertAlmostEqual(6.5697617, lift.x, 4)
-        self.assertAlmostEqual(-37.2589703, lift.y, 4)
+        self.assertAlmostEqual(3.2848808, lift.x, 4)
+        self.assertAlmostEqual(-18.6294851, lift.y, 4)
 
     def test_flat_plate_lift_neg_vert(self):
         velocity = Vector2D(5, 0)
@@ -185,15 +185,15 @@ class TestSurface(unittest.TestCase):
         velocity = Vector2D(5, 0)
         wing = self.get_flat_plate()
         lift = self.get_lift(velocity, wing, Angle(-170))
-        self.assertAlmostEqual(-6.5697617, lift.x, 4)
-        self.assertAlmostEqual(-37.2589703, lift.y, 4)
+        self.assertAlmostEqual(-3.2848808, lift.x, 4)
+        self.assertAlmostEqual(-18.6294851, lift.y, 4)
 
     def test_flat_plate_lift_pos_backward(self):
         velocity = Vector2D(5, 0)
         wing = self.get_flat_plate()
         lift = self.get_lift(velocity, wing, Angle(170))
-        self.assertAlmostEqual(-6.5697617, lift.x, 4)
-        self.assertAlmostEqual(37.2589703, lift.y, 4)
+        self.assertAlmostEqual(-3.2848808, lift.x, 4)
+        self.assertAlmostEqual(18.6294851, lift.y, 4)
 
 
 # Some code to make the tests actually run.

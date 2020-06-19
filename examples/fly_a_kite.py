@@ -10,12 +10,8 @@ from pygame.locals import (
     QUIT,
 )
 
-from flight.simulator import Simulator
-from flight.kites.box_kite import BoxKite
-from flight.stationary_object import StationaryObject
-from flight.atmosphere import Atmosphere
-from physics.vector_2d import Vector2D
-from physics.angle import Angle
+import flight
+import physics
 from examples.sprites.kite_sprite import KiteSprite
 from flight.kites.bridle import Bridle
 import display
@@ -41,10 +37,10 @@ def run_game():
                     running = False
                 if event.key == K_RIGHT:
                     atmosphere.wind_speed = \
-                        atmosphere.wind_speed.add(Vector2D(-.5, 0))
+                        atmosphere.wind_speed.add(physics.Vector2D(-.5, 0))
                 if event.key == K_LEFT:
                     atmosphere.wind_speed = \
-                        atmosphere.wind_speed.add(Vector2D(.5, 0))
+                        atmosphere.wind_speed.add(physics.Vector2D(.5, 0))
                 if event.key == K_f:
                     show_forces = not show_forces
                 if event.key == K_s:
@@ -123,9 +119,9 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Wind Tunnel")
 
-anchor_position = Vector2D(0, 3)
+anchor_position = physics.Vector2D(0, 3)
 
-projector = display.Projector(Vector2D(
+projector = display.Projector(physics.Vector2D(
     SCREEN_WIDTH, SCREEN_HEIGHT))
 
 debug_draw = display.DebugDraw(screen, projector)
@@ -133,16 +129,16 @@ debug_draw = display.DebugDraw(screen, projector)
 pygame.font.init()
 font = pygame.font.SysFont('Comic Sans MS', 30)
 
-atmosphere = Atmosphere()
-atmosphere.wind_speed = Vector2D(-1, 0)
+atmosphere = flight.Atmosphere()
+atmosphere.wind_speed = physics.Vector2D(-1, 0)
 
 bridle = Bridle(4.1, 3.7, 4)
-bridle.initial_pos = anchor_position.subtract(Vector2D(2, 0))
+bridle.initial_pos = anchor_position.subtract(physics.Vector2D(2, 0))
 
-kite = BoxKite(
+kite = flight.kites.BoxKite(
     4, 2, 4/3.0, atmosphere,
     bridle=bridle,
-    initial_orientation=Angle(0))
+    initial_orientation=physics.Angle(0))
 
 kite_sprite = KiteSprite(kite, "examples/images/box_kite_big.png", projector)
 all_sprites = pygame.sprite.Group()
@@ -150,14 +146,14 @@ all_sprites.add(kite_sprite)
 projector.set_resolution(kite_sprite.rect.width, 4)
 projector.center_x(kite.position())
 
-simulator = Simulator()
+simulator = flight.Simulator()
 simulator.register_flying_object(kite)
 
-anchor = StationaryObject(anchor_position)
+anchor = flight.StationaryObject(anchor_position)
 simulator.register_stationary_object(anchor, anchor_position)
 simulator.tether(
     kite, anchor, kite.bridle_position,
-    Vector2D(0, 0), 2)
+    physics.Vector2D(0, 0), 2)
 
 run_game()
 pygame.quit()

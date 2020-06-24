@@ -6,6 +6,7 @@ from pygame.locals import (
     K_s,
     K_p,
     K_f,
+    K_SPACE,
     KEYDOWN,
     QUIT,
 )
@@ -23,6 +24,7 @@ def run_game():
     running = True
     paused = False
     show_forces = True
+    tethered = True
 
     target_steps = 500
     fps = 30
@@ -41,6 +43,10 @@ def run_game():
                 if event.key == K_LEFT:
                     atmosphere.wind_speed = \
                         atmosphere.wind_speed.add(physics.Vector2D(.5, 0))
+                if event.key == K_SPACE:
+                    simulator.untether(kite)
+                    tethered = False
+                    atmosphere.wind_speed = physics.Vector2D(0, 0)
                 if event.key == K_f:
                     show_forces = not show_forces
                 if event.key == K_s:
@@ -70,11 +76,12 @@ def run_game():
             if show_forces:
                 debug_draw.draw_forces(kite)
 
-            pygame.draw.line(
-                screen, pygame.Color("white"),
-                projector.project(anchor_position),
-                projector.project(kite.global_bridle()),
-                1)
+            if tethered:
+                pygame.draw.line(
+                    screen, pygame.Color("white"),
+                    projector.project(anchor_position),
+                    projector.project(kite.global_bridle()),
+                    1)
 
             wind_speed_text = font.render(
                 'Windspeed: ' + str(atmosphere.wind_speed),

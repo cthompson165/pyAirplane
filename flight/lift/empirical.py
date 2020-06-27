@@ -17,31 +17,13 @@ class Empirical(LiftCurve):
 
     def calculate_lift_coefficient(self, aoa):
 
-        factor = 1
-
         aoa_degrees = aoa.relative_degrees()
-
-        if aoa_degrees > 180 or aoa_degrees < -180:
-            raise ValueError()
-        elif aoa_degrees > 90:
-            # upside down and backward with positive aoa
-            # on trailing edge
-            aoa_degrees = 180 - aoa_degrees
-        elif aoa_degrees < 0 and aoa_degrees >= -90:
-            factor = -1
-            aoa_degrees = -aoa_degrees
-        elif aoa_degrees >= -180 and aoa_degrees < -90:
-            # upside down and backward with negative aoa
-            # on trailing edge
-            factor = -1
-            aoa_degrees = aoa_degrees + 180
-
         previous_point = self._points[0]
         for i in range(1, len(self._points)):
             next_point = self._points[i]
             if aoa_degrees <= next_point.x:
                 return self._get_cl_between_points(
-                    aoa_degrees, previous_point, next_point) * factor
+                    aoa_degrees, previous_point, next_point)
                 break
             previous_point = next_point
 

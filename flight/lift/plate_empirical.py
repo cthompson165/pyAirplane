@@ -23,6 +23,23 @@ class PlateEmpirical(Empirical):
     def get_points(self):
 
         points = []
+        points.append(physics.Vector2D(-180, 0))
+
+        # trailing edge is leading with a negative aoa
+        points.append(physics.Vector2D(-170, -self._get_cl(1)))
+        points.append(physics.Vector2D(-167, -self._get_cl(1.08)))
+        points.append(physics.Vector2D(-164, -self._get_cl(.6)))
+        points.append(physics.Vector2D(-160, -self._get_cl(.6)))
+        points.append(physics.Vector2D(-135, -self._get_cl(1.05)))
+
+        points.append(physics.Vector2D(-90, 0))
+
+        points.append(physics.Vector2D(-45, -self._get_cl(1.05)))
+        points.append(physics.Vector2D(-20, -self._get_cl(.6)))
+        points.append(physics.Vector2D(-16, -self._get_cl(.6)))
+        points.append(physics.Vector2D(-13, -self._get_cl(1.08)))
+        points.append(physics.Vector2D(-10, -self._get_cl(1)))
+
         points.append(physics.Vector2D(0, 0))
         points.append(physics.Vector2D(10, self._get_cl(1)))
         points.append(physics.Vector2D(13, self._get_cl(1.08)))
@@ -30,6 +47,15 @@ class PlateEmpirical(Empirical):
         points.append(physics.Vector2D(20, self._get_cl(.6)))
         points.append(physics.Vector2D(45, self._get_cl(1.05)))
         points.append(physics.Vector2D(90, self._get_cl(0)))
+
+        # trailing edge is leading with a positive aoa
+        points.append(physics.Vector2D(135, self._get_cl(1.05)))
+        points.append(physics.Vector2D(160, self._get_cl(.6)))
+        points.append(physics.Vector2D(164, self._get_cl(.6)))
+        points.append(physics.Vector2D(167, self._get_cl(1.08)))
+        points.append(physics.Vector2D(170, self._get_cl(1)))
+
+        points.append(physics.Vector2D(180, 0))
 
         return points
 

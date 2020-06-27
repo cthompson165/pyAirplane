@@ -10,10 +10,19 @@ class FakeLiftCurve(Empirical):
 
     def get_points(self):
         points = []
+        points.append(Vector2D(-180, 0))
+        points.append(Vector2D(-170, -2))
+        points.append(Vector2D(-160, -3))
+        points.append(Vector2D(-90, 0))
+        points.append(Vector2D(-20, -3))
+        points.append(Vector2D(-10, -2))
         points.append(Vector2D(0, 0))
         points.append(Vector2D(10, 2))
         points.append(Vector2D(20, 3))
         points.append(Vector2D(90, 0))
+        points.append(Vector2D(160, 3))
+        points.append(Vector2D(170, 2))
+        points.append(Vector2D(180, 0))
         return points
 
 

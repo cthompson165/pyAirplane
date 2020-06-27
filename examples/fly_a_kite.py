@@ -46,7 +46,6 @@ def run_game():
                 if event.key == K_SPACE:
                     simulator.untether(kite)
                     tethered = False
-                    atmosphere.wind_speed = physics.Vector2D(0, 0)
                 if event.key == K_f:
                     show_forces = not show_forces
                 if event.key == K_s:

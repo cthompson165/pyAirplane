@@ -1,7 +1,7 @@
 # pyAirplane
 pyAirplane is a simple 2D flight dynamics engine in Python for simulating airplanes and kites.
 
-#Requirements
+## Requirements
 pyAirplane requires pyMonk (I have 5.6.0). The examples require pyGame and that you have the root of the project (the directory containing the "examples" folder) in your python path environment variable. I have pyGame version 1.9.6.
 
 ## Structure

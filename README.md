@@ -11,6 +11,9 @@ The one thing pyMunk doesn't have that would be nice is a more accurate integrat
 runge kutta. Kites experience big forces relative to their mass so require more accurate integration
 to avoid rocketing off into space. With euler integration the best we can do is use really small step sizes.
 
+## Examples
+The following examples require that you have the root of the project (the directory containing the "examples" folder) in your python path environment variable.
+
 ## Simple Example
 Create a rock with drag and drop it from 100m (from examples/drop_a_rock.py):
 
@@ -69,6 +72,9 @@ For debugging forces, you can use the following keys:
 fly_a_747.py simulates flying a 747 (with a bomber plane image because I am lazy). Use the up and down arrows to control the elevator and right and left to control thrust. If you have a flight-stick plugged in the simulation will try to use that. The airplane example implements the same debug keys as the kite example.
 
 Note that the airplane will always explode if you try to land. Adding the ability to land would be a fun upgrade if anyone wants to take it on. You'd need to turn on collisions for stationary objects in `flight.simulator`, setup friction for wheels vs. any other part of the plane, and then determine how big a collision impulse a plane can experience without damage.
+
+## Rocket
+fly_a_rocket.py is a first pass at creating a rocket simulator. It loosely uses the specs from SpaceX's Falcon Heavy rocket. 
 
 ## Disclaimers
 I wrote this for fun and don't guarantee the accuracy of any of it. I got a lot of the information from NASA's aerodynamics info website (https://www.grc.nasa.gov/WWW/K-12/airplane/short.html) so hopefully it is close. But please don't use it for anything important :-).

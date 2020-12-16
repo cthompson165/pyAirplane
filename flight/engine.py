@@ -5,6 +5,7 @@ from physics.force import Force
 class Engine:
 
     def __init__(self, name, position, angle, idle_thrust, max_thrust):
+        # thrust in newtons
         self.position = position
         self.angle = angle
         self.idle_thrust = idle_thrust

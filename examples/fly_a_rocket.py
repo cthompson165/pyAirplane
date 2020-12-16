@@ -8,26 +8,26 @@ from pygame.locals import (
     QUIT,
 )
 
-from examples.sprites.plane_sprite import PlaneSprite
+from examples.sprites.rocket_sprite import RocketSprite
 from examples.sprites.explosion_sprite import ExplosionSprite
 from examples.sprites.cloud_sprite import CloudSprite
 from flight.simulator import Simulator
 from physics.vector_2d import Vector2D
 import display
 import flight.planes as planes
+from flight.atmosphere import Atmosphere
 
 
 def test_crash():
-    if not plane_sprite.dead:
-        screen_pos = projector.project(plane.position())
-        if (screen_pos[1] >= (SCREEN_HEIGHT - GROUND_HEIGHT - 20)):
-            plane_sprite.kill()
-            plane_sprite.dead = True
-            expl = ExplosionSprite(screen_pos, 'sm')
+    if not rocket_sprite.dead:
+        if (rocket.position().y - 35) < (GROUND_HEIGHT_METERS - 1):
+            rocket_sprite.kill()
+            rocket_sprite.dead = True
+            expl = ExplosionSprite(projector.project(rocket.position()), 'sm')
             all_sprites.add(expl)
             explosions.add(expl)
             pygame.time.set_timer(GAME_OVER, 1000)
-            simulator.unregister(plane)
+            simulator.unregister(rocket)
 
 
 def run_game():
@@ -35,7 +35,7 @@ def run_game():
     clock = pygame.time.Clock()
     running = True
     paused = False
-    show_forces = False
+    show_forces = True
 
     while running:
         step = False
@@ -53,37 +53,29 @@ def run_game():
                 running = False
             elif event.type == ADDCLOUD:
 
-                if not plane_sprite.dead:
+                if not rocket_sprite.dead:
                     # Create the new cloud and add it to sprite groups
                     new_cloud = CloudSprite(
                         "examples/images/cloud7.png", SCREEN_WIDTH,
-                        CLOUD_BASE_METERS, projector, plane_sprite)
+                        CLOUD_BASE_METERS, projector, rocket_sprite, True)
 
-                    # Workaround to not have clouds on the ground
-                    # 747 is flying really high, but screen shows
-                    # the ground to add some interest and so the plane can blow
-                    # up. The plane is flying high to test the aerodynamics
-                    # based on an example I found.
-                    # TODO: Update to fly lower and have ground move as plane
-                    # goes up and down (see fly_a_rocket for example).
-                    # Then clouds can generate above cloud base.
-                    if new_cloud.get_screen_position()[1] > (SCREEN_HEIGHT -
-                                                             GROUND_HEIGHT -
-                                                             100):
-                        new_cloud.kill()
-                    else:
-                        clouds.add(new_cloud)
-                        all_sprites.add(new_cloud)
+                    clouds.add(new_cloud)
+                    all_sprites.add(new_cloud)
 
         if not running:
             break
 
         screen.fill(pygame.Color("skyblue"))
 
-        pygame.draw.rect(screen,
-                         pygame.Color("forestgreen"),
-                         (0, SCREEN_HEIGHT - GROUND_HEIGHT,
-                          SCREEN_WIDTH, GROUND_HEIGHT))
+        ground_screen_top_left = projector.project(
+            Vector2D(0, GROUND_HEIGHT_METERS))
+
+        if projector.is_on_screen(ground_screen_top_left):
+            ground_y = ground_screen_top_left[1]
+            pygame.draw.rect(screen,
+                             pygame.Color("forestgreen"),
+                             (0, ground_y,
+                              SCREEN_WIDTH, SCREEN_HEIGHT - ground_y))
 
         pressed_keys = pygame.key.get_pressed()
 
@@ -101,13 +93,29 @@ def run_game():
             for explosion in explosions:
                 screen.blit(explosion.image, explosion.rect)
 
-            if not plane_sprite.dead:
-                plane_sprite.control(pressed_keys, joystick)
-                plane_sprite.update()
-                screen.blit(plane_sprite.image, plane_sprite.rect)
+            if not rocket_sprite.dead:
+                rocket_sprite.control(pressed_keys, joystick)
+                rocket_sprite.update()
+                screen.blit(rocket_sprite.image, rocket_sprite.rect)
 
             if show_forces:
-                debug_draw.draw_forces(plane)
+                debug_draw.draw_forces(rocket)
+
+            meters_per_second = rocket.velocity().magnitude()
+            km_per_second = meters_per_second / 1000
+            km_per_hour = km_per_second * 3600
+
+            seconds = pygame.time.get_ticks() / 1000
+            time_text = font.render(
+                'Time: ' + str(round(seconds, 2)) + ' seconds',
+                False, (0, 0, 0))
+
+            speed_text = font.render(
+                'Speed: ' + str(round(km_per_hour, 2)) + ' kph',
+                False, (0, 0, 0))
+
+            screen.blit(time_text, (10, 10))
+            screen.blit(speed_text, (10, 40))
 
             pygame.display.flip()
             simulator.apply_forces(1/40.0)
@@ -117,10 +125,10 @@ def run_game():
 pygame.init()
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
-CLOUD_BASE_METERS = 10
-GROUND_HEIGHT = 30
+CLOUD_BASE_METERS = 500
+GROUND_HEIGHT_METERS = 0
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Airplane Simulator")
+pygame.display.set_caption("Airrocket Simulator")
 
 ADDCLOUD = pygame.USEREVENT + 2
 GAME_OVER = pygame.USEREVENT + 3
@@ -138,18 +146,24 @@ else:
 projector = display.Projector(Vector2D(SCREEN_WIDTH, SCREEN_HEIGHT))
 debug_draw = display.DebugDraw(screen, projector)
 
-# create plane and add to the list of sprites
-plane = planes.SevenFourSeven(Vector2D(5, 14000), Vector2D(265, 0))
+pygame.font.init()
+font = pygame.font.SysFont('Comic Sans MS', 30)
 
-plane_sprite = PlaneSprite(plane, "examples/images/plane4.png", projector)
+# create rocket and add to the list of sprites
+atmosphere = Atmosphere()
+rocket = planes.FalconHeavy(Vector2D(0, 35), Vector2D(0, 0), atmosphere)
+
+rocket_sprite = RocketSprite(rocket, "examples/images/Falcon_Heavy.png",
+                             projector)
 all_sprites = pygame.sprite.Group()
-all_sprites.add(plane_sprite)
+all_sprites.add(rocket_sprite)
 
-projector.set_resolution(plane_sprite.rect.width, 77)
-projector.center(plane.position())
+projector.set_resolution(rocket_sprite.rect.width, 70)
+projector.center(rocket.position())
+projector.center(rocket.position())
 
 simulator = Simulator()
-simulator.register_flying_object(plane)
+simulator.register_flying_object(rocket)
 
 clouds = pygame.sprite.Group()
 explosions = pygame.sprite.Group()

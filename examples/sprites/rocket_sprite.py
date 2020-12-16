@@ -8,17 +8,20 @@ from pygame.locals import (
 )
 
 
-class PlaneSprite(pygame.sprite.Sprite):
+class RocketSprite(pygame.sprite.Sprite):
     ''' Plane sprite '''
 
     ELEVATOR_STEP = 5
     THROTTLE_STEP = 1
 
     def __init__(self, plane, image_path, projector):
-        super(PlaneSprite, self).__init__()
-        self.original_image = pygame.image.load(image_path)
-        self.image = self.original_image
-        self.image.set_colorkey([53, 60, 41], RLEACCEL)
+        super(RocketSprite, self).__init__()
+        image = pygame.image.load(image_path)
+        # back_color = image.get_at((250, 0))
+
+        self.original_image = image
+        self.image = image
+        self.image.set_colorkey([0, 0, 0], RLEACCEL)
         self.rect = self.image.get_rect(
             center=(
                 200, 200
@@ -31,7 +34,7 @@ class PlaneSprite(pygame.sprite.Sprite):
         self.dead = False
 
         self.elevator_percent = 0
-        self.throttle_percent = 60
+        self.throttle_percent = 10
 
     def x_velocity(self):
         if self.dead:
@@ -41,19 +44,19 @@ class PlaneSprite(pygame.sprite.Sprite):
 
     def _increment_elevator(self):
         self.elevator_percent = min(
-            100, self.elevator_percent + PlaneSprite.ELEVATOR_STEP)
+            100, self.elevator_percent + RocketSprite.ELEVATOR_STEP)
 
     def _decrement_elevator(self):
         self.elevator_percent = max(
-            -100, self.elevator_percent - PlaneSprite.ELEVATOR_STEP)
+            -100, self.elevator_percent - RocketSprite.ELEVATOR_STEP)
 
     def _increment_throttle(self):
         self.throttle_percent = min(
-            100, self.throttle_percent + PlaneSprite.THROTTLE_STEP)
+            100, self.throttle_percent + RocketSprite.THROTTLE_STEP)
 
     def _decrement_throttle(self):
         self.throttle_percent = max(
-            0, self.throttle_percent - PlaneSprite.THROTTLE_STEP)
+            0, self.throttle_percent - RocketSprite.THROTTLE_STEP)
 
     def control(self, pressed_keys, joystick):
 
@@ -89,7 +92,7 @@ class PlaneSprite(pygame.sprite.Sprite):
     def update(self):
         ''' update the sprite based on plane's state '''
         position = self._airplane.position()
-        self.projector.center_x(position)
+        self.projector.center(position)
         screen_pos = self.projector.project(position)
 
         self.image = pygame.transform.rotate(

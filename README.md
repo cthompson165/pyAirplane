@@ -1,6 +1,9 @@
 # pyAirplane
 pyAirplane is a simple 2D flight dynamics engine in Python for simulating airplanes and kites.
 
+#Requirements
+pyAirplane requires pyMonk (I have 5.6.0). The examples require pyGame and that you have the root of the project (the directory containing the "examples" folder) in your python path environment variable. I have pyGame version 1.9.6.
+
 ## Structure
 Planes and kites start with `flight.flying_object`. Flying objects have one or more `flight.surface` objects that generate lift and drag based on the surface's `flight.lift_curve` and `flight drag_curve`. `flying_object` also takes care of collecting and applying the aerodynamic, thrust, and gravity forces acting on the object.
 
@@ -12,7 +15,6 @@ runge kutta. Kites experience big forces relative to their mass so require more 
 to avoid rocketing off into space. With euler integration the best we can do is use really small step sizes.
 
 ## Examples
-The following examples require that you have the root of the project (the directory containing the "examples" folder) in your python path environment variable.
 
 ### Simple Example
 Create a rock with drag and drop it from 100m (from examples/drop_a_rock.py):

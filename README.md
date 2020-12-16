@@ -14,7 +14,7 @@ to avoid rocketing off into space. With euler integration the best we can do is 
 ## Examples
 The following examples require that you have the root of the project (the directory containing the "examples" folder) in your python path environment variable.
 
-## Simple Example
+### Simple Example
 Create a rock with drag and drop it from 100m (from examples/drop_a_rock.py):
 
 Create the rock class and inherit from FlyingObject. It needs physical properties like weight and mass moment of inertia for gravity force calculation. Add a surface with parasitic drag for aerodynamic force calculation.
@@ -60,7 +60,7 @@ while rock.position().y > 0:
 
 The rock hits the ground after about 4.7 seconds and is blown off course by a little over .8 meters.
 
-## Kite
+### Kite
 fly_a_kite.py simulates flying a box kite. Use the left and right arrows to control the windspeed. 
 
 For debugging forces, you can use the following keys:
@@ -68,12 +68,12 @@ For debugging forces, you can use the following keys:
 * p: pause and unpause
 * s: when paused, advance one step
 
-## Airplane
+### Airplane
 fly_a_747.py simulates flying a 747 (with a bomber plane image because I am lazy). Use the up and down arrows to control the elevator and right and left to control thrust. If you have a flight-stick plugged in the simulation will try to use that. The airplane example implements the same debug keys as the kite example.
 
 Note that the airplane will always explode if you try to land. Adding the ability to land would be a fun upgrade if anyone wants to take it on. You'd need to turn on collisions for stationary objects in `flight.simulator`, setup friction for wheels vs. any other part of the plane, and then determine how big a collision impulse a plane can experience without damage.
 
-## Rocket
+### Rocket
 fly_a_rocket.py is a first pass at creating a rocket simulator. It loosely uses the specs from SpaceX's Falcon Heavy rocket. 
 
 ## Disclaimers
